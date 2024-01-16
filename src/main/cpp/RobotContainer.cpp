@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/button/Trigger.h>
+#include <frc2/command/Commands.h>
 
 #include "commands/Autos.h"
 
@@ -47,4 +48,5 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   // You can ignore this for now.
   //return autos::ExampleAuto(&m_subsystem);
+  return frc2::cmd::Idle();
 }
