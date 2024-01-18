@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "Constants.h"
-
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
@@ -13,6 +11,12 @@
 #include <frc2/command/WaitUntilCommand.h>
 
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+
+namespace ShooterConstants {
+    constexpr int kIntakeMotorPort = 13;
+    constexpr int kFlywheelMotorPort = 14;
+}
 
 class Shooter : public frc2::SubsystemBase {
  public:

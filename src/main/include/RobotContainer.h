@@ -8,6 +8,7 @@
 #include <frc/MathUtil.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc/trajectory/TrapezoidProfile.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -17,9 +18,49 @@
 #include <units/velocity.h>
 #include <units/voltage.h>
 
-#include "Constants.h"
+#include <numbers>
+
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
+
+
+namespace AutoConstants {
+
+constexpr auto kMaxSpeed = 1_mps;
+constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
+
+
+// Swerve Constants (NEED TO BE INTEGRATED)
+// constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
+// out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
+constexpr auto kMaxAngularSpeed = 180_rpm;
+constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
+
+// XXX Very untrustworthy placeholder values.
+constexpr double kPXController = 0.5;
+constexpr double kPYController = 0.5;
+constexpr double kPThetaController = 0.5;
+
+// Trapezoidal motion profile for the robot heading.
+const frc::TrapezoidProfile<units::radians>::Constraints
+    kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
+
+} // namespace AutoConstants
+
+
+namespace OperatorConstants {
+
+constexpr int kDriverControllerPort = 0;
+constexpr int kSwerveControllerPort = 0;
+
+constexpr double kDeadband = 0.08;
+
+constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
+constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
+constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
+constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
+
+}  // namespace OperatorConstants
 
 /**
  * This class is where the bulk of the robot should be declared.  Since

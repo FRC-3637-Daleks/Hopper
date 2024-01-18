@@ -8,8 +8,6 @@
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
 
-#include "Constants.h"
-
 using namespace DriveConstants;
 
 class DrivetrainSimulation
@@ -117,7 +115,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
 void Drivetrain::SetModuleStates(
     wpi::array<frc::SwerveModuleState, 4> desiredStates) {
   kDriveKinematics.DesaturateWheelSpeeds(&desiredStates,
-                                         AutoConstants::kMaxSpeed);
+                                         DriveConstants::kMaxSpeed);
   m_frontLeft.SetDesiredState(desiredStates[0]);
   m_frontRight.SetDesiredState(desiredStates[1]);
   m_rearLeft.SetDesiredState(desiredStates[2]);
