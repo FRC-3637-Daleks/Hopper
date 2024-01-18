@@ -75,7 +75,7 @@ void Drivetrain::Periodic() {
                      m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
   m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 
-  UpdateDashboard();
+  this->UpdateDashboard();
 }
 
 Drivetrain::~Drivetrain() {}
@@ -84,9 +84,6 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
                        units::meters_per_second_t strafeSpeed,
                        units::radians_per_second_t angularSpeed,
                        bool fieldRelative) {
-
-  // fmt::print("{}, {}, {}, inside drive method", forwardSpeed, strafeSpeed,
-  //            angularSpeed);
   //  Use the kinematics model to get from the set of commanded speeds to a set
   //  of states that can be commanded to each module.
   auto states = kDriveKinematics.ToSwerveModuleStates(
@@ -94,8 +91,6 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
           ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                 forwardSpeed, strafeSpeed, angularSpeed, GetHeading())
           : frc::ChassisSpeeds{forwardSpeed, strafeSpeed, angularSpeed});
-
-  // fmt::print("calculated swerve module states\n");
 
   // Occasionally a drive motor is commanded to go faster than its maximum
   // output can sustain. Desaturation lowers the module speeds so that no motor
@@ -178,11 +173,6 @@ void Drivetrain::UpdateDashboard() {
   frc::SmartDashboard::PutNumber("PDH/Voltage", m_pdh.GetVoltage());
 
   frc::SmartDashboard::PutNumber("PDH/Total Current", m_pdh.GetTotalCurrent());
-  // for (int channel = 0; channel < 24; channel++) {
-  //   frc::SmartDashboard::PutNumber(
-  //       ("PDH/Ch" + std::to_string(channel) + " Current"),
-  //       m_pdh.GetCurrent(channel));
-  // }
 }
 
 void Drivetrain::SimulationPeriodic()

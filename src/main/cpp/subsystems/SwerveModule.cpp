@@ -126,11 +126,11 @@ void SwerveModule::SetDesiredState(
 
   m_steerMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position,
                    ToTalonAngle(state.angle));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
-                                 state.angle.Degrees().value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
-                                 ToTalonAngle(state.angle));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+  //                                state.angle.Degrees().value());
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
+  //                                ToTalonAngle(state.angle));
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
 }
 
 // TODO Display things neater on the SmartDashboard.
@@ -151,10 +151,12 @@ void SwerveModule::UpdateDashboard() {
   frc::SmartDashboard::PutNumber(fmt::format("{}/turn voltage", m_name), m_steerMotor.GetBusVoltage());
   frc::SmartDashboard::PutNumber(fmt::format("{}/drive current", m_name), m_driveMotor.GetOutputCurrent());
   frc::SmartDashboard::PutNumber(fmt::format("{}/turn current", m_name), m_steerMotor.GetOutputCurrent());
-  // frc::SmartDashboard::PutNumber(fmt::format("{} drive raw", m_name),
-  //                                m_driveEncoder.GetVelocity());
-  // frc::SmartDashboard::PutNumber(fmt::format("{} steer raw", m_name),
-  //                                m_steerMotor.GetSelectedSensorPosition());
+
+  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+                                 state.angle.Degrees().value());
+  frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
+                                 ToTalonAngle(state.angle));
+  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
 }
 
 double SwerveModule::ToTalonVelocity(units::meters_per_second_t speed) {

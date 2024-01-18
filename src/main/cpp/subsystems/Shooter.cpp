@@ -19,3 +19,5 @@ frc2::CommandPtr Shooter::FlywheelCommand( double controllerInput ) {
   return Run([this, &controllerInput] 
              { flywheel.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Velocity, controllerInput); });
 }
+
+
