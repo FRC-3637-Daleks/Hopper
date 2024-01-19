@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ctre/Phoenix.h>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/CANcoder.hpp>
 #include <frc/AnalogInput.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <rev/CANSparkMax.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -97,7 +97,7 @@ public:
   void UpdateDashboard();
 
   // Run physics simulation and update the hardware
-  void SimulationPeriodic();
+  // void SimulationPeriodic();
 
 private:
   // Converts m/s to rpm for the drive velocity setpoint.
@@ -111,12 +111,12 @@ private:
 
   const std::string m_name; // Useful to identify the module.
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX m_driveMotor;
+  ctre::phoenix6::hardware::TalonFX m_driveMotor;
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX m_steerMotor;
+  ctre::phoenix6::hardware::TalonFX m_steerMotor;
 
   // Keeps track of the module heading between power cycles.
-  ctre::phoenix::sensors::WPI_CANCoder m_absoluteEncoder;
+  ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
 private:
   friend class SwerveModuleSim;
