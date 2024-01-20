@@ -28,6 +28,7 @@ constexpr double kSteerMotorCurrentLimit = 20; // An educated guess.
 constexpr double kMotorRampRate = 0.5; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
+constexpr auto kWheelCircum = std::numbers::pi*kWheelDiameter / units::turn_t{1};
 constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
 constexpr double kDriveEncoderCPR = 4096;
 constexpr auto kDriveEncoderDistancePerRevolution =
@@ -97,7 +98,7 @@ public:
   void UpdateDashboard();
 
   // Run physics simulation and update the hardware
-  // void SimulationPeriodic();
+  void SimulationPeriodic();
 
 private:
   // Converts m/s to rpm for the drive velocity setpoint.
