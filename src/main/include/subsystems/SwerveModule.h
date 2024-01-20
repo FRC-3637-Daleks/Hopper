@@ -99,7 +99,7 @@ public:
   void UpdateDashboard();
 
   // Run physics simulation and update the hardware
-  // void SimulationPeriodic();
+  void SimulationPeriodic();
 
 private:
   // Converts m/s to rpm for the drive velocity setpoint.

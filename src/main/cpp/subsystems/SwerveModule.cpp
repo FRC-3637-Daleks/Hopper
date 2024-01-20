@@ -35,7 +35,7 @@ public:
     m_swivelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kSteerGearReduction, ModuleConstants::kSteerMoment)
   {}
 
-  // void update();
+  void update();
 
 private:
   // hooks to hardware abstraction layer
@@ -238,30 +238,31 @@ units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {
   return m_absoluteEncoder.GetAbsolutePosition().GetValue().convert<units::radian>();
 }
 
-// // Simulation
-// void SwerveModule::SimulationPeriodic()
-// {
-//   if(m_sim_state) m_sim_state->update();
-// }
+// Simulation
+void SwerveModule::SimulationPeriodic()
+{
+  if(m_sim_state) m_sim_state->update();
+}
 
-// void SwerveModuleSim::update()
-// {
-//   m_driveSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-//   m_steerSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+void SwerveModuleSim::update()
+{
+  m_driveSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+  m_steerSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
-//   // Simulate the wheel swiveling
-//   const auto prev_velocity = m_swivelModel.GetAngularVelocity();
-//   // invert swivel output as per real robot
-//   m_swivelModel.SetInputVoltage(-m_steerSim.GetMotorVoltage());
-//   m_swivelModel.Update(20_ms);
-//   const auto average_velocity = (prev_velocity + m_swivelModel.GetAngularVelocity())/2;
-//   m_encoderSim.AddPosition(average_velocity/(2_rad*std::numbers::pi)*20_ms*ModuleConstants::kSteerEncoderCPR);
+  // Simulate the wheel swiveling
+  const auto prev_velocity = m_swivelModel.GetAngularVelocity();
+  // invert swivel output as per real robot
+  m_swivelModel.SetInputVoltage(-m_steerSim.GetMotorVoltage());
+  m_swivelModel.Update(20_ms);
+  const auto average_velocity = (prev_velocity + m_swivelModel.GetAngularVelocity())/2;
+  m_encoderSim.AddPosition(average_velocity*20_ms);
+  m_steerSim.AddRotorPosition(average_velocity*ModuleConstants::kSteerGearReduction*20_ms);
+  m_steerSim.SetRotorVelocity(average_velocity*ModuleConstants::kSteerGearReduction);
 
-//   // Simulate the wheel turning (ignoring changes in traction)
-//   m_wheelModel.SetInputVoltage(m_driveSim.GetMotorVoltage());
-//   m_wheelModel.Update(20_ms);
+  // Simulate the wheel turning (ignoring changes in traction)
+  m_wheelModel.SetInputVoltage(m_driveSim.GetMotorVoltage());
+  m_wheelModel.Update(20_ms);
 
-//   const auto tick_speed = m_wheelModel.GetAngularVelocity()/(2_rad*std::numbers::pi)*ModuleConstants::kDriveEncoderCPR;
-//   m_driveSim.SetRotorVelocity(m_wheelModel.GetAngularVelocity());
-//   m_driveSim.AddRotorPosition(tick_speed*20_ms);
-// }
+  m_driveSim.SetRotorVelocity(m_wheelModel.GetAngularVelocity()*ModuleConstants::kDriveEncoderReduction);
+  m_driveSim.AddRotorPosition(m_wheelModel.GetAngularVelocity()*ModuleConstants::kDriveEncoderReduction*20_ms);
+}

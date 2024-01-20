@@ -177,10 +177,10 @@ void Drivetrain::SimulationPeriodic()
 {
   if (!m_sim_state) return;
 
-  // m_frontLeft.SimulationPeriodic();
-  // m_rearLeft.SimulationPeriodic();
-  // m_frontRight.SimulationPeriodic();
-  // m_rearRight.SimulationPeriodic();
+  m_frontLeft.SimulationPeriodic();
+  m_rearLeft.SimulationPeriodic();
+  m_frontRight.SimulationPeriodic();
+  m_rearRight.SimulationPeriodic();
 
   // Assume perfect kinematics and get the new gyro angle
   const auto chassis_speed = kDriveKinematics.ToChassisSpeeds(
