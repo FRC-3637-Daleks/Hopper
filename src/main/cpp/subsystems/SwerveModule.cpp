@@ -101,19 +101,26 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   drivePIDConfigs.kP = driveMotorPIDCoefficients.kP;
   drivePIDConfigs.kI = driveMotorPIDCoefficients.kI;
   drivePIDConfigs.kD = driveMotorPIDCoefficients.kD;
-  drivePIDConfigs.kV = 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed);
+  drivePIDConfigs.kV = 1.0/(ModuleConstants::kPhysicalMaxSpeed / ModuleConstants::kDistanceToRotations * 1_s / 1_tr);
 
   m_driveMotor.GetConfigurator().Apply(drivePIDConfigs, 50_ms);
   //m_driveMotor.Config_kF(0, driveMotorPIDCoefficients.kFF);
   // really this isn't something that should be arbitrarily tuned, we can calculate it
   // See the documentation on Config_kF
+
+
   ctre::phoenix6::configs::Slot0Configs steerPIDConfigs{};
   steerPIDConfigs.kP = driveMotorPIDCoefficients.kP;
   steerPIDConfigs.kI = driveMotorPIDCoefficients.kI;
   steerPIDConfigs.kD = driveMotorPIDCoefficients.kD;
-  steerPIDConfigs.kV = 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed);
+  steerPIDConfigs.kV = 0.0;
   
   m_steerMotor.GetConfigurator().Apply(steerPIDConfigs, 50_ms);
+
+  ctre::phoenix6::configs::ClosedLoopGeneralConfigs steerClosedLoopConfig{};
+  steerClosedLoopConfig.ContinuousWrap = true;
+
+  m_steerMotor.GetConfigurator().Apply(steerClosedLoopConfig, 50_ms);
 
   ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig{};
   magnetConfig.MagnetOffset = absoluteEncoderOffset;
@@ -134,23 +141,13 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 SwerveModule::~SwerveModule() {}
 
 units::meter_t SwerveModule::GetModuleDistance() {
-  auto& rotorPosSignal = m_driveMotor.GetPosition();
+  auto test = m_driveMotor.GetPosition().GetValue() * ModuleConstants::kDistanceToRotations;
 
-  auto rotorPos = rotorPosSignal.GetValue();
-
-  auto dist = (rotorPos / ModuleConstants::kDriveEncoderReduction) * std::numbers::pi * ModuleConstants::kWheelDiameter;
-
-  return dist;
+  return m_driveMotor.GetPosition().GetValue() * ModuleConstants::kDistanceToRotations;
 }
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
-  auto& rotorPosSignal = m_driveMotor.GetRotorVelocity();
-
-  auto rotorPos = rotorPosSignal.GetValue();
-
-  auto velocity = (rotorPos / ModuleConstants::kDriveEncoderReduction) * std::numbers::pi * ModuleConstants::kWheelDiameter;
-
-  return velocity;
+  return m_driveMotor.GetVelocity().GetValue() * ModuleConstants::kDistanceToRotations;
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {
@@ -174,7 +171,7 @@ void SwerveModule::SetDesiredState(
   
   ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0.0_tr_per_s_sq, true, 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed)};
 
-  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed));
+  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed * ModuleConstants::kDistanceToRotations));
   //m_driveMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 
   //                 state.speed/kPhysicalMaxSpeed);
   
