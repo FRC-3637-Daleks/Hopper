@@ -141,8 +141,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 SwerveModule::~SwerveModule() {}
 
 units::meter_t SwerveModule::GetModuleDistance() {
-  auto test = m_driveMotor.GetPosition().GetValue() * ModuleConstants::kDistanceToRotations;
-
   return m_driveMotor.GetPosition().GetValue() * ModuleConstants::kDistanceToRotations;
 }
 
@@ -171,7 +169,7 @@ void SwerveModule::SetDesiredState(
   
   ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0.0_tr_per_s_sq, true, 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed)};
 
-  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed * ModuleConstants::kDistanceToRotations));
+  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / ModuleConstants::kDistanceToRotations));
   //m_driveMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 
   //                 state.speed/kPhysicalMaxSpeed);
   

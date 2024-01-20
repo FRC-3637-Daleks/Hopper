@@ -28,13 +28,13 @@ constexpr double kSteerMotorCurrentLimit = 20; // An educated guess.
 constexpr double kMotorRampRate = 0.5; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
-constexpr auto kDriveEncoderReduction = 6.75_tr;  // reduction in drive motor
+constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
 constexpr double kDriveEncoderCPR = 4096.0;
 constexpr auto kDriveEncoderDistancePerRevolution =
-    kWheelDiameter * std::numbers::pi / kDriveEncoderReduction.value();
+    kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
 constexpr auto kWheelMoment = 0.015_kg_sq_m;
 
-constexpr auto kDistanceToRotations = std::numbers::pi * ModuleConstants::kWheelDiameter / ModuleConstants::kDriveEncoderReduction;
+constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
 constexpr double kSteerGearReduction = 150.0/7.0;
 constexpr double kSteerEncoderCPR = 4096;
