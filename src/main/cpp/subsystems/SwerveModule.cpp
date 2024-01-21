@@ -121,11 +121,14 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerClosedLoopConfig.ContinuousWrap = true;
 
   m_steerMotor.GetConfigurator().Apply(steerClosedLoopConfig, 50_ms);
+  
+  // This automatically scales future setpoints and readings by gear ratio
+  ctre::phoenix6::configs::FeedbackConfigs steerFeedbackConfigs{};
+  steerFeedbackConfigs.SensorToMechanismRatio = ModuleConstants::kSteerGearReduction;
+  m_steerMotor.GetConfigurator().Apply(steerFeedbackConfigs, 50_ms);
 
-  ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig{};
-  magnetConfig.MagnetOffset = absoluteEncoderOffset;
-
-  m_absoluteEncoder.GetConfigurator().Apply(magnetConfig);
+  // Home the integrated rotor sensor to the cancoder position
+  m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
 
   // // Connects CANCoder to the steer motor
   // m_steerMotor.ConfigRemoteFeedbackFilter(m_absoluteEncoder, 0);
