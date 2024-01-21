@@ -110,9 +110,9 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
 
   ctre::phoenix6::configs::Slot0Configs steerPIDConfigs{};
-  steerPIDConfigs.kP = driveMotorPIDCoefficients.kP;
-  steerPIDConfigs.kI = driveMotorPIDCoefficients.kI;
-  steerPIDConfigs.kD = driveMotorPIDCoefficients.kD;
+  steerPIDConfigs.kP = steerMotorPIDCoefficients.kP;
+  steerPIDConfigs.kI = steerMotorPIDCoefficients.kI;
+  steerPIDConfigs.kD = steerMotorPIDCoefficients.kD;
   steerPIDConfigs.kV = 0.0;
   
   m_steerMotor.GetConfigurator().Apply(steerPIDConfigs, 50_ms);
@@ -166,14 +166,10 @@ void SwerveModule::SetDesiredState(
   const auto state =
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
-  
-  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0.0_tr_per_s_sq, true, 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed)};
-
+  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, false};
   m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / ModuleConstants::kDistanceToRotations));
-  //m_driveMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 
-  //                 state.speed/kPhysicalMaxSpeed);
   
-  ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, ModuleConstants::kPhysicalMaxAngularSpeed, true, 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed)};
+  ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps, false};
 
   m_steerMotor.SetControl(positionControl.WithPosition(state.angle.Radians()));
   // frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
