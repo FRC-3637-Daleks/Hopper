@@ -249,11 +249,11 @@ void SwerveModuleSim::update()
 
   // Simulate the wheel swiveling
   const auto prev_velocity = m_swivelModel.GetAngularVelocity();
-  // invert swivel output as per real robot
-  m_swivelModel.SetInputVoltage(-m_steerSim.GetMotorVoltage());
+  m_swivelModel.SetInputVoltage(m_steerSim.GetMotorVoltage());
   m_swivelModel.Update(20_ms);
   const auto average_velocity = (prev_velocity + m_swivelModel.GetAngularVelocity())/2;
-  m_encoderSim.AddPosition(average_velocity*20_ms);
+  // cancoder is on mechanism and is inverted from the falcon's rotor
+  m_encoderSim.AddPosition(-average_velocity*20_ms);
   m_steerSim.AddRotorPosition(average_velocity*ModuleConstants::kSteerGearReduction*20_ms);
   m_steerSim.SetRotorVelocity(average_velocity*ModuleConstants::kSteerGearReduction);
 
