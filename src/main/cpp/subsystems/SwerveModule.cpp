@@ -86,14 +86,18 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   // Hopefully prevents brownouts.
   ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentConfigs{};
-  driveCurrentConfigs.StatorCurrentLimit = ModuleConstants::kDriveMotorCurrentLimit;
-  driveCurrentConfigs.StatorCurrentLimitEnable = true;
+  driveCurrentConfigs.SupplyCurrentLimitEnable = true;
+  driveCurrentConfigs.SupplyCurrentLimit = ModuleConstants::kDriveMotorCurrentLimit;
+  driveCurrentConfigs.SupplyCurrentThreshold = ModuleConstants::kDriveMotorCurrentLimit;
+  driveCurrentConfigs.SupplyTimeThreshold = ModuleConstants::kCurrentLimitPeriod.convert<units::second>().value();
 
   m_driveMotor.GetConfigurator().Apply(driveCurrentConfigs, 50_ms);
 
   ctre::phoenix6::configs::CurrentLimitsConfigs steerCurrentConfigs{};
-  steerCurrentConfigs.StatorCurrentLimit = ModuleConstants::kSteerMotorCurrentLimit;
-  steerCurrentConfigs.StatorCurrentLimitEnable = true;
+  steerCurrentConfigs.SupplyCurrentLimitEnable = true;
+  steerCurrentConfigs.SupplyCurrentLimit = ModuleConstants::kSteerMotorCurrentLimit;
+  steerCurrentConfigs.SupplyCurrentThreshold = ModuleConstants::kSteerMotorCurrentLimit;
+  steerCurrentConfigs.SupplyTimeThreshold = ModuleConstants::kCurrentLimitPeriod.convert<units::second>().value();
 
   m_steerMotor.GetConfigurator().Apply(steerCurrentConfigs, 50_ms);
   
