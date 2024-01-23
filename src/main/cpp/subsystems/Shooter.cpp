@@ -50,3 +50,5 @@ frc2::CommandPtr Shooter::FlywheelCommand( double controllerInput ) {
   return Run([this, &controllerInput] 
              { m_motor.Set(controllerInput); });
 }
+
+

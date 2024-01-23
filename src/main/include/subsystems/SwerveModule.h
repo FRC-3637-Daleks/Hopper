@@ -8,12 +8,49 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <rev/CANSparkMax.h>
 
-#include <memory>
+#include <units/acceleration.h>
+#include <units/angle.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
+#include <units/length.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
+#include <units/moment_of_inertia.h>
 
-#include "Constants.h"
+#include <memory>
+#include <numbers>
+
+
+namespace ModuleConstants {
+constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay.
+constexpr double kSteerMotorCurrentLimit = 20; // An educated guess.
+
+constexpr double kMotorRampRate = 0.5; // Seconds from neutral to full output.
+
+constexpr auto kWheelDiameter = 4_in;
+constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
+constexpr double kDriveEncoderCPR = 4096;
+constexpr auto kDriveEncoderDistancePerRevolution =
+    kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
+constexpr auto kWheelMoment = 0.015_kg_sq_m;
+
+constexpr double kSteerGearReduction = 150.0/7.0;
+constexpr double kSteerEncoderCPR = 4096;
+constexpr auto kSteerEncoderDistancePerCount =
+    2_rad * std::numbers::pi / kSteerEncoderCPR; // Radians per encoder count.
+constexpr auto kSteerMoment = 0.005_kg_sq_m;
+
+// Values measured with the drivetrain suspended.
+constexpr auto kPhysicalMaxSpeed = 16.5_fps;
+constexpr auto kPhysicalMaxAngularSpeed = 180_rpm;
+} // namespace ModuleConstants
 
 // forward declaration
 class SwerveModuleSim;
+
+struct PIDCoefficients {
+  double kP, kI, kD, kFF, kIz;
+};
 
 /**
  * The SwerveModule helper class consists of a steer motor and a drive motor
@@ -85,3 +122,4 @@ private:
   friend class SwerveModuleSim;
   std::unique_ptr<SwerveModuleSim> m_sim_state;
 };
+

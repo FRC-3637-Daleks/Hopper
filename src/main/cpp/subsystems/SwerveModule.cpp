@@ -7,11 +7,16 @@
 
 #include <frc/simulation/FlywheelSim.h>
 
+#include <units/acceleration.h>
+#include <units/angle.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
+#include <units/length.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
+#include <units/moment_of_inertia.h>
+
 #include <iostream>
-
-#include "Constants.h"
-
-using namespace ModuleConstants;
 
 class SwerveModuleSim
 {
@@ -20,8 +25,8 @@ public:
     m_driveSim(module.m_driveMotor.GetSimCollection()),
     m_steerSim(module.m_steerMotor.GetSimCollection()),
     m_encoderSim(module.m_absoluteEncoder.GetSimCollection()),
-    m_wheelModel(frc::DCMotor::Falcon500(1), kDriveEncoderReduction, kWheelMoment),
-    m_swivelModel(frc::DCMotor::Falcon500(1), kSteerGearReduction, kSteerMoment)
+    m_wheelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kDriveEncoderReduction, ModuleConstants::kWheelMoment),
+    m_swivelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kSteerGearReduction, ModuleConstants::kSteerMoment)
   {}
 
   void update();
@@ -54,11 +59,11 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   m_steerMotor.SetSelectedSensorPosition(0);
   m_driveMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   m_steerMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-  m_driveMotor.ConfigClosedloopRamp(kMotorRampRate);
-  m_driveMotor.ConfigOpenloopRamp(kMotorRampRate);
+  m_driveMotor.ConfigClosedloopRamp(ModuleConstants::kMotorRampRate);
+  m_driveMotor.ConfigOpenloopRamp(ModuleConstants::kMotorRampRate);
   // Hopefully prevents brownouts.
-  m_driveMotor.ConfigStatorCurrentLimit({true, kDriveMotorCurrentLimit, kDriveMotorCurrentLimit, 1.0});
-  m_steerMotor.ConfigStatorCurrentLimit({true, kSteerMotorCurrentLimit, kSteerMotorCurrentLimit, 1.0});
+  m_driveMotor.ConfigStatorCurrentLimit({true, ModuleConstants::kDriveMotorCurrentLimit, ModuleConstants::kDriveMotorCurrentLimit, 1.0});
+  m_steerMotor.ConfigStatorCurrentLimit({true, ModuleConstants::kSteerMotorCurrentLimit, ModuleConstants::kSteerMotorCurrentLimit, 1.0});
   
   m_driveMotor.Config_kP(0, driveMotorPIDCoefficients.kP);
   m_driveMotor.Config_kI(0, driveMotorPIDCoefficients.kI);
@@ -66,7 +71,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   //m_driveMotor.Config_kF(0, driveMotorPIDCoefficients.kFF);
   // really this isn't something that should be arbitrarily tuned, we can calculate it
   // See the documentation on Config_kF
-  m_driveMotor.Config_kF(0, 1023/ToTalonVelocity(kPhysicalMaxSpeed));
+  m_driveMotor.Config_kF(0, 1023/ToTalonVelocity(ModuleConstants::kPhysicalMaxSpeed));
   m_steerMotor.Config_kP(0, steerMotorPIDCoefficients.kP);
   m_steerMotor.Config_kI(0, steerMotorPIDCoefficients.kI);
   m_steerMotor.Config_kD(0, steerMotorPIDCoefficients.kD);
@@ -76,7 +81,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   );
 
   m_absoluteEncoder.ConfigFeedbackCoefficient(
-    kSteerEncoderDistancePerCount.value(), "rad",
+    ModuleConstants::kSteerEncoderDistancePerCount.value(), "rad",
     ctre::phoenix::sensors::SensorTimeBase::PerSecond);
 
   // Connects CANCoder to the steer motor
@@ -94,11 +99,11 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 SwerveModule::~SwerveModule() {}
 
 units::meter_t SwerveModule::GetModuleDistance() {
-  return kDriveEncoderDistancePerRevolution * m_driveMotor.GetSelectedSensorPosition() / kDriveEncoderCPR;
+  return ModuleConstants::kDriveEncoderDistancePerRevolution * m_driveMotor.GetSelectedSensorPosition() / ModuleConstants::kDriveEncoderCPR;
 }
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
-  return kDriveEncoderDistancePerRevolution * m_driveMotor.GetSelectedSensorVelocity() / kDriveEncoderCPR / 100_ms;
+  return ModuleConstants::kDriveEncoderDistancePerRevolution * m_driveMotor.GetSelectedSensorVelocity() / ModuleConstants::kDriveEncoderCPR / 100_ms;
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {
@@ -126,11 +131,11 @@ void SwerveModule::SetDesiredState(
 
   m_steerMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position,
                    ToTalonAngle(state.angle));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
-                                 state.angle.Degrees().value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
-                                 ToTalonAngle(state.angle));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+  //                                state.angle.Degrees().value());
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
+  //                                ToTalonAngle(state.angle));
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
 }
 
 // TODO Display things neater on the SmartDashboard.
@@ -151,24 +156,26 @@ void SwerveModule::UpdateDashboard() {
   frc::SmartDashboard::PutNumber(fmt::format("{}/turn voltage", m_name), m_steerMotor.GetBusVoltage());
   frc::SmartDashboard::PutNumber(fmt::format("{}/drive current", m_name), m_driveMotor.GetOutputCurrent());
   frc::SmartDashboard::PutNumber(fmt::format("{}/turn current", m_name), m_steerMotor.GetOutputCurrent());
-  // frc::SmartDashboard::PutNumber(fmt::format("{} drive raw", m_name),
-  //                                m_driveEncoder.GetVelocity());
-  // frc::SmartDashboard::PutNumber(fmt::format("{} steer raw", m_name),
-  //                                m_steerMotor.GetSelectedSensorPosition());
+
+  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+                                 state.angle.Degrees().value());
+  frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
+                                 ToTalonAngle(state.angle));
+  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
 }
 
 double SwerveModule::ToTalonVelocity(units::meters_per_second_t speed) {
   // encoder ticks per 100ms
-  return speed * 100_ms / kDriveEncoderDistancePerRevolution * kDriveEncoderCPR;
+  return speed * 100_ms / ModuleConstants::kDriveEncoderDistancePerRevolution * ModuleConstants::kDriveEncoderCPR;
 }
 
 double SwerveModule::ToTalonAngle(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
-      kSteerEncoderDistancePerCount * m_steerMotor.GetSelectedSensorPosition();
+      ModuleConstants::kSteerEncoderDistancePerCount * m_steerMotor.GetSelectedSensorPosition();
   // Puts the rotation in the correct scope for the incremental encoder.
   return (frc::AngleModulus(rotation.Radians() - currentHeading) +
           currentHeading) /
-         kSteerEncoderDistancePerCount;
+         ModuleConstants::kSteerEncoderDistancePerCount;
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {
@@ -192,13 +199,13 @@ void SwerveModuleSim::update()
   m_swivelModel.SetInputVoltage(-m_steerSim.GetMotorOutputLeadVoltage()*1_V);
   m_swivelModel.Update(20_ms);
   const auto average_velocity = (prev_velocity + m_swivelModel.GetAngularVelocity())/2;
-  m_encoderSim.AddPosition(average_velocity/(2_rad*std::numbers::pi)*20_ms*kSteerEncoderCPR);
+  m_encoderSim.AddPosition(average_velocity/(2_rad*std::numbers::pi)*20_ms*ModuleConstants::kSteerEncoderCPR);
 
   // Simulate the wheel turning (ignoring changes in traction)
   m_wheelModel.SetInputVoltage(m_driveSim.GetMotorOutputLeadVoltage()*1_V);
   m_wheelModel.Update(20_ms);
 
-  const auto tick_speed = m_wheelModel.GetAngularVelocity()/(2_rad*std::numbers::pi)*kDriveEncoderCPR;
+  const auto tick_speed = m_wheelModel.GetAngularVelocity()/(2_rad*std::numbers::pi)*ModuleConstants::kDriveEncoderCPR;
   m_driveSim.SetIntegratedSensorVelocity(tick_speed*100_ms);
   m_driveSim.AddIntegratedSensorPosition(tick_speed*20_ms);
 }
