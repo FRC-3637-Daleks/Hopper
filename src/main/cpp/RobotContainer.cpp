@@ -42,7 +42,12 @@ void RobotContainer::ConfigureBindings() {
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
       .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+
+  m_swerveController.A()
+      .OnTrue(m_swerve.ZeroHeadingCommand());
+
 }
+
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous

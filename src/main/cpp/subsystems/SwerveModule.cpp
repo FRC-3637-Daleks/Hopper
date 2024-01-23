@@ -130,6 +130,9 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   ctre::phoenix6::configs::FeedbackConfigs steerFeedbackConfigs{};
   steerFeedbackConfigs.SensorToMechanismRatio = ModuleConstants::kSteerGearReduction;
   m_steerMotor.GetConfigurator().Apply(steerFeedbackConfigs, 50_ms);
+  
+  
+  m_steerMotor.SetInverted(true);
 
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
@@ -141,7 +144,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       
   
   // positive voltage is counter clockwise
-  m_steerMotor.SetInverted(true);
   // m_steerMotor.SetInverted(false);
 }
 

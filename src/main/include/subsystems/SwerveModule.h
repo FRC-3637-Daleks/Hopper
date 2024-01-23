@@ -27,7 +27,7 @@ constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
 constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
 
 // Best defense against current
-constexpr double kMotorRampRate = 0.05; // Seconds from neutral to full output.
+constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
 constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
