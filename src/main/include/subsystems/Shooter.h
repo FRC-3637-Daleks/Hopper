@@ -11,26 +11,36 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/StartEndCommand.h>
 #include <frc2/command/WaitUntilCommand.h>
+#include <rev/CANSparkFlex.h>
+#include <frc/drive/DifferentialDrive.h>
 
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
 
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
-
-  /**
-   * Run the intake motor.
-   */
+  
+  //Runs Motor? - basic void commands 
+  void runMotor(); 
+  void stopMotor();
+  
   frc2::CommandPtr IntakeCommand();
 
   frc2::CommandPtr FlywheelCommand( double controllerInput);
 
+ //Lead + Follow motors (makes motors run in parallel) what constructors?
+  const int leadDeviceID = 1, followDeviceID = 2;
+
+  rev::CANSparkFlex m_leadMotor{leadDeviceID,rev::CANSparkFlex::MotorType::kBrushless};
+  rev::CANSparkFlex m_followMotor{followDeviceID,rev::CANSparkFlex::MotorType::kBrushless};
+ 
+
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  ctre::phoenix::motorcontrol::can::WPI_TalonSRX intake{ShooterConstants::kIntakeMotorPort};
-  ctre::phoenix::motorcontrol::can::WPI_TalonSRX flywheel{ShooterConstants::kFlywheelMotorPort};
-
+  rev::CANSparkFlex m_motor{ShooterConstants::kFlywheelMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
+  rev::CANSparkFlex m_motor{ShooterConstants::kFlywheelMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
   frc::DigitalInput m_intakeBreakBeam{0};
   frc::DigitalInput m_flywheelBreakBeam{1};
 };
