@@ -134,6 +134,12 @@ frc::Pose2d Drivetrain::GetPose() {
   return m_poseEstimator.GetEstimatedPosition();
 }
 
+frc::ChassisSpeeds Drivetrain::GetSpeed(){
+  return kDriveKinematics.ToChassisSpeeds(
+  m_frontLeft.GetState(), m_frontRight.GetState(),
+  m_rearLeft.GetState(), m_rearRight.GetState());
+}
+
 void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
   m_poseEstimator.ResetPosition(
       GetHeading(),

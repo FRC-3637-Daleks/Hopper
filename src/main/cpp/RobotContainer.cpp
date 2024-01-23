@@ -4,10 +4,30 @@
 
 #include "RobotContainer.h"
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+
+#include <units/math.h>
+
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
 
 #include "commands/Autos.h"
+#include <frc/DriverStation.h>
+  const auto kRadius = units::math::sqrt((DriveConstants::kWheelBase/2 * DriveConstants::kWheelBase/2)+
+  (DriveConstants::kTrackWidth/2 * DriveConstants::kTrackWidth/2));
+
+ const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
+    pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants 
+    pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
+    DriveConstants::kArcadeMaxSpeed,
+    kRadius, // Drive base radius (distance from center to furthest module) 
+    pathplanner::ReplanningConfig()
+);
+
+
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -42,11 +62,36 @@ void RobotContainer::ConfigureBindings() {
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
       .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+
+
+      pathplanner::AutoBuilder::configureHolonomic(
+        [this](){return this->m_swerve.GetPose();},
+        [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
+        [this](){return this->m_swerve.GetSpeed();},
+        [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
+        speed.vx, speed.vy, speed.omega, false);},
+        pathFollowerConfig,
+        [](){  
+
+          auto alliance = frc::DriverStation::GetAlliance();
+          if(alliance) {
+            return alliance.value() == frc::DriverStation::Alliance::kRed;
+          }
+
+          return false;
+
+
+          
+        }, //replace later, just a placeholder
+        (&m_swerve)
+      );
+
 }
+
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   // You can ignore this for now.
   //return autos::ExampleAuto(&m_subsystem);
-  return frc2::cmd::Idle();
+  return pathplanner::PathPlannerAuto("Hopper").ToPtr();
 }

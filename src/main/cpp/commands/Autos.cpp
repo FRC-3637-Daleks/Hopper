@@ -3,11 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/Autos.h"
-
 #include <frc2/command/Commands.h>
 
 
-frc2::CommandPtr autos::ExampleAuto(Shooter* subsystem) {
-  return frc2::cmd::Sequence(subsystem->IntakeCommand(),
-                             frc2::cmd::Print("Hello World!"));
+namespace autos {
 }

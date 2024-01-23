@@ -162,6 +162,8 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
+  //Returns Current Chassis Speed
+  frc::ChassisSpeeds GetSpeed();
   // Resets the odometry using the given a field-relative pose using current
   // gyro angle.
   void ResetOdometry(const frc::Pose2d &pose);

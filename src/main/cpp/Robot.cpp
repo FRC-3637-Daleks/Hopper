@@ -40,7 +40,9 @@ void Robot::AutonomousInit() {
   }
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {  
+  frc2::CommandScheduler::GetInstance().Run();
+}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
@@ -56,6 +58,7 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
+  
   frc2::CommandScheduler::GetInstance().Run();
 }
 

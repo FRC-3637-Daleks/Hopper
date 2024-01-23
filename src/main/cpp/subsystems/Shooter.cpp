@@ -8,6 +8,7 @@ Shooter::Shooter() {
   // Implementation of subsystem constructor goes here.
 }
 
+<<<<<<< Updated upstream
 frc2::CommandPtr Shooter::IntakeCommand() {
   // Inline construction of command goes here.
   // Subsystem::RunOnce implicitly requires `this` subsystem.
@@ -21,3 +22,5 @@ frc2::CommandPtr Shooter::FlywheelCommand( double controllerInput ) {
 }
 
 
+=======
+>>>>>>> Stashed changes
