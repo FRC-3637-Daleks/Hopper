@@ -5,22 +5,9 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() {
-  // Implementation of subsystem constructor goes here.
-}
 
-<<<<<<< Updated upstream
-frc2::CommandPtr Shooter::IntakeCommand() {
-  // Inline construction of command goes here.
-  // Subsystem::RunOnce implicitly requires `this` subsystem.
-  return StartEnd([this] { intake.Set(0.5); }, 
-                  [this] { intake.Set(0.0); });
-}
-
-frc2::CommandPtr Shooter::FlywheelCommand( double controllerInput ) {
-  return Run([this, &controllerInput] 
-             { flywheel.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Velocity, controllerInput); });
 }
 
 
-=======
->>>>>>> Stashed changes
+
+
