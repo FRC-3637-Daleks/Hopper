@@ -3,7 +3,7 @@
     "PowerDistributions": {
       "14": {
         "PowerDistribution[14]": {
-          "open": true
+          "open": false
         }
       }
     }
@@ -24,14 +24,14 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "FL": {
-          "open": true
-        },
         "Swerve": {
           "open": true
         },
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }
