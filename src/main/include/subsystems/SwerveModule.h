@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ctre/Phoenix.h>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <ctre/phoenix6/CANcoder.hpp>
 #include <frc/AnalogInput.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <rev/CANSparkMax.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -22,17 +22,21 @@
 
 
 namespace ModuleConstants {
-constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay.
-constexpr double kSteerMotorCurrentLimit = 20; // An educated guess.
+constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
+constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
+constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
 
-constexpr double kMotorRampRate = 0.5; // Seconds from neutral to full output.
+// Best defense against current
+constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
 constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
-constexpr double kDriveEncoderCPR = 4096;
+constexpr double kDriveEncoderCPR = 4096.0;
 constexpr auto kDriveEncoderDistancePerRevolution =
     kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
 constexpr auto kWheelMoment = 0.015_kg_sq_m;
+
+constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
 constexpr double kSteerGearReduction = 150.0/7.0;
 constexpr double kSteerEncoderCPR = 4096;
@@ -111,12 +115,12 @@ private:
 
   const std::string m_name; // Useful to identify the module.
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX m_driveMotor;
+  ctre::phoenix6::hardware::TalonFX m_driveMotor;
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX m_steerMotor;
+  ctre::phoenix6::hardware::TalonFX m_steerMotor;
 
   // Keeps track of the module heading between power cycles.
-  ctre::phoenix::sensors::WPI_CANCoder m_absoluteEncoder;
+  ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
 private:
   friend class SwerveModuleSim;

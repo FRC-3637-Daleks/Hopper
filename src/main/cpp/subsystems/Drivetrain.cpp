@@ -64,7 +64,7 @@ Drivetrain::Drivetrain()
                           m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
                           m_rearLeft.GetPosition(), m_rearRight.GetPosition()},
                       frc::Pose2d()},
-      m_sim_state(new DrivetrainSimulation(*this)) {}
+      m_sim_state(new DrivetrainSimulation(*this)) { }
 
 void Drivetrain::Periodic() {
   // Update the odometry with the current gyro angle and module states.
@@ -122,12 +122,12 @@ void Drivetrain::SetModuleStates(
   m_rearRight.SetDesiredState(desiredStates[3]);
 }
 
-frc::Rotation2d Drivetrain::GetHeading() { return units::degree_t(m_gyro.GetYaw()); }
+frc::Rotation2d Drivetrain::GetHeading() { return units::degree_t(-m_gyro.GetYaw()); }
 
 void Drivetrain::ZeroHeading() { m_gyro.Reset(); }
 
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
-  return m_gyro.GetRate() * 1_deg_per_s;
+  return -m_gyro.GetRate() * 1_deg_per_s;
 }
 
 frc::Pose2d Drivetrain::GetPose() {
