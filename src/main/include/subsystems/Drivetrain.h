@@ -21,7 +21,7 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kTrackWidth = 24_in;
+constexpr auto kTrackWidth = 25_in;
 
 constexpr bool kGyroReversed = true;
 

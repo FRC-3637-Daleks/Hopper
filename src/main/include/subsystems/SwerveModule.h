@@ -22,10 +22,12 @@
 
 
 namespace ModuleConstants {
-constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay.
-constexpr double kSteerMotorCurrentLimit = 20; // An educated guess.
+constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
+constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
+constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
 
-constexpr double kMotorRampRate = 0.5; // Seconds from neutral to full output.
+// Best defense against current
+constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
 constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
