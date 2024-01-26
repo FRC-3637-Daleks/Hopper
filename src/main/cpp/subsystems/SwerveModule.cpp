@@ -24,6 +24,8 @@
 
 #include <iostream>
 
+using namespace ModuleConstants;
+
 class SwerveModuleSim
 {
 public:
@@ -64,37 +66,37 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
 
   ctre::phoenix6::configs::OpenLoopRampsConfigs driveOpenLoopConfigs{};
-  driveOpenLoopConfigs.DutyCycleOpenLoopRampPeriod = ModuleConstants::kMotorRampRate;
-  driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = ModuleConstants::kMotorRampRate;
-  driveOpenLoopConfigs.TorqueOpenLoopRampPeriod = ModuleConstants::kMotorRampRate;
+  driveOpenLoopConfigs.DutyCycleOpenLoopRampPeriod = kMotorRampRate;
+  driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = kMotorRampRate;
+  driveOpenLoopConfigs.TorqueOpenLoopRampPeriod = kMotorRampRate;
   driveConfig.WithOpenLoopRamps(driveOpenLoopConfigs);
 
   ctre::phoenix6::configs::ClosedLoopRampsConfigs driveClosedLoopConfigs{};
-  driveClosedLoopConfigs.DutyCycleClosedLoopRampPeriod = ModuleConstants::kMotorRampRate;
-  driveClosedLoopConfigs.VoltageClosedLoopRampPeriod = ModuleConstants::kMotorRampRate;
-  driveClosedLoopConfigs.TorqueClosedLoopRampPeriod = ModuleConstants::kMotorRampRate;
+  driveClosedLoopConfigs.DutyCycleClosedLoopRampPeriod = kMotorRampRate;
+  driveClosedLoopConfigs.VoltageClosedLoopRampPeriod = kMotorRampRate;
+  driveClosedLoopConfigs.TorqueClosedLoopRampPeriod = kMotorRampRate;
   driveConfig.WithClosedLoopRamps(driveClosedLoopConfigs);
 
   // Hopefully prevents brownouts.
   ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentConfigs{};
   driveCurrentConfigs.SupplyCurrentLimitEnable = true;
-  driveCurrentConfigs.SupplyCurrentLimit = ModuleConstants::kDriveMotorCurrentLimit;
-  driveCurrentConfigs.SupplyCurrentThreshold = ModuleConstants::kDriveMotorCurrentLimit;
-  driveCurrentConfigs.SupplyTimeThreshold = ModuleConstants::kCurrentLimitPeriod.convert<units::second>().value();
+  driveCurrentConfigs.SupplyCurrentLimit = kDriveMotorCurrentLimit;
+  driveCurrentConfigs.SupplyCurrentThreshold = kDriveMotorCurrentLimit;
+  driveCurrentConfigs.SupplyTimeThreshold = kCurrentLimitPeriod.convert<units::second>().value();
   driveConfig.WithCurrentLimits(driveCurrentConfigs);
 
   ctre::phoenix6::configs::CurrentLimitsConfigs steerCurrentConfigs{};
   steerCurrentConfigs.SupplyCurrentLimitEnable = true;
-  steerCurrentConfigs.SupplyCurrentLimit = ModuleConstants::kSteerMotorCurrentLimit;
-  steerCurrentConfigs.SupplyCurrentThreshold = ModuleConstants::kSteerMotorCurrentLimit;
-  steerCurrentConfigs.SupplyTimeThreshold = ModuleConstants::kCurrentLimitPeriod.convert<units::second>().value();
+  steerCurrentConfigs.SupplyCurrentLimit = kSteerMotorCurrentLimit;
+  steerCurrentConfigs.SupplyCurrentThreshold = kSteerMotorCurrentLimit;
+  steerCurrentConfigs.SupplyTimeThreshold = kCurrentLimitPeriod.convert<units::second>().value();
   steerConfig.WithCurrentLimits(steerCurrentConfigs);
 
   ctre::phoenix6::configs::Slot0Configs drivePIDConfigs{};
   drivePIDConfigs.kP = driveMotorPIDCoefficients.kP;
   drivePIDConfigs.kI = driveMotorPIDCoefficients.kI;
   drivePIDConfigs.kD = driveMotorPIDCoefficients.kD;
-  drivePIDConfigs.kV = 1.0/(ModuleConstants::kPhysicalMaxSpeed / ModuleConstants::kDistanceToRotations * 1_s / 1_tr);
+  drivePIDConfigs.kV = 1.0/(kPhysicalMaxSpeed / kDistanceToRotations * 1_s / 1_tr);
   driveConfig.WithSlot0(drivePIDConfigs);
 
   ctre::phoenix6::configs::Slot0Configs steerPIDConfigs{};
@@ -110,7 +112,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   // This automatically scales future setpoints and readings by gear ratio
   ctre::phoenix6::configs::FeedbackConfigs steerFeedbackConfigs{};
-  steerFeedbackConfigs.SensorToMechanismRatio = ModuleConstants::kSteerGearReduction;  
+  steerFeedbackConfigs.SensorToMechanismRatio = kSteerGearReduction;  
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
   if(auto ret = m_driveMotor.GetConfigurator().Apply(driveConfig, 500_ms))
@@ -135,11 +137,11 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 SwerveModule::~SwerveModule() {}
 
 units::meter_t SwerveModule::GetModuleDistance() {
-  return m_driveMotor.GetPosition().GetValue() * ModuleConstants::kDistanceToRotations;
+  return m_driveMotor.GetPosition().GetValue() * kDistanceToRotations;
 }
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
-  return m_driveMotor.GetVelocity().GetValue() * ModuleConstants::kDistanceToRotations;
+  return m_driveMotor.GetVelocity().GetValue() * kDistanceToRotations;
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {
@@ -161,7 +163,7 @@ void SwerveModule::SetDesiredState(
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
   ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, false};
-  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / ModuleConstants::kDistanceToRotations));
+  m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / kDistanceToRotations));
   
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps, false};
 
@@ -225,13 +227,13 @@ void SwerveModuleSim::update()
   const auto average_velocity = (prev_velocity + m_swivelModel.GetAngularVelocity())/2;
   // cancoder is on mechanism and is inverted from the falcon's rotor
   m_encoderSim.AddPosition(-average_velocity*20_ms);
-  m_steerSim.AddRotorPosition(average_velocity*ModuleConstants::kSteerGearReduction*20_ms);
-  m_steerSim.SetRotorVelocity(average_velocity*ModuleConstants::kSteerGearReduction);
+  m_steerSim.AddRotorPosition(average_velocity*kSteerGearReduction*20_ms);
+  m_steerSim.SetRotorVelocity(average_velocity*kSteerGearReduction);
 
   // Simulate the wheel turning (ignoring changes in traction)
   m_wheelModel.SetInputVoltage(m_driveSim.GetMotorVoltage());
   m_wheelModel.Update(20_ms);
 
-  m_driveSim.SetRotorVelocity(m_wheelModel.GetAngularVelocity()*ModuleConstants::kDriveEncoderReduction);
-  m_driveSim.AddRotorPosition(m_wheelModel.GetAngularVelocity()*ModuleConstants::kDriveEncoderReduction*20_ms);
+  m_driveSim.SetRotorVelocity(m_wheelModel.GetAngularVelocity()*kDriveEncoderReduction);
+  m_driveSim.AddRotorPosition(m_wheelModel.GetAngularVelocity()*kDriveEncoderReduction*20_ms);
 }
