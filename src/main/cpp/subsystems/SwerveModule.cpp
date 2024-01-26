@@ -56,15 +56,12 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
     : m_name{name},
       m_driveMotor(driveMotorId),
       m_steerMotor(steerMotorId),
-      // Have the absolute encoder return radian values.
       m_absoluteEncoder(absoluteEncoderId),
       m_sim_state(new SwerveModuleSim(*this)) {
   // Reset the drive and steer motor controllers to their default settings,
   // then configure them for use.
   m_driveMotor.GetConfigurator().Apply(ctre::phoenix6::configs::TalonFXConfiguration());
   m_steerMotor.GetConfigurator().Apply(ctre::phoenix6::configs::TalonFXConfiguration());
-
-  //m_steerMotor.SetSelectedSensorPosition(0);
 
   m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
   m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
@@ -108,10 +105,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   drivePIDConfigs.kV = 1.0/(ModuleConstants::kPhysicalMaxSpeed / ModuleConstants::kDistanceToRotations * 1_s / 1_tr);
 
   m_driveMotor.GetConfigurator().Apply(drivePIDConfigs, 50_ms);
-  //m_driveMotor.Config_kF(0, driveMotorPIDCoefficients.kFF);
-  // really this isn't something that should be arbitrarily tuned, we can calculate it
-  // See the documentation on Config_kF
-
 
   ctre::phoenix6::configs::Slot0Configs steerPIDConfigs{};
   steerPIDConfigs.kP = steerMotorPIDCoefficients.kP;
@@ -136,15 +129,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
-
-  // // Connects CANCoder to the steer motor
-  // m_steerMotor.ConfigRemoteFeedbackFilter(m_absoluteEncoder, 0);
-  // m_steerMotor.ConfigSelectedFeedbackSensor(
-  //     ctre::phoenix::motorcontrol::FeedbackDevice::RemoteSensor0, 0, 0);
-      
-  
-  // positive voltage is counter clockwise
-  // m_steerMotor.SetInverted(false);
 }
 
 SwerveModule::~SwerveModule() {}
@@ -215,26 +199,7 @@ void SwerveModule::UpdateDashboard() {
 
   frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
                                  state.angle.Degrees().value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/talon angle setpoint", m_name),
-                                 ToTalonAngle(state.angle));
   frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
-}
-
-double SwerveModule::ToTalonVelocity(units::meters_per_second_t speed) {
-  // encoder ticks per 100ms
-  return speed * 100_ms / ModuleConstants::kDriveEncoderDistancePerRevolution * ModuleConstants::kDriveEncoderCPR;
-}
-
-double SwerveModule::ToTalonAngle(const frc::Rotation2d &rotation) {
-  // units::radian_t currentHeading =
-  //     ModuleConstants::kSteerEncoderDistancePerCount * m_steerMotor.GetSelectedSensorPosition();
-
-  auto& steerRotorPosSignal = m_steerMotor.GetPosition();
-  units::radian_t currentHeading = steerRotorPosSignal.GetValue();
-  // Puts the rotation in the correct scope for the incremental encoder.
-  return (frc::AngleModulus(rotation.Radians() - currentHeading) +
-          currentHeading) /
-         ModuleConstants::kSteerEncoderDistancePerCount;
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {

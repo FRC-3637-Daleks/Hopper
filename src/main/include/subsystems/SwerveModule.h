@@ -22,6 +22,7 @@
 
 
 namespace ModuleConstants {
+
 constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
 constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
 constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
@@ -31,7 +32,6 @@ constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameter = 4_in;
 constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
-constexpr double kDriveEncoderCPR = 4096.0;
 constexpr auto kDriveEncoderDistancePerRevolution =
     kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
 constexpr auto kWheelMoment = 0.015_kg_sq_m;
@@ -39,14 +39,10 @@ constexpr auto kWheelMoment = 0.015_kg_sq_m;
 constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
 constexpr double kSteerGearReduction = 150.0/7.0;
-constexpr double kSteerEncoderCPR = 4096;
-constexpr auto kSteerEncoderDistancePerCount =
-    2_rad * std::numbers::pi / kSteerEncoderCPR; // Radians per encoder count.
 constexpr auto kSteerMoment = 0.005_kg_sq_m;
 
 // Values measured with the drivetrain suspended.
 constexpr auto kPhysicalMaxSpeed = 16.5_fps;
-constexpr auto kPhysicalMaxAngularSpeed = 180_rpm;
 } // namespace ModuleConstants
 
 // forward declaration
@@ -104,12 +100,6 @@ public:
   void SimulationPeriodic();
 
 private:
-  // Converts m/s to rpm for the drive velocity setpoint.
-  double ToTalonVelocity(units::meters_per_second_t speed);
-
-  // Converts an angle to Talon sensor units for the steer position setpoint.
-  double ToTalonAngle(const frc::Rotation2d &rotation);
-
   // Returns the absolute position of the steer motor in radians
   units::radian_t GetAbsoluteEncoderPosition();
 
