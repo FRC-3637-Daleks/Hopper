@@ -50,7 +50,6 @@ private:
 SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
                            const int steerMotorId,
                            const int absoluteEncoderId,
-                           const double absoluteEncoderOffset,
                            const PIDCoefficients driveMotorPIDCoefficients,
                            const PIDCoefficients steerMotorPIDCoefficients)
     : m_name{name},
