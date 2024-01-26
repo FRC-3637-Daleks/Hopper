@@ -115,17 +115,27 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerFeedbackConfigs.SensorToMechanismRatio = kSteerGearReduction;  
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
-  if(auto ret = m_driveMotor.GetConfigurator().Apply(driveConfig, 500_ms))
+  int retries = 4;
+  while (auto ret = m_driveMotor.GetConfigurator().Apply(driveConfig, 500_ms))
   {
-    // when ret is non-zero, that means there's an error
-    std::cerr << "ERROR Applying Drive Motor Configs for " << m_name << std::endl;
-    std::cerr << "Talon ID: " << driveMotorId << ", Error: " << ret << std::endl;
+    if (retries-- == 0)
+    {
+      // when ret is non-zero, that means there's an error
+      std::cerr << "ERROR Applying Drive Motor Configs for " << m_name << std::endl;
+      std::cerr << "Talon ID: " << driveMotorId << ", Error: " << ret << std::endl;
+      break;
+    }
   }
 
-  if(auto ret = m_steerMotor.GetConfigurator().Apply(steerConfig, 500_ms))
+  retries = 4;
+  while (auto ret = m_steerMotor.GetConfigurator().Apply(steerConfig, 500_ms))
   {
-    std::cerr << "ERROR Applying Steer Motor Configs for " << m_name << std::endl;
-    std::cerr << "Talon ID: " << steerMotorId << ", Error: " << ret << std::endl;
+    if (retries-- == 0)
+    {
+      std::cerr << "ERROR Applying Steer Motor Configs for " << m_name << std::endl;
+      std::cerr << "Talon ID: " << steerMotorId << ", Error: " << ret << std::endl;
+      break;
+    }
   }
 
   m_steerMotor.SetInverted(true);
