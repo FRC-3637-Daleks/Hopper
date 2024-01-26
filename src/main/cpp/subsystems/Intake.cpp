@@ -1,11 +1,20 @@
 #include "subsystems/Intake.h"
+//Please look at intake.h for documentation
 
 Intake::Intake() {
-  // Implementation of subsystem constructor goes here.
+  rotate.RestoreFactoryDefaults(); //resets PID settings on moter
+
+  //Applies configuration for Intake 
+  m_pidController.SetP(kP);
+  m_pidController.SetI(kI);
+  m_pidController.SetD(kD);
+  m_pidController.SetIZone(kIz);
+  m_pidController.SetFF(kFF);
+  m_pidController.SetOutputRange(kMinOutput, kMaxOutput);
+  
 }
 
 frc2::CommandPtr Intake::IntakeCommand() {
-  //Please look at header file for more design details
 
   return StartEnd( 
     [this] {
@@ -20,48 +29,62 @@ frc2::CommandPtr Intake::IntakeCommand() {
         }
 
         frc2::ConditionalCommand( 
-            frc2::RunCommand([this] {intake.Set(0.0); }), //stop (#4)
-            frc2::RunCommand([this] {intake.Set(1.0); }), //keep going (is one of the following: #1, #2, #3)
-            [this] () -> bool { return hasBeenBroken /*has been broken*/ && IntakeBreakBeam.Get();/*not broken*/ })/*.ToPtr()*/;}, 
+            frc2::RunCommand([this] {IntakeOff();}), //stop (#4)
+            frc2::RunCommand([this] {IntakeOn(); }), //keep going (is one of the following: #1, #2, #3)
+            [this] () -> bool { return hasBeenBroken /*has been broken*/ && IntakeBreakBeam.Get();/*not broken now*/ })/*.ToPtr()*/;}, 
   
-    [this] {intake.Set(0); 
+    [this] {IntakeOff(); 
             hasBeenBroken=false;}
   );
 
 }
 
-//Moves Arm to specific encoder position for intaking notes
-frc2::CommandPtr Intake::IntakeArmIntake(int targetPos) {
-  
+
+/** Set refrence documentation
+ * value: In this case, for Position, measured in rotations 
+   (whatever that means there measured in 100s/1000s for sparkMax)
+ * ctrl: eather volts, position, velocity, current 
+ * (2 more optional slots (or at least it does not throw error))
+*/
+//Moves arm to positition specified by IntakeArmIntakePos
+frc2::CommandPtr Intake::IntakeArmIntake() {
+    return RunOnce(
+        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmIntakePos, rev::CANSparkMax::ControlType::kPosition); });
 }
 
-//Moves Arm to specific encoder position for AMP
-frc2::CommandPtr Intake::IntakeArmAMP(int targetPos) {
-
+//Moves arm to positition specified by IntakeArmAMPPos
+frc2::CommandPtr Intake::IntakeArmAMP() {
+    return RunOnce(
+        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmAMPPos, rev::CANSparkMax::ControlType::kPosition); });
 }
 
-//Moves Arn to specific endoer position for Speaker
-frc2::CommandPtr Intake::IntakeArmSpeaker(int targetPos) {
-
+//Moves arm to positition specified by IntakeArmSpeakerPos
+frc2::CommandPtr Intake::IntakeArmSpeaker() {
+    return RunOnce(
+        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmSpeakerPos, rev::CANSparkMax::ControlType::kPosition); });
 }
 
-void Intake::IntakeOn() {
-    frc::SmartDashboard::PutNumber("Intake Moter output", intake.Get());
-    intake.Set(1);
+//Outputs ring for AMP
+frc2::CommandPtr Intake::IntakeAMPOutput() {
+    return RunOnce(
+        [this] {intake.Set(-1.0);});
 }
-void Intake::IntakeOff() {
-    frc::SmartDashboard::PutNumber("Intake Moter output", intake.Get());
-    intake.Set(0);
+
+//Outputs ring for speaker
+frc2::CommandPtr Intake::IntakeSpeakerOutput() {
+    return RunOnce(
+        [this] {intake.Set(-0.5);});
 }
-void Intake::IntakeRotateUp() {
-    frc::SmartDashboard::PutNumber("Intake Rotate Moter output", rotate.Get());
-    rotate.Set(1);
+
+//Turns on the intake
+frc2::CommandPtr Intake::IntakeOn() {
+    return RunOnce(
+        [this] {intake.Set(1.0);});
 }
-void Intake::IntakeRotateDown() {
-    frc::SmartDashboard::PutNumber("Intake Rotate Moter output", rotate.Get());
-    rotate.Set(-1);
+
+//Turns off the intake
+frc2::CommandPtr Intake::IntakeOff() {
+    return RunOnce(
+        [this] {intake.Set(0.0);});
 }
-void Intake::IntakeRotateStop() {
-    frc::SmartDashboard::PutNumber("Intake Rotate Moter output", rotate.Get());
-    rotate.Set(0);
-}
+
