@@ -62,8 +62,14 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
 
-  m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
-  m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
+  steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  steerOutputConfigs.WithInverted(true);
+  steerConfig.WithMotorOutput(steerOutputConfigs);
+
+  ctre::phoenix6::configs::MotorOutputConfigs driveOutputConfigs;
+  driveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  driveConfig.WithMotorOutput(driveOutputConfigs);
 
   ctre::phoenix6::configs::OpenLoopRampsConfigs driveOpenLoopConfigs{};
   driveOpenLoopConfigs.DutyCycleOpenLoopRampPeriod = kMotorRampRate;
@@ -137,8 +143,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       break;
     }
   }
-
-  m_steerMotor.SetInverted(true);
 
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
