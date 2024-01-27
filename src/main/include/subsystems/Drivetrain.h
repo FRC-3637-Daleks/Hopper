@@ -15,17 +15,18 @@
 #include <hal/SimDevice.h>
 #include <hal/simulation/SimDeviceData.h>
 
+#include <frc/controller/ProfiledPIDController.h>
+
 #include <memory>
 #include <numbers>
 
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kTrackWidth = 25_in;
-
 constexpr bool kGyroReversed = true;
 
 constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxTeleopSpeed = 15_fps;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
 
@@ -39,7 +40,7 @@ constexpr double kIzDriveSpeed = 1000;
 constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
-constexpr double kPTurn = 2.2;
+constexpr double kPTurn = 0.5;
 constexpr double kPDistance = 2;
 constexpr auto kDistanceTolerance = 7_cm;
 
@@ -52,13 +53,11 @@ constexpr auto kTurnRateTolerance = 1_deg_per_s;
 constexpr auto kMaxTurnRate = 1 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 
-// Swerve Constants (NEED TO INTEGRATE)
-
-// left out as this variable are repeated above
-// constexpr auto kTrackWidth =
-//    20.25_in; // Distance between centers of right and left wheels.
+// Swerve Constants
+constexpr auto kTrackWidth =
+    25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
-    20_in; // Distance between centers of front and back wheels.
+    25_in; // Distance between centers of front and back wheels.
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -74,12 +73,6 @@ constexpr int kFrontLeftAbsoluteEncoderChannel = 9;
 constexpr int kRearLeftAbsoluteEncoderChannel = 10;
 constexpr int kFrontRightAbsoluteEncoderChannel = 11;
 constexpr int kRearRightAbsoluteEncoderChannel = 12;
-
-// Absolute encoder reading when modules are facing forward.
-constexpr double kFrontLeftAbsoluteEncoderOffset = 3.15246;
-constexpr double kRearLeftAbsoluteEncoderOffset = -2.25482;
-constexpr double kFrontRightAbsoluteEncoderOffset = -2.03871;
-constexpr double kRearRightAbsoluteEncoderOffset = 1.377484;
 
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
@@ -108,9 +101,6 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
-constexpr auto kMaxTeleopSpeed = 15_fps;
-// constexpr auto kPreciseSpeed = 2_fps; // left out because it already exists
-// above
 
 } // namespace DriveConstants
 
@@ -210,6 +200,8 @@ public:
   // Add Vision Pose to SwerveDrivePoseEstimator.
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
+  frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
@@ -229,6 +221,8 @@ private:
 
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
+
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, 0.0, 0.0, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   
 private:
   friend class DrivetrainSimulation;

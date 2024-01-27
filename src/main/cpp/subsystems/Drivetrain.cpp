@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
+#include <frc2/command/ProfiledPIDCommand.h>
 
 using namespace DriveConstants;
 
@@ -34,28 +35,24 @@ Drivetrain::Drivetrain()
                   kFrontLeftDriveMotorId,
                   kFrontLeftSteerMotorId,
                   kFrontLeftAbsoluteEncoderChannel,
-                  kFrontLeftAbsoluteEncoderOffset,
                   kFrontLeftDriveMotorPIDCoefficients,
                   kFrontLeftSteerMotorPIDCoefficients},
       m_rearLeft{"RL",
                  kRearLeftDriveMotorId,
                  kRearLeftSteerMotorId,
                  kRearLeftAbsoluteEncoderChannel,
-                 kRearLeftAbsoluteEncoderOffset,
                  kRearLeftDriveMotorPIDCoefficients,
                  kRearLeftSteerMotorPIDCoefficients},
       m_frontRight{"FR",
                    kFrontRightDriveMotorId,
                    kFrontRightSteerMotorId,
                    kFrontRightAbsoluteEncoderChannel,
-                   kFrontRightAbsoluteEncoderOffset,
                    kFrontRightDriveMotorPIDCoefficients,
                    kFrontRightSteerMotorPIDCoefficients},
       m_rearRight{"RR",
                   kRearRightDriveMotorId,
                   kRearRightSteerMotorId,
                   kRearRightAbsoluteEncoderChannel,
-                  kRearRightAbsoluteEncoderOffset,
                   kRearRightDriveMotorPIDCoefficients,
                   kRearRightSteerMotorPIDCoefficients},
       m_gyro{frc::SPI::Port::kMXP},
@@ -189,7 +186,8 @@ void Drivetrain::SimulationPeriodic()
   
   const auto theta = m_sim_state->m_poseSim.GetPose().Rotation();
   const auto new_theta = theta.RotateBy(units::radian_t{chassis_speed.omega*20_ms});
-  m_sim_state->m_gyroYaw.Set(new_theta.Degrees().value());
+  // robot nav x defines clockwise as positive instead of counterclockwise
+  m_sim_state->m_gyroYaw.Set(-new_theta.Degrees().value());
 
   // Feed this simulated gyro angle into the odometry to get simulated position
   m_sim_state->m_poseSim.Update(new_theta,
@@ -260,4 +258,24 @@ frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {
   m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+}
+
+frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
+  /* 
+      Profiled PID Command for turning to angle.
+      m_turnPID - Profiled PID Controller, in degrees.
+      Lambda to measure angle.
+      Final state: angle at 0 radians per second.
+      Move at setpoint velocity from Profiled PID Controller.
+  */
+  return frc2::ProfiledPIDCommand<units::degree>(
+    m_turnPID,
+    [this] () -> units::degree_t {
+      return GetHeading().Degrees();
+    },
+    {angle, 0_rad_per_s},
+    [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(0_mps, 0_mps, setpoint.velocity * output, false);
+    }, {this}
+  ).ToPtr();
 }

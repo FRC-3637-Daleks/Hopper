@@ -51,6 +51,9 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
+  m_swerveController.B()
+      .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
+
 }
 
 
