@@ -8,6 +8,9 @@
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
 
+#include <frc2/command/ProfiledPIDCommand.h>
+#include <frc/trajectory/TrapezoidProfile.h>
+
 using namespace DriveConstants;
 
 class DrivetrainSimulation
@@ -257,4 +260,48 @@ frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {
   m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+}
+
+frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
+  /* 
+      Profiled PID Command for turning to angle.
+      m_turnPID - Profiled PID Controller, in degrees.
+      Lambda to measure angle.
+      Final state: angle at 0 radians per second.
+      Move at setpoint velocity from Profiled PID Controller.
+  */
+  return frc2::ProfiledPIDCommand<units::degree>(
+    m_turnPID,
+    [this] () -> units::degree_t {
+      return GetHeading().Degrees();
+    },
+    {angle, 0_rad_per_s},
+    [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(0_mps, 0_mps, setpoint.velocity, false);
+    }, {this}
+  ).ToPtr();
+}
+
+
+/*** WIP - VERY BAD DO NOT RUN ***/
+frc2::CommandPtr Drivetrain::DriveToDistanceCommand(units::meter_t distance) {
+  /* 
+      Profiled PID Command for turning to angle.
+      m_distancePID - Profiled PID Controller, in meters.
+      Lambda to measure distance.
+      Final state: distance at 0 radians per second.
+      Move at setpoint velocity from Profiled PID Controller.
+  */
+  frc::Pose2d startPos = GetPose();
+
+  return frc2::ProfiledPIDCommand<units::meter>(
+    m_distancePID,
+    [this, &startPos] () -> units::meter_t {
+      return startPos.Translation().Distance(GetPose().Translation());
+    },
+    {distance, 0_mps},
+    [this] (double output, frc::TrapezoidProfile<units::meter>::State setpoint) { 
+      Drive(0_mps, 0_mps, setpoint.velocity, false);
+    }, {this}
+  ).ToPtr();
 }

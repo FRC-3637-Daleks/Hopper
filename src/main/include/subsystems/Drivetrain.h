@@ -9,6 +9,7 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/controller/ProfiledPIDController.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/PowerDistribution.h>
@@ -99,6 +100,10 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
+constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr auto kMaxTeleopAcceleration = 1_fps_sq;
+// constexpr auto kPreciseSpeed = 2_fps; // left out because it already exists
+// above
 
 } // namespace DriveConstants
 
@@ -198,6 +203,9 @@ public:
   // Add Vision Pose to SwerveDrivePoseEstimator.
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
+  frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
+  frc2::CommandPtr DriveToDistanceCommand(units::meter_t distance);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
@@ -217,7 +225,9 @@ private:
 
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
-  
+
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, 0.0, 0.0, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+  frc::ProfiledPIDController<units::meter> m_distancePID{DriveConstants::kPDistance, 0.0, 0.0, {DriveConstants::kMaxTeleopSpeed, DriveConstants::kMaxTeleopAcceleration}};
 private:
   friend class DrivetrainSimulation;
   std::unique_ptr<DrivetrainSimulation> m_sim_state;
