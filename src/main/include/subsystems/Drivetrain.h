@@ -55,7 +55,7 @@ constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
-    20_in; // Distance between centers of front and back wheels.
+    25_in; // Distance between centers of front and back wheels.
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
