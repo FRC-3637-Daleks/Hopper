@@ -1,0 +1,41 @@
+{
+  "sourceUrl": "https://team3637.com",
+  "rotations": [
+    {
+      "axis": "z",
+      "degrees": 90
+    },
+    {
+      "axis": "x",
+      "degrees": 180
+    }
+  ],
+  "position": [
+    -0.4798457810,
+    -0.4798457810,
+    0
+  ],
+  "cameras": [
+    {
+      "name": "Limelight 2",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": 10
+        }
+      ],
+      "position": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "resolution": [
+        640,
+        480
+      ],
+      "fov": 120
+    }
+  ],
+  "components": [],
+  "name": "Hopper"
+}

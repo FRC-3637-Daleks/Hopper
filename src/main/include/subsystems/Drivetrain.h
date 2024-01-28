@@ -16,6 +16,8 @@
 #include <hal/SimDevice.h>
 #include <hal/simulation/SimDeviceData.h>
 
+#include <frc/controller/ProfiledPIDController.h>
+
 #include <memory>
 #include <numbers>
 
@@ -39,7 +41,15 @@ constexpr double kIzDriveSpeed = 1000;
 constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
-constexpr double kPTurn = 2.2;
+// constexpr double kPTurn = 0.0008; // Increase P for more aggressive response.
+// constexpr double kITurn = 0.00025; // Increase I to correct steady-state error.
+// constexpr double kDTurn = 0.15;   // Adjust D if necessary after observing the effects of P and I.
+
+
+constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, consider lowering this.
+constexpr double kITurn = 0.0001; // If the I term is causing wind-up, keep this low.
+constexpr double kDTurn = 0.05;   // Lower the D term if it's amplifying noise.
+
 constexpr double kPDistance = 2;
 constexpr auto kDistanceTolerance = 7_cm;
 
@@ -56,7 +66,7 @@ constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
-    20_in; // Distance between centers of front and back wheels.
+    25_in; // Distance between centers of front and back wheels.
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -224,10 +234,10 @@ private:
   frc::Field2d m_field;
 
   frc::PowerDistribution m_pdh{15,
-                               frc::PowerDistribution::ModuleType::kRev};
-
-  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, 0.0, 0.0, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+                               frc::PowerDistribution::ModuleType::kRev};                         
   frc::ProfiledPIDController<units::meter> m_distancePID{DriveConstants::kPDistance, 0.0, 0.0, {DriveConstants::kMaxTeleopSpeed, DriveConstants::kMaxTeleopAcceleration}};
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+  
 private:
   friend class DrivetrainSimulation;
   std::unique_ptr<DrivetrainSimulation> m_sim_state;

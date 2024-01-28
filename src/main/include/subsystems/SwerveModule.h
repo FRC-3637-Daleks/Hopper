@@ -21,6 +21,7 @@
 #include <numbers>
 
 
+
 namespace ModuleConstants {
 
 constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
