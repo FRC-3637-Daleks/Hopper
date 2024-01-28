@@ -1,5 +1,7 @@
 #include "subsystems/Drivetrain.h"
 
+#include <cmath> // Make sure to include cmath for std::fmod
+
 #include <frc/I2C.h>
 #include <frc/SPI.h>
 #include <frc/geometry/Pose2d.h>
@@ -268,14 +270,24 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
       Final state: angle at 0 radians per second.
       Move at setpoint velocity from Profiled PID Controller.
   */
+
   return frc2::ProfiledPIDCommand<units::degree>(
     m_turnPID,
     [this] () -> units::degree_t {
-      return GetHeading().Degrees();
+      auto currentAngle = GetHeading().Degrees();
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.to<double>()); // Debugging print
+      //return GetHeading().Degrees();
+      return currentAngle;
     },
     {angle, 0_rad_per_s},
     [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
       Drive(0_mps, 0_mps, setpoint.velocity * output, false);
+      // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.to<double>()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.to<double>()); // Debugging print
+      double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
+      frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
     }, {this}
   ).ToPtr();
 }
