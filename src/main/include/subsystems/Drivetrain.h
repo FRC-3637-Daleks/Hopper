@@ -40,9 +40,11 @@ constexpr double kIzDriveSpeed = 1000;
 constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
-// constexpr double kPTurn = 0.0008; // Increase P for more aggressive response.
-// constexpr double kITurn = 0.00025; // Increase I to correct steady-state error.
-// constexpr double kDTurn = 0.15;   // Adjust D if necessary after observing the effects of P and I.
+
+constexpr double kPTurn = 0.0605;  
+constexpr double kITurn = 0.001; 
+constexpr double kDTurn = 0.03;   
+
 
 
 constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, consider lowering this.
