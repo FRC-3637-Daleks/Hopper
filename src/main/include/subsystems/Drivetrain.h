@@ -45,11 +45,11 @@ constexpr double kPTurn = 0.0605;
 constexpr double kITurn = 0.001; 
 constexpr double kDTurn = 0.03;   
 
+constexpr auto kMaxTurnRate = 3 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 3 * std::numbers::pi * 1_rad_per_s_sq;
 
 
-constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, consider lowering this.
-constexpr double kITurn = 0.0001; // If the I term is causing wind-up, keep this low.
-constexpr double kDTurn = 0.05;   // Lower the D term if it's amplifying noise.
+
 
 constexpr double kPDistance = 2;
 constexpr auto kDistanceTolerance = 7_cm;
@@ -60,8 +60,6 @@ constexpr double kPRightStraight = 0.2;
 constexpr auto kTurnTolerance = 3_deg;
 constexpr auto kTurnRateTolerance = 1_deg_per_s;
 
-constexpr auto kMaxTurnRate = 1 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 
 // Swerve Constants
 constexpr auto kTrackWidth =
