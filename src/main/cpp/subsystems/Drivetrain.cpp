@@ -270,6 +270,8 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
       Final state: angle at 0 radians per second.
       Move at setpoint velocity from Profiled PID Controller.
   */
+  //continuous and wraps around 
+  m_turnPID.EnableContinuousInput(-180_deg, 180_deg);
 
   return frc2::ProfiledPIDCommand<units::degree>(
     m_turnPID,
@@ -281,7 +283,7 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
     },
     {angle, 0_rad_per_s},
     [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
-      Drive(0_mps, 0_mps, setpoint.velocity * output, false);
+      Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
       frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.to<double>()); // Debugging print
