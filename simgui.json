@@ -35,12 +35,11 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
-        "right": 1088,
-        "top": 36,
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -63,6 +62,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "DistancePID": {
+          "open": true
+        },
         "FL": {
           "open": true
         },
@@ -152,7 +154,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 623,
+          "height": 15,
           "series": [
             {
               "color": [

@@ -28,6 +28,7 @@ constexpr bool kGyroReversed = true;
 
 constexpr auto kMaxSpeed = 18_fps;
 constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr auto kMaxTeleopAcceleration = 1_fps_sq;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
 
@@ -50,7 +51,11 @@ constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, 
 constexpr double kITurn = 0.0001; // If the I term is causing wind-up, keep this low.
 constexpr double kDTurn = 0.05;   // Lower the D term if it's amplifying noise.
 
-constexpr double kPDistance = 2;
+constexpr double kPDistance = 0.05;
+constexpr double kIDistance = 0.0;
+constexpr double kDDistance = 0.0;
+
+
 constexpr auto kDistanceTolerance = 7_cm;
 
 constexpr double kPLeftStraight = 0.2;
@@ -110,8 +115,6 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
-constexpr auto kMaxTeleopSpeed = 15_fps;
-constexpr auto kMaxTeleopAcceleration = 1_fps_sq;
 // constexpr auto kPreciseSpeed = 2_fps; // left out because it already exists
 // above
 

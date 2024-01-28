@@ -10,6 +10,7 @@
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
 #include <frc2/command/ProfiledPIDCommand.h>
+#include <frc2/command/Commands.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 
 using namespace DriveConstants;
@@ -268,21 +269,36 @@ frc2::CommandPtr Drivetrain::DriveToDistanceCommand(units::meter_t distance) {
       Profiled PID Command for turning to angle.
       m_distancePID - Profiled PID Controller, in meters.
       Lambda to measure distance.
-      Final state: distance at 0 radians per second.
+      Final state: distance at 0 meters per second.
       Move at setpoint velocity from Profiled PID Controller.
   */
   frc::Pose2d startPos = GetPose();
+  frc::SmartDashboard::PutNumber("DistancePID/Goal Distance", distance.value());
+  m_field.GetObject("DistancePID/Start Pos")->SetPose(startPos);
 
-  return frc2::ProfiledPIDCommand<units::meter>(
-    m_distancePID,
-    [this, &startPos] () -> units::meter_t {
-      return startPos.Translation().Distance(GetPose().Translation());
-    },
-    {distance, 0_mps},
-    [this] (double output, frc::TrapezoidProfile<units::meter>::State setpoint) { 
-      Drive(0_mps, 0_mps, setpoint.velocity, false);
-    }, {this}
-  ).ToPtr();
+  return frc2::cmd::Run([this, &startPos, &distance] { 
+      startPos = GetPose();
+      frc::SmartDashboard::PutNumber("DistancePID/Goal Distance", distance.value());
+      m_field.GetObject("DistancePID/Start Pos")->SetPose(startPos); 
+    }).AndThen(
+      frc2::ProfiledPIDCommand<units::meter>(
+      m_distancePID,
+      [this, &startPos] () -> units::meter_t {
+        units::meter_t currentDistance = startPos.Translation().Distance(GetPose().Translation());
+        m_field.GetObject("DistancePID/Current Pos")->SetPose(GetPose());
+        frc::SmartDashboard::PutNumber("DistancePID/Current Distance", currentDistance.value());
+        return currentDistance;
+      },
+      {distance, 0_mps},
+      [this] (double output, frc::TrapezoidProfile<units::meter>::State setpoint) { 
+        Drive(setpoint.velocity * output, 0_mps, 0_rad_per_s, false);
+        frc::SmartDashboard::PutNumber("DistancePID/PID Output", output); 
+        frc::SmartDashboard::PutNumber("DistancePID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+        frc::SmartDashboard::PutNumber("DistancePID/Setpoint Position", setpoint.position.value()); // Debugging print
+        double pidVal [] = {DriveConstants::kPDistance, DriveConstants::kIDistance, DriveConstants::kDDistance};
+        frc::SmartDashboard::PutNumberArray("DistancePID/PID Val", pidVal);
+      }, {this}
+  ).ToPtr());
 }
 
 frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
@@ -293,12 +309,14 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
       Final state: angle at 0 radians per second.
       Move at setpoint velocity from Profiled PID Controller.
   */
+  frc::SmartDashboard::PutNumber("TurnPID/Goal Angle", angle.value()); // Debugging print
+
 
   return frc2::ProfiledPIDCommand<units::degree>(
     m_turnPID,
     [this] () -> units::degree_t {
       auto currentAngle = GetHeading().Degrees();
-      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.to<double>()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
       //return GetHeading().Degrees();
       return currentAngle;
     },
@@ -307,8 +325,8 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
       Drive(0_mps, 0_mps, setpoint.velocity * output, false);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
-      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.to<double>()); // Debugging print
-      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.to<double>()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.value()); // Debugging print
       double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
       frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
     }, {this}

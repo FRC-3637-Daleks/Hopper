@@ -54,6 +54,9 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.B()
       .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
 
+  m_swerveController.X()
+      .WhileTrue(m_swerve.DriveToDistanceCommand(1_m));
+
 }
 
 
