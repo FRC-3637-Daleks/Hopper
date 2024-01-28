@@ -277,7 +277,7 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
     m_turnPID,
     [this] () -> units::degree_t {
       auto currentAngle = GetHeading().Degrees();
-      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.to<double>()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
       //return GetHeading().Degrees();
       return currentAngle;
     },
@@ -286,8 +286,8 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
       Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
-      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.to<double>()); // Debugging print
-      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.to<double>()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.value()); // Debugging print
       double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
       frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
     }, {this}
