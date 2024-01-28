@@ -40,7 +40,15 @@ constexpr double kIzDriveSpeed = 1000;
 constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
-constexpr double kPTurn = 0.5;
+// constexpr double kPTurn = 0.0008; // Increase P for more aggressive response.
+// constexpr double kITurn = 0.00025; // Increase I to correct steady-state error.
+// constexpr double kDTurn = 0.15;   // Adjust D if necessary after observing the effects of P and I.
+
+
+constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, consider lowering this.
+constexpr double kITurn = 0.0001; // If the I term is causing wind-up, keep this low.
+constexpr double kDTurn = 0.05;   // Lower the D term if it's amplifying noise.
+
 constexpr double kPDistance = 2;
 constexpr auto kDistanceTolerance = 7_cm;
 
@@ -222,7 +230,7 @@ private:
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
 
-  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, 0.0, 0.0, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   
 private:
   friend class DrivetrainSimulation;
