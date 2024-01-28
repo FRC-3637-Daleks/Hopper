@@ -10,7 +10,11 @@
 #include <frc2/command/StartEndCommand.h>
 #include <frc2/command/WaitUntilCommand.h>
 #include <rev/CANSparkFlex.h>
+#include <ctre/Phoenix.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <cmath>
+
+
 
 
 
@@ -24,10 +28,19 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   
-  //Runs Motor? - basic void commands 
-  void runMotor(); 
-  void stopMotor();
-  
+  const PIDCoefficients m_pivotPIDCoefficients
+
+  //Runs and Stops Motors - basic voids
+  void runShootMotor(); 
+
+  void stopShootMotor();
+
+  void runTalonMotor();
+
+  void stopTalonMotor();
+
+  void Periodic() override; 
+
   frc2::CommandPtr IntakeCommand();
 
   frc2::CommandPtr FlywheelCommand( double controllerInput);
@@ -39,12 +52,15 @@ class Shooter : public frc2::SubsystemBase {
   rev::CANSparkFlex m_followMotor{followDeviceID,rev::CANSparkFlex::MotorType::kBrushless};
  
 
+  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{1.0};
+
+
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  rev::CANSparkFlex m_motor{ShooterConstants::kFlywheelMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
-  rev::CANSparkFlex m_motor{ShooterConstants::kFlywheelMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
   frc::DigitalInput m_intakeBreakBeam{0};
+  
   frc::DigitalInput m_flywheelBreakBeam{1};
+  
 };
