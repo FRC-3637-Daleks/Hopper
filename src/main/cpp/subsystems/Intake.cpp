@@ -2,89 +2,96 @@
 //Please look at intake.h for documentation
 
 Intake::Intake() {
-  rotate.RestoreFactoryDefaults(); //resets PID settings on moter
+  //https://github.com/CrossTheRoadElec/Phoenix5-Examples/blob/master/C%2B%2B%20General/PositionClosedLoop/src/main/cpp/Robot.cpp
 
-  //Applies configuration for Intake 
-  m_pidController.SetP(kP);
-  m_pidController.SetI(kI);
-  m_pidController.SetD(kD);
-  m_pidController.SetIZone(kIz);
-  m_pidController.SetFF(kFF);
-  m_pidController.SetOutputRange(kMinOutput, kMaxOutput);
-  
+  m_arm.ConfigFactoryDefault();
+
+  m_arm.SetSelectedSensorPosition(0 /*starting position*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
+
+  m_arm.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
+  //I think this sets the direction of the sensor, not too sure
+  m_arm.SetSensorPhase(true/*idk if correct*/);
+
+  //something with power or something
+  m_arm.ConfigNominalOutputForward(0.0, IntakeConstants::kTimeoutMs);
+  m_arm.ConfigNominalOutputReverse(0.0, IntakeConstants::kTimeoutMs);
+  m_arm.ConfigPeakOutputForward(1.0, IntakeConstants::kTimeoutMs);
+  m_arm.ConfigPeakOutputReverse(-1.0, IntakeConstants::kTimeoutMs);
+
+  m_arm.Config_kF(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kP(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+   
 }
 
-frc2::CommandPtr Intake::IntakeCommand() {
-
-  return StartEnd( 
-    [this] {
-        //#1 hasent broken   & not broken = nothing has entered yet                    keep going
-        //#2 hasent broken   & is broken  = first frame intake                         keep going
-        //#3 has been broken & is broken  = is intaking                                keep going
-        //#4 has been broken & not broken = ring has gone in and past the sensor,      stop
-
-        //If false (has not been broken before)
-        if (!hasBeenBroken) {
-            hasBeenBroken = !IntakeBreakBeam.Get(); //when break beam broken (false), has been brokem is true
-        }
-
-        frc2::ConditionalCommand( 
-            frc2::RunCommand([this] {IntakeOff();}), //stop (#4)
-            frc2::RunCommand([this] {IntakeOn(); }), //keep going (is one of the following: #1, #2, #3)
-            [this] () -> bool { return hasBeenBroken /*has been broken*/ && IntakeBreakBeam.Get();/*not broken now*/ })/*.ToPtr()*/;}, 
-  
-    [this] {IntakeOff(); 
-            hasBeenBroken=false;}
-  );
-
-}
-
-
-/** Set refrence documentation
- * value: In this case, for Position, measured in rotations 
-   (whatever that means there measured in 100s/1000s for sparkMax)
- * ctrl: eather volts, position, velocity, current 
- * (2 more optional slots (or at least it does not throw error))
+/**
+ * I could proboly consolidate OutputShooterIntake and OutputAMPIntake into OnIntake
+ * by passing peramiters to it but I will do that later
+ * (ie passing voltage and witch way to spin)
+ * 
+ * May also be possible to consolidate IsAtAMP and IsAtSpeaker by using goal 
+ * variable and having a function that sees if GetArmDiffrence and current 
+ * position has a diffrence of less or equal to kAllowableMarginOfError
 */
-//Moves arm to positition specified by IntakeArmIntakePos
-frc2::CommandPtr Intake::IntakeArmIntake() {
-    return RunOnce(
-        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmIntakePos, rev::CANSparkMax::ControlType::kPosition); });
+void Intake::InvertIntake() {
+  m_intake.SetInverted(true);
 }
 
-//Moves arm to positition specified by IntakeArmAMPPos
-frc2::CommandPtr Intake::IntakeArmAMP() {
-    return RunOnce(
-        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmAMPPos, rev::CANSparkMax::ControlType::kPosition); });
+void Intake::VertIntake() {
+  m_arm.SetInverted(true);
 }
 
-//Moves arm to positition specified by IntakeArmSpeakerPos
-frc2::CommandPtr Intake::IntakeArmSpeaker() {
-    return RunOnce(
-        [this] {m_pidController.SetReference(IntakeConstants::IntakeArmSpeakerPos, rev::CANSparkMax::ControlType::kPosition); });
+void Intake::OnIntake() {
+  VertIntake();
+  m_intake.SetVoltage(IntakeConstants::kIntakeVoltage);
 }
 
-//Outputs ring for AMP
-frc2::CommandPtr Intake::IntakeAMPOutput() {
-    return RunOnce(
-        [this] {intake.Set(-1.0);});
+void Intake::OffIntake() {
+  m_intake.SetVoltage(IntakeConstants::kOffVoltage);
 }
 
-//Outputs ring for speaker
-frc2::CommandPtr Intake::IntakeSpeakerOutput() {
-    return RunOnce(
-        [this] {intake.Set(-0.5);});
+void Intake::OutputShooterIntake() {
+  InvertIntake();
+  m_intake.SetVoltage(IntakeConstants::kShooterVoltage);
 }
 
-//Turns on the intake
-frc2::CommandPtr Intake::IntakeOn() {
-    return RunOnce(
-        [this] {intake.Set(1.0);});
+void Intake::OutputAMPIntake() {
+  InvertIntake();
+  m_intake.SetVoltage(IntakeConstants::kAMPVoltage);
 }
 
-//Turns off the intake
-frc2::CommandPtr Intake::IntakeOff() {
-    return RunOnce(
-        [this] {intake.Set(0.0);});
+void Intake::IntakeArmAMP() {
+  goal = IntakeConstants::IntakeArmAMPPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmAMPPos);
 }
 
+void Intake::IntakeArmSpeaker() {
+  goal = IntakeConstants::IntakeArmSpeakerPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmSpeakerPos);
+}
+
+void Intake::IntakeArmIntake() {
+  goal = IntakeConstants::IntakeArmIntakePos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmIntakePos);
+}
+
+bool Intake::GetStateLimitSwitchIntake() {
+  return m_limitSwitchIntake.Get();
+}
+
+bool Intake::GetStateBreakBeamIntake() {
+  return m_breakbeam.Get();
+}
+
+int Intake::GetArmDiffrence() {
+  return goal - m_arm.GetSelectedSensorPosition();
+}
+
+bool Intake::IsAtAMP() {
+  return abs(m_arm.GetSelectedSensorPosition() == IntakeConstants::IntakeArmAMPPos) <= IntakeConstants::kAllowableMarginOfError;
+}
+
+bool Intake::IsAtSpeaker() {
+  return abs(m_arm.GetSelectedSensorPosition() == IntakeConstants::IntakeArmSpeakerPos) <= IntakeConstants::kAllowableMarginOfError;
+}
