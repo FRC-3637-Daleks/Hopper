@@ -84,6 +84,17 @@ void RobotContainer::ConfigureBindings() {
         }, //replace later, just a placeholder
         (&m_swerve)
       );
+  // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
+  //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
+  //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+
+
+      
+  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+
+  m_swerveController.A()
+      .OnTrue(m_swerve.ZeroHeadingCommand());
 
 }
 
