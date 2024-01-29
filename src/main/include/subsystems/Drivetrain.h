@@ -25,7 +25,7 @@ constexpr auto kTrackWidth = 25_in;
 
 constexpr bool kGyroReversed = true;
 
-constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxSpeed = 10_fps;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
 
@@ -58,7 +58,7 @@ constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 // constexpr auto kTrackWidth =
 //    20.25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
-    20_in; // Distance between centers of front and back wheels.
+    25_in; // Distance between centers of front and back wheels.
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
