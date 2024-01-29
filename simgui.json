@@ -8,6 +8,12 @@
       }
     }
   },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Field": "Field2d"
+    }
+  },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
@@ -16,5 +22,8 @@
         }
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }

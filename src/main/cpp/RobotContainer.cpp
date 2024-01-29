@@ -16,13 +16,12 @@
 
 #include "commands/Autos.h"
 #include <frc/DriverStation.h>
-  const auto kRadius = units::math::sqrt((DriveConstants::kWheelBase/2 * DriveConstants::kWheelBase/2)+
-  (DriveConstants::kTrackWidth/2 * DriveConstants::kTrackWidth/2));
+  const auto kRadius = 17.5_in;
 
  const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants 
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
-    DriveConstants::kArcadeMaxSpeed,
+    AutoConstants::kMaxSpeed,
     kRadius, // Drive base radius (distance from center to furthest module) 
     pathplanner::ReplanningConfig()
 );
