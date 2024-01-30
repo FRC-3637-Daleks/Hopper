@@ -28,14 +28,14 @@ void RobotContainer::ConfigureBindings() {
   auto strafe = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis),
                 OperatorConstants::kDeadband));
   };
 
   auto rot = [this]() -> units::revolutions_per_minute_t {
     return (AutoConstants::kMaxAngularSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
                 OperatorConstants::kDeadband));
   };
 
