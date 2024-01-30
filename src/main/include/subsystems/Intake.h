@@ -11,124 +11,138 @@
 #include <frc2/command/StartEndCommand.h>
 #include <frc2/command/WaitUntilCommand.h>
 
-#include <rev/CANSparkMax.h>
+#include <rev/CANSparkFlex.h>
 
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/RunCommand.h>
+
+#include <rev/CANSparkLowLevel.h>
+
+#include <ctre/Phoenix.h>
+#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
 
 namespace IntakeConstants {
     //Moter IDs
     constexpr int kIntakeMotorPort = 13;
     constexpr int kArmlMotorPort = 14;
 
-    //Position of the arm, most likely moter encoder positions
-    constexpr int IntakeArmIntakePos = 1000;
-    constexpr int IntakeArmAMPPos = 1500;
-    constexpr int IntakeArmSpeakerPos = 2000;
+    //limit switch
+    constexpr int kLimitSwitchIntakePort = 0;
 
+    //breakbeam
+    constexpr int kBreakbeamPort = 1;
+
+    //From documetation: output value is in encoder ticks or an analog value, 
+    //depending on the sensor
+    constexpr int IntakeArmIntakePos = 1;
+    constexpr int IntakeArmAMPPos = 2;
+    constexpr int IntakeArmSpeakerPos = 3;
+
+    //something to do with the type of PID loop
+    constexpr int kPIDLoopIdx = 0;
+
+    //timeout for the PID loop
+    constexpr int kTimeoutMs = 30;
+
+    //pid configurations
+    constexpr int kF = 0.0;
+    constexpr int kP = 0.0;
+    constexpr int kI = 0.0;
+    constexpr int kD = 0.0;
+
+    //margin of error for detecting if arm is in specific spot
+    constexpr int kAllowableMarginOfError = 1;
+
+    //voltage for funtions (i dide't even have to use auto)
+    constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
+    constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
+    constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
+    constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
 
 }
+
 class Intake : public frc2::SubsystemBase {
  public:
 
-  /** Clears and sets up paramiters for PID, IZone, FF, and Output Range
-   * Look at private for the defition of the values
-   */
+
   Intake();
 
-  /**Used existing intake functions to automatically stop ring after its secured
-   * Button command is bound to should be heald down from time when trying 
-     to pick up ring to sortly after ring is secured inside intake 
+
+  /** Changes the direction of the moter
+    * Makes the moter spin backwards (spitting game peice out)
+    * Makes the moter spin forwards (intaking game peice)
   */
-  frc2::CommandPtr IntakeCommand();
+  void InvertIntake();
+  void VertIntake();
+
+  /** Simeple on off for intake
+   * Turns on intake spinning forward for intaking game peice
+   * Turns off intake for stopping intake
+  */
+  void OnIntake();
+  void OffIntake();
 
   /**
-   * Uses PID Controller to move arm to positions 
-     as specified in IntakeConstants namespace
+  * Outputs the intake to the shooter
+  * Outputs (and shoots) the intake to the AMP
   */
-  frc2::CommandPtr IntakeArmIntake();
-  frc2::CommandPtr IntakeArmAMP();
-  frc2::CommandPtr IntakeArmSpeaker();
+  void OutputShooterIntake();
+  void OutputAMPIntake();
 
-  /**
-   * Moves arm to specified position and outputs ring
+  /** Moves arm to specified position, position specified in constants
+  * Moves the intake arm to the AMP position
+  * Moves the intake arm to the Speaker position
+  * Moves the intake arm to the Intake position
   */
-  frc2::CommandPtr IntakeAMPOutput();
-  frc2::CommandPtr IntakeSpeakerOutput();
+  void IntakeArmAMP();
+  void IntakeArmSpeaker();
+  void IntakeArmIntake();
 
-  /**
-   * Basic funtion for turning moter on and off
+  /** Gets the state of Limit switches and break beams for intake
+  * Gets the state of the limit switch for the intake
+  * Gets the state of the break beam for the intake
   */
-  frc2::CommandPtr IntakeOn();
-  frc2::CommandPtr IntakeOff();
+  bool GetStateLimitSwitchIntake();  
+  bool GetStateBreakBeamIntake();
+
+  /** 
+  * Gets the difference between were the arm is going and were it is 
+  */
+  int GetArmDiffrence();
+
+  /** sees if the arm is at a specific position, 
+  has a margin of error defined in constants
+  * Sees if the arm is at the amp position
+  * Sees if the arm is at the speaker position
+  * Sees if the arm is at the intake position
+  */
+  bool IsAtAMP();
+  bool IsAtSpeaker();
+  bool IsAtIntake();
 
  private:
 
-  /* My Idea of how the intake would look like with lazer
-  ### Purpose: automatically stops wheels after driver intakes ring, driver just has to hold the button down ###
-
-  * = rod for wheels
-  - = break beam
-  assume moter and gear placement
-    ___________
-      *    *   
-               -  _________ 
-    __*____*___   |_______| <- ring
-
-    when beam is being broken, always spin, if beam has not been broek before & is not broken, spin
-    ___________
-    __*____*____   
-    |__________|- <- ring with break beam in front inside intake
-    __*____*___   
-
-    when the beam has been broken and is not broken now, then the ring has been taken in and should be just on the edge of the beam
-    when driver lets go of intake button, hasRing becomes false making it possible to pick up another beam
-    when passing from intake to AMP or speaker, hasRing should not been touched as intake button will not being pressed
+  /**
+   * The motor used to run the intake.
   */
+  rev::CANSparkFlex m_intake{IntakeConstants::kIntakeMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
 
-  /**Defines intake moter
-   * DeviceID:  Defined in namespace IntakeConstants
-   * Type:    Type of moter that we are using (kBushless)
+  /**
+   * The motor used to run the intake arm. Is setup with a PID
   */
-  rev::CANSparkMax intake{IntakeConstants::kIntakeMotorPort, rev::CANSparkMax::MotorType::kBrushless};
-  
-  /** Defines Break beam for intake, used to detect ring, look at diagram above
-   * DeviceID: the ID of the break beam
-  */
-  frc::DigitalInput IntakeBreakBeam{0};
+  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmlMotorPort};
 
-  /**Used to know if we have a ring in the intake
-   * Used only for IntakeCommand()
-   * When this is true the beam has been broken before, 
-   * If this is true and the break beam is clear then theres a ring in the intake
-   * Is reset when driver let goes of intake button
+  /**
+   * The goal position of the arm used for some functions
   */
-  bool hasBeenBroken = false; 
+  int goal;
 
-  //A lot of code for the Intake Arm is taken from:
-//https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/C%2B%2B/Velocity%20PID%20Control/src/main/cpp/Robot.cpp
-  
-  /**Defines rotate moter (the one used for the arm part of the intake)
-   * DeviceID:  Defined in namespace IntakeConstants
-   * Type:    Type of moter that we are using (kBushless)
+  /** Defines some digital inputs
+   * Defines limitswitch used on the intake
+   * Defines breakbeam used on the intake
   */
-  rev::CANSparkMax rotate{IntakeConstants::kArmlMotorPort, rev::CANSparkMax::MotorType::kBrushless};
-
-  /**Setup for the PID, initialized in the constructor
-   * Values gotten form example Github
-   * kP = Proportional value 
-   * kI = Integral value
-   * kD = Derivative value
-   * kIz = IZone limits error range where integral grain is active
-   * kFF = FowardFeed value
-   * kMinOutput/kMaxOutput = limit output range for controller
-  */
-  double kP = 0.1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
-
-  /** Binds m_pidController to rotate (i think)
-   * Setup for the pid is found above, initialized in the constructor
-  */
-  rev::SparkPIDController m_pidController = rotate.GetPIDController();
+  frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
+  frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
 };
