@@ -51,7 +51,7 @@ constexpr double kPTurn = 0.00425;  // If robot is responding too aggressively, 
 constexpr double kITurn = 0.0001; // If the I term is causing wind-up, keep this low.
 constexpr double kDTurn = 0.05;   // Lower the D term if it's amplifying noise.
 
-constexpr double kPDistance = 0.05;
+constexpr double kPDistance = 0.5;
 constexpr double kIDistance = 0.0;
 constexpr double kDDistance = 0.0;
 
@@ -217,7 +217,7 @@ public:
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
-  frc2::CommandPtr DriveToDistanceCommand(units::meter_t distance);
+  frc2::CommandPtr DriveToDistanceCommand(units::meter_t distance, frc::Pose2d start);
 
 private:
   SwerveModule m_frontLeft;

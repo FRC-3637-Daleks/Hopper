@@ -264,7 +264,7 @@ void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
   m_poseEstimator.AddVisionMeasurement(pose, timestamp);
 }
 /*** WIP - VERY BAD DO NOT RUN ***/
-frc2::CommandPtr Drivetrain::DriveToDistanceCommand(units::meter_t distance) {
+frc2::CommandPtr Drivetrain::DriveToDistanceCommand(units::meter_t distance, frc::Pose2d start) {
   /* 
       Profiled PID Command for turning to angle.
       m_distancePID - Profiled PID Controller, in meters.
@@ -274,31 +274,37 @@ frc2::CommandPtr Drivetrain::DriveToDistanceCommand(units::meter_t distance) {
   */
   frc::Pose2d startPos = GetPose();
   frc::SmartDashboard::PutNumber("DistancePID/Goal Distance", distance.value());
-  m_field.GetObject("DistancePID/Start Pos")->SetPose(startPos);
+  m_field.GetObject("DistancePID/Start Pos")->SetPose(start);
+  units::meter_t startDist = m_frontLeft.GetModuleDistance();
+  // Debugging Prints
+  fmt::print("goal distance: {}", distance.value());
+  fmt::print("start distance: {}", startDist.value());
 
-  return frc2::cmd::Run([this, &startPos, &distance] { 
-      startPos = GetPose();
-      frc::SmartDashboard::PutNumber("DistancePID/Goal Distance", distance.value());
-      m_field.GetObject("DistancePID/Start Pos")->SetPose(startPos); 
-    }).AndThen(
+  return 
       frc2::ProfiledPIDCommand<units::meter>(
-      m_distancePID,
-      [this, &startPos] () -> units::meter_t {
-        units::meter_t currentDistance = startPos.Translation().Distance(GetPose().Translation());
-        m_field.GetObject("DistancePID/Current Pos")->SetPose(GetPose());
-        frc::SmartDashboard::PutNumber("DistancePID/Current Distance", currentDistance.value());
-        return currentDistance;
-      },
-      {distance, 0_mps},
-      [this] (double output, frc::TrapezoidProfile<units::meter>::State setpoint) { 
-        Drive(setpoint.velocity * output, 0_mps, 0_rad_per_s, false);
-        frc::SmartDashboard::PutNumber("DistancePID/PID Output", output); 
-        frc::SmartDashboard::PutNumber("DistancePID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
-        frc::SmartDashboard::PutNumber("DistancePID/Setpoint Position", setpoint.position.value()); // Debugging print
-        double pidVal [] = {DriveConstants::kPDistance, DriveConstants::kIDistance, DriveConstants::kDDistance};
-        frc::SmartDashboard::PutNumberArray("DistancePID/PID Val", pidVal);
-      }, {this}
-  ).ToPtr());
+        m_distancePID,
+        [this, &startPos, &startDist, &start] () -> units::meter_t {
+          units::meter_t currentDistance = start.Translation().Distance(GetPose().Translation());
+          m_field.GetObject("DistancePID/Current Pos")->SetPose(GetPose());
+          // units::meter_t currentDistance = m_frontLeft.GetModuleDistance() - startDist;
+          frc::SmartDashboard::PutNumber("DistancePID/Current Distance", currentDistance.value());
+          fmt::print("current distance: {}\n", currentDistance.value());
+          return currentDistance;
+        },
+        {distance, 0_mps},
+        [this] (double output, frc::TrapezoidProfile<units::meter>::State setpoint) { 
+          Drive(setpoint.velocity * output, 0_mps, 0_rad_per_s, false);
+          frc::SmartDashboard::PutNumber("DistancePID/PID Output", output); 
+          frc::SmartDashboard::PutNumber("DistancePID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+          frc::SmartDashboard::PutNumber("DistancePID/Setpoint Position", setpoint.position.value()); // Debugging print
+          double pidVal [] = {DriveConstants::kPDistance, DriveConstants::kIDistance, DriveConstants::kDDistance};
+          frc::SmartDashboard::PutNumberArray("DistancePID/PID Val", pidVal);
+
+          fmt::print("PID Output: {}", output);
+          fmt::print("Setpoint velocity: {}", setpoint.velocity.value());
+          fmt::print("Setpoint position: {}", setpoint.position.value());
+        }, {this}
+  ).ToPtr();
 }
 
 frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {

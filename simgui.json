@@ -65,21 +65,6 @@
         "DistancePID": {
           "open": true
         },
-        "FL": {
-          "open": true
-        },
-        "FR": {
-          "open": true
-        },
-        "RL": {
-          "open": true
-        },
-        "RR": {
-          "open": true
-        },
-        "Swerve": {
-          "open": true
-        },
         "TurnPID": {
           "double[]##v_/SmartDashboard/TurnPID/PID Val": {
             "open": true
@@ -154,7 +139,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 15,
+          "height": -14,
           "series": [
             {
               "color": [
