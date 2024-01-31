@@ -10,6 +10,7 @@
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
 #include <frc2/command/ProfiledPIDCommand.h>
+#include <frc2/command/FunctionalCommand.h>
 
 using namespace DriveConstants;
 
@@ -284,6 +285,36 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
     {angle, 0_rad_per_s},
     [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
       Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false);
+      // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.value()); // Debugging print
+      double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
+      frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
+    }, {this}
+  ).ToPtr();
+}
+
+
+frc2::CommandPtr Drivetrain::ZTargetPoseCommand(frc::Pose2d pose, 
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe) {
+
+  auto angle = [this, pose] () -> units::radian_t {
+    return units::math::atan2<units::meter_t, units::meter_t>( pose.Y() - GetPose().Y(), pose.X() - GetPose().X() );
+  };
+
+  return frc2::ProfiledPIDCommand<units::degree>(
+    m_turnPID,
+    [this, angle] () -> units::degree_t {
+      auto currentAngle = GetHeading().Degrees() - angle();
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
+      //return GetHeading().Degrees();
+      return currentAngle;
+    },
+    {0_rad, 0_rad_per_s},
+    [this, forward, strafe] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
       frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print

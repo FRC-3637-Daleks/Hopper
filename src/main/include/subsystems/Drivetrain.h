@@ -25,7 +25,7 @@
 namespace DriveConstants {
 constexpr bool kGyroReversed = true;
 
-constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxSpeed = 12_fps;
 constexpr auto kMaxTeleopSpeed = 15_fps;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
@@ -209,6 +209,10 @@ public:
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
+
+  frc2::CommandPtr ZTargetPoseCommand(frc::Pose2d pose, 
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe);
 
 private:
   SwerveModule m_frontLeft;
