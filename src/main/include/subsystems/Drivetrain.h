@@ -21,7 +21,7 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kTrackWidth = 24_in;
+constexpr auto kTrackWidth = 25_in;
 
 constexpr bool kGyroReversed = true;
 
@@ -96,16 +96,16 @@ constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
 constexpr auto kMaxTeleopSpeed = 15_fps;
