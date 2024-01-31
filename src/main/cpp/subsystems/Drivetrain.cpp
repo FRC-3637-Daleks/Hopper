@@ -296,12 +296,12 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
 }
 
 
-frc2::CommandPtr Drivetrain::ZTargetPoseCommand(frc::Pose2d pose, 
+frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe) {
 
   auto angle = [this, pose] () -> units::radian_t {
-    return units::math::atan2<units::meter_t, units::meter_t>( pose.Y() - GetPose().Y(), pose.X() - GetPose().X() );
+    return units::math::atan2<units::meter_t, units::meter_t>( pose().Y() - GetPose().Y(), pose().X() - GetPose().X() );
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(

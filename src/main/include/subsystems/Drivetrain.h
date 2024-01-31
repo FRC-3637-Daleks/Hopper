@@ -210,7 +210,7 @@ public:
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
 
-  frc2::CommandPtr ZTargetPoseCommand(frc::Pose2d pose, 
+  frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe);
 
