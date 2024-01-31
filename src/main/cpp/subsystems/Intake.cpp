@@ -25,21 +25,48 @@ Intake::Intake() {
    
 }
 
-/**
- * I could proboly consolidate OutputShooterIntake and OutputAMPIntake into OnIntake
- * by passing peramiters to it but I will do that later
- * (ie passing voltage and witch way to spin)
- * 
- * May also be possible to consolidate IsAtAMP and IsAtSpeaker by using goal 
- * variable and having a function that sees if GetArmDiffrence and current 
- * position has a diffrence of less or equal to kAllowableMarginOfError
-*/
+
+frc2::CommandPtr Intake::IntakeRing() {
+  return this->RunOnce([this] {
+    IntakeArmIntake();})
+    .AndThen(this->StartEnd(
+      [this] {frc2::ConditionalCommand(
+                                      frc2::RunCommand([this] {OnIntake();}),
+                                      frc2::RunCommand([this] {OffIntake();}),
+                                      [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ || !GetStateLimitSwitchIntake()/*when untouched*/;});
+      },
+      [this] {OffIntake();}
+    ));
+}
+
+frc2::CommandPtr Intake::ShootOnAMP() {
+  return this->RunOnce([this] {
+    IntakeArmAMP();})
+    .AndThen(StartEnd([this] {OutputAMPIntake();},
+                      [this] {OffIntake();}));
+}
+
+frc2::CommandPtr Intake::OutputToShooter() {
+  return this->RunOnce([this] {
+    IntakeArmSpeaker();})
+    .AndThen(this->RunEnd(
+      [this] {frc2::ConditionalCommand(
+                                      frc2::RunCommand([this] {OutputShooterIntake();}),
+                                      frc2::RunCommand([this] {OffIntake();}),
+                                      [this] () -> bool {return true/*replace with break beam from the shooter*/;});
+      },
+      [this] {OffIntake();}
+    ));
+}
+
+
+
 void Intake::InvertIntake() {
   m_intake.SetInverted(true);
 }
 
 void Intake::VertIntake() {
-  m_arm.SetInverted(true);
+  m_arm.SetInverted(false);
 }
 
 void Intake::OnIntake() {
@@ -82,6 +109,10 @@ bool Intake::GetStateLimitSwitchIntake() {
 
 bool Intake::GetStateBreakBeamIntake() {
   return m_breakbeam.Get();
+}
+
+bool Intake::GetStateShooterBeamIntake() {
+  return m_shooterBreakBeam.Get();
 }
 
 int Intake::GetArmDiffrence() {

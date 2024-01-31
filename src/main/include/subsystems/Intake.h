@@ -32,6 +32,7 @@ namespace IntakeConstants {
 
     //breakbeam
     constexpr int kBreakbeamPort = 1;
+    constexpr int kShooterBreakBeamPort=2;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
@@ -67,6 +68,30 @@ class Intake : public frc2::SubsystemBase {
 
 
   Intake();
+
+  /**
+   * Sets the arm position to the intake position
+   * runs intake until break beam or limit switch is hit
+   * also stops when button is released
+  */
+  frc2::CommandPtr IntakeRing(); 
+
+  /**
+   * Sets the arm to the AMP position, 
+   * when the button is down it shoots the ring
+   * stops when the button is let go
+  */
+  frc2::CommandPtr ShootOnAMP();
+
+  /**
+   * Sets he arm to the Shooter position
+   * Passes the ring to the shooter
+   * Stops when:
+   * a. Break beam on the shooter is tripped (will need get command from shooter class)
+   * b. the button is released
+  */
+  frc2::CommandPtr OutputToShooter();
+
 
 
   /** Changes the direction of the moter
@@ -105,6 +130,8 @@ class Intake : public frc2::SubsystemBase {
   */
   bool GetStateLimitSwitchIntake();  
   bool GetStateBreakBeamIntake();
+  bool GetStateShooterBeamIntake();
+
 
   /** 
   * Gets the difference between were the arm is going and were it is 
@@ -144,5 +171,5 @@ class Intake : public frc2::SubsystemBase {
   */
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
-
+  frc::DigitalInput m_shooterBreakBeam{IntakeConstants::kShooterBreakBeamPort};
 };
