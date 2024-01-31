@@ -4,8 +4,12 @@
 
 #pragma once
 
+#include <units/moment_of_inertia.h>
+#include <units/torque.h>
+#include <units/angle.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DigitalInput.h>
+#include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/StartEndCommand.h>
@@ -21,6 +25,8 @@
 
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+#include <memory>
 
 namespace IntakeConstants {
     //Moter IDs
@@ -59,14 +65,39 @@ namespace IntakeConstants {
     constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
     constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
     constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
+    
+    //physical characteristics
+    constexpr auto kWheelMoment = 0.001_kg_sq_m;
+    constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
+    constexpr auto kArmMass = 25_lb;
+    constexpr auto kArmRadius = 13_in;
+    constexpr double kArmGearing = 4.0;
+    //you can play with the leading constant to get the dynamics you want
+    constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
+    constexpr bool kGravityCompensation = false;  // true if there's a gas spring
 
+    // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
+    constexpr auto kMinAngle = -30_deg;
+    constexpr auto kMaxAngle = 160_deg;
+
+    // TODO: MEASURE THESE
+    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle
+    constexpr int kArmSensorFullRetract = 1000;  // corresponds to kMaxAngle
+    constexpr auto kAngleToSensor = 
+      (kArmSensorFullRetract - kArmSensorFullExtend) /
+      (kMaxAngle - kMinAngle);
 }
+
+class IntakeSimulation;  // forward declaration
 
 class Intake : public frc2::SubsystemBase {
  public:
 
 
   Intake();
+  ~Intake();
+
+  void SimulationPeriodic() override;
 
 
   /** Changes the direction of the moter
@@ -145,4 +176,7 @@ class Intake : public frc2::SubsystemBase {
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
+private:
+  friend class IntakeSimulation;
+  std::unique_ptr<IntakeSimulation> m_sim_state;
 };
