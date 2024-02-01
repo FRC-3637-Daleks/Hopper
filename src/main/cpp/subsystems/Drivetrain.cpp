@@ -34,28 +34,24 @@ Drivetrain::Drivetrain()
                   kFrontLeftDriveMotorId,
                   kFrontLeftSteerMotorId,
                   kFrontLeftAbsoluteEncoderChannel,
-                  kFrontLeftAbsoluteEncoderOffset,
                   kFrontLeftDriveMotorPIDCoefficients,
                   kFrontLeftSteerMotorPIDCoefficients},
       m_rearLeft{"RL",
                  kRearLeftDriveMotorId,
                  kRearLeftSteerMotorId,
                  kRearLeftAbsoluteEncoderChannel,
-                 kRearLeftAbsoluteEncoderOffset,
                  kRearLeftDriveMotorPIDCoefficients,
                  kRearLeftSteerMotorPIDCoefficients},
       m_frontRight{"FR",
                    kFrontRightDriveMotorId,
                    kFrontRightSteerMotorId,
                    kFrontRightAbsoluteEncoderChannel,
-                   kFrontRightAbsoluteEncoderOffset,
                    kFrontRightDriveMotorPIDCoefficients,
                    kFrontRightSteerMotorPIDCoefficients},
       m_rearRight{"RR",
                   kRearRightDriveMotorId,
                   kRearRightSteerMotorId,
                   kRearRightAbsoluteEncoderChannel,
-                  kRearRightAbsoluteEncoderOffset,
                   kRearRightDriveMotorPIDCoefficients,
                   kRearRightSteerMotorPIDCoefficients},
       m_gyro{frc::SPI::Port::kMXP},
@@ -189,7 +185,8 @@ void Drivetrain::SimulationPeriodic()
   
   const auto theta = m_sim_state->m_poseSim.GetPose().Rotation();
   const auto new_theta = theta.RotateBy(units::radian_t{chassis_speed.omega*20_ms});
-  m_sim_state->m_gyroYaw.Set(new_theta.Degrees().value());
+  // robot nav x defines clockwise as positive instead of counterclockwise
+  m_sim_state->m_gyroYaw.Set(-new_theta.Degrees().value());
 
   // Feed this simulated gyro angle into the odometry to get simulated position
   m_sim_state->m_poseSim.Update(new_theta,
