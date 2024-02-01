@@ -51,6 +51,7 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
+  m_swerveController.X().OnTrue(m_swerve.ZeroAbsEncodersCommand());
 }
 
 
