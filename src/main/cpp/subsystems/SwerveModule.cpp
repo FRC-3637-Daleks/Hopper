@@ -170,6 +170,19 @@ frc::SwerveModuleState SwerveModule::GetState() {
   return {GetModuleVelocity(), GetModuleHeading()};
 }
 
+void SwerveModule::SetEncoderOffset(){
+  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  magConfig.WithMagnetOffset(0);
+  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::Clockwise_Positive);
+
+  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+  double position = m_absoluteEncoder.GetAbsolutePosition().GetValue().value();
+  magConfig.WithMagnetOffset(-position);
+
+  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+}
+
 void SwerveModule::SetDesiredState(
     const frc::SwerveModuleState &referenceState) {
   // Optimize the reference state to prevent the module turning >90 degrees.
@@ -217,6 +230,8 @@ void SwerveModule::UpdateDashboard() {
   frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
                                  state.angle.Degrees().value());
   frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
+
+  frc::SmartDashboard::PutNumber(fmt::format("{}/Abs Encoder", m_name), m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {

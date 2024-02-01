@@ -88,6 +88,8 @@ public:
   // Combines GetModuleVelocity() and GetModuleHeading().
   frc::SwerveModuleState GetState();
 
+  void SetEncoderOffset();
+
   // Commands the module to accelerate to a certain velocity and take on a
   // certain heading.
   void SetDesiredState(const frc::SwerveModuleState &state);
