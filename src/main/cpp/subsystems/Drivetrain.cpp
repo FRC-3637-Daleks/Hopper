@@ -122,6 +122,13 @@ frc::Rotation2d Drivetrain::GetHeading() { return units::degree_t(-m_gyro.GetYaw
 
 void Drivetrain::ZeroHeading() { m_gyro.Reset(); }
 
+void Drivetrain::ZeroAbsEncoders(){
+  m_frontLeft.SetEncoderOffset();
+  m_frontRight.SetEncoderOffset();
+  m_rearLeft.SetEncoderOffset();
+  m_rearRight.SetEncoderOffset();
+}
+
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
   return -m_gyro.GetRate() * 1_deg_per_s;
 }
@@ -253,6 +260,11 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
 frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
   return this->RunOnce([&] { ZeroHeading(); });
 }
+
+frc2::CommandPtr Drivetrain::ZeroAbsEncodersCommand(){
+  return this->RunOnce([&] { ZeroAbsEncodersCommand(); });
+};
+
 
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {

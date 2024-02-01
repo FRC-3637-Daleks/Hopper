@@ -144,6 +144,8 @@ public:
   // Zeroes the robot heading.
   void ZeroHeading();
 
+  void ZeroAbsEncoders();
+
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
 
@@ -191,6 +193,9 @@ public:
 
   // Returns a command that zeroes the robot heading.
   frc2::CommandPtr ZeroHeadingCommand();
+
+
+  frc2::CommandPtr ZeroAbsEncodersCommand();
 
   // Returns a command that stops the robot.
   frc2::CommandPtr BrakeCommand();
