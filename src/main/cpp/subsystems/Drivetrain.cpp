@@ -67,7 +67,6 @@ void Drivetrain::Periodic() {
   m_poseEstimator.Update(
       GetHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
                      m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
-  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 
   this->UpdateDashboard();
 }
@@ -146,7 +145,27 @@ void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
 }
 
 void Drivetrain::UpdateDashboard() {
+  const auto robot_center = m_poseEstimator.GetEstimatedPosition();
+  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+
+  const auto fl_pose = robot_center.TransformBy(
+    {kWheelBase/2, kTrackWidth/2, m_frontLeft.GetState().angle});
+  m_field.GetObject("FL")->SetPose(fl_pose);
+
+  const auto fr_pose = robot_center.TransformBy(
+    {kWheelBase/2, -kTrackWidth/2, m_frontRight.GetState().angle});
+  m_field.GetObject("FR")->SetPose(fr_pose);
+
+  const auto rl_pose = robot_center.TransformBy(
+    {-kWheelBase/2, kTrackWidth/2, m_rearLeft.GetState().angle});
+  m_field.GetObject("RL")->SetPose(rl_pose);
+
+  const auto rr_pose = robot_center.TransformBy(
+    {-kWheelBase/2, -kTrackWidth/2, m_rearRight.GetState().angle});
+  m_field.GetObject("RR")->SetPose(rr_pose);
+
   frc::SmartDashboard::PutData("Field", &m_field);
+
   frc::SmartDashboard::PutBoolean("Swerve/Gyro calibrating?",
                                   m_gyro.IsCalibrating());
   frc::SmartDashboard::PutNumber("Swerve/Robot heading",
