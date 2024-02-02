@@ -1,11 +1,12 @@
 #include "subsystems/Intake.h"
 //Please look at intake.h for documentation
 
-
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <frc/simulation/FlywheelSim.h>
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/simulation/SimDeviceSim.h>
+#include <frc/simulation/DIOSim.h>
 
 class IntakeSimulation
 {
@@ -13,6 +14,7 @@ public:
   IntakeSimulation(Intake &intake):
     m_intakeMotorSim{"SPARK MAX ", IntakeConstants::kIntakeMotorPort},
     m_armMotorSim{intake.m_arm.GetSimCollection()},
+    m_breakBeamSim{intake.m_breakbeam},
     m_intakeModel{frc::DCMotor::NeoVortex(1), 2, IntakeConstants::kWheelMoment},
     m_armModel{
       IntakeConstants::kWindowMotor, IntakeConstants::kArmGearing,
@@ -25,10 +27,14 @@ public:
 public:
   frc::sim::SimDeviceSim m_intakeMotorSim;
   ctre::phoenix::motorcontrol::TalonSRXSimCollection &m_armMotorSim;
+  frc::sim::DIOSim m_breakBeamSim;
 
   // models the physics of the components
   frc::sim::FlywheelSim m_intakeModel;
   frc::sim::SingleJointedArmSim m_armModel;
+
+  // negative for no note, 13in for note at edge, 0 for note fully in
+  units::inch_t m_notePosition{-1};
 };
 
 Intake::Intake():
@@ -145,9 +151,31 @@ void Intake::SimulationPeriodic()
     m_sim_state->m_intakeModel.GetAngularVelocity()
       .convert<units::revolutions_per_minute>().value()
   );
-  m_sim_state->m_intakeMotorSim.GetDouble("Current").Set(
+  m_sim_state->m_intakeMotorSim.GetDouble("Motor Current").Set(
     m_sim_state->m_intakeModel.GetCurrentDraw().value()
   );
+
+  // Simulate game piece
+  if (m_sim_state->m_notePosition >= 0_in) {
+    const auto note_velocity = m_sim_state->m_intakeModel.GetAngularVelocity()*kWheelCircum;
+    m_sim_state->m_notePosition += note_velocity*20_ms;
+    if (m_sim_state->m_notePosition > kIntakeLength)
+    {
+      m_sim_state->m_notePosition = -1.0_in; // dropped the piece
+    }
+    else if (m_sim_state->m_notePosition < kIntakeSensorPosition)
+    {
+      m_sim_state->m_breakBeamSim.SetValue(kBeamBroken);
+      if (m_sim_state->m_notePosition < 0_in)
+      {
+        m_sim_state->m_notePosition = 0_in;  // piece cant come further in
+      }
+    }
+  } else {
+    m_sim_state->m_breakBeamSim.SetValue(kBeamClear);
+  }
+  frc::SmartDashboard::PutNumber("Intake/sim/note_position_inches",
+    m_sim_state->m_notePosition.value());
 
   // Simulate arm
   m_sim_state->m_armMotorSim.SetBusVoltage(
@@ -177,4 +205,17 @@ void Intake::SimulationPeriodic()
   m_sim_state->m_armMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );
+}
+
+void Intake::SimulateNotePickup()
+{
+  /* Piece grabs off floor if arm is down,
+   * intake is spinning inward, and there isn't already a note inside
+   */
+  if (m_sim_state->m_notePosition < 0_in 
+    && m_sim_state->m_intakeModel.GetAngularVelocity() < 0_rad_per_s
+    && m_sim_state->m_armModel.GetAngle() < IntakeConstants::kMinAngle + 5_deg)
+  {
+    m_sim_state->m_notePosition = 13_in;
+  }
 }

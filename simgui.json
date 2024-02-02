@@ -1,5 +1,22 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Other Devices": {
+      "SPARK MAX [13]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[14]/Analog In": {
+        "header": {
+          "open": true
+        }
+      }
+    },
     "PowerDistributions": {
       "14": {
         "PowerDistribution[14]": {
@@ -15,6 +32,13 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
+        "height": 8.013679504394531,
+        "left": 46,
+        "right": 1088,
+        "top": 36,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
@@ -24,8 +48,11 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "FL": {
-          "open": true
+        "Intake": {
+          "open": true,
+          "sim": {
+            "open": true
+          }
         },
         "Swerve": {
           "open": true
@@ -33,5 +60,8 @@
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }

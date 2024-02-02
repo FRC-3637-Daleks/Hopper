@@ -27,6 +27,7 @@
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
 
 #include <memory>
+#include <numbers>
 
 namespace IntakeConstants {
     //Moter IDs
@@ -44,6 +45,9 @@ namespace IntakeConstants {
     constexpr int IntakeArmIntakePos = 1;
     constexpr int IntakeArmAMPPos = 2;
     constexpr int IntakeArmSpeakerPos = 3;
+
+    constexpr bool kBeamBroken = true;
+    constexpr bool kBeamClear = false;
 
     //something to do with the type of PID loop
     constexpr int kPIDLoopIdx = 0;
@@ -71,6 +75,8 @@ namespace IntakeConstants {
     constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
     constexpr auto kArmMass = 25_lb;
     constexpr auto kArmRadius = 13_in;
+    constexpr auto kWheelDiameter = 1.5_in;  //< Verify this
+    constexpr auto kWheelCircum = kWheelDiameter*std::numbers::pi/1_tr;
     constexpr double kArmGearing = 4.0;
     //you can play with the leading constant to get the dynamics you want
     constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
@@ -86,6 +92,9 @@ namespace IntakeConstants {
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
       (kMaxAngle - kMinAngle);
+    constexpr auto kIntakeLength = 13.0_in;
+    constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
+
 }
 
 class IntakeSimulation;  // forward declaration
@@ -179,4 +188,11 @@ class Intake : public frc2::SubsystemBase {
 private:
   friend class IntakeSimulation;
   std::unique_ptr<IntakeSimulation> m_sim_state;
+
+public:
+  /* For simulation only. This allows the higher level simulation
+   * to tell the intake simulation when a Note is at the spot where intake
+   * will pick it up. (for example when robot is facing feeder station)
+  */
+  void SimulateNotePickup();
 };
