@@ -90,6 +90,8 @@ public:
 
   void SetEncoderOffset();
 
+  void SyncEncoders();
+
   // Commands the module to accelerate to a certain velocity and take on a
   // certain heading.
   void SetDesiredState(const frc::SwerveModuleState &state);

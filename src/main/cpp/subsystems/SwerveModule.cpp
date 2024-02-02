@@ -146,6 +146,8 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
+
+  SyncEncoders();
 }
 
 SwerveModule::~SwerveModule() {}
@@ -181,6 +183,17 @@ void SwerveModule::SetEncoderOffset(){
   magConfig.WithMagnetOffset(-position);
 
   m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+
+  SyncEncoders();
+}
+
+void SwerveModule::SyncEncoders(){
+  ctre::phoenix6::configs::FeedbackConfigs falconConfig;
+  falconConfig.WithFeedbackRotorOffset(0);
+
+  m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
+  falconConfig.WithFeedbackRotorOffset(-m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
+  m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
 }
 
 void SwerveModule::SetDesiredState(
