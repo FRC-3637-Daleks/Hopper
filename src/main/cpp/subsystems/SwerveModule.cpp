@@ -179,6 +179,17 @@ frc::SwerveModuleState SwerveModule::GetState() {
   return {GetModuleVelocity(), GetModuleHeading()};
 }
 
+void SwerveModule::SteerCoastMode(bool coast){
+  ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
+  coast
+    ? steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast)
+    : steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+
+  steerOutputConfigs.WithInverted(true);
+  m_steerMotor.GetConfigurator().Apply(steerOutputConfigs,50_ms);
+}
+
+
 void SwerveModule::SetEncoderOffset(){
   ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
   magConfig.WithMagnetOffset(0);
