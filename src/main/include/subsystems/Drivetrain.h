@@ -203,6 +203,8 @@ public:
 
   frc2::CommandPtr ZeroAbsEncodersCommand();
 
+  frc2::CommandPtr SetAbsEncoderOffsetCommand();
+
   // Returns a command that stops the robot.
   frc2::CommandPtr BrakeCommand();
 
@@ -228,6 +230,8 @@ private:
 
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
+
+  frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
 private:
   friend class DrivetrainSimulation;

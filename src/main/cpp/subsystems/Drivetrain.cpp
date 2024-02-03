@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
+#include <frc2/command/WaitCommand.h>
 
 using namespace DriveConstants;
 
@@ -203,6 +204,8 @@ void Drivetrain::UpdateDashboard() {
       swerveStates); // Have to initialize array separately due as an error
                      // occurs when an array attempts to initialize as a
                      // parameter.
+
+  frc::SmartDashboard::PutData("zeroEncodersCommand", zeroEncodersCommand.get());
   m_frontLeft.UpdateDashboard();
   m_rearLeft.UpdateDashboard();
   m_frontRight.UpdateDashboard();
@@ -301,8 +304,17 @@ frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
 }
 
 frc2::CommandPtr Drivetrain::ZeroAbsEncodersCommand(){
-  return this->RunOnce([&] { ZeroAbsEncodersCommand(); });
+  return this->RunOnce([&] { 
+    fmt::print("inside ZeroAbsEncodersCommand");
+    ZeroAbsEncoders(); 
+    }).IgnoringDisable(true);
 };
+
+frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
+  return this->RunOnce([&] {
+    SetAbsEncoderOffset();
+  }).IgnoringDisable(true);
+}
 
 
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
