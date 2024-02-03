@@ -122,12 +122,32 @@ frc::Rotation2d Drivetrain::GetHeading() { return units::degree_t(-m_gyro.GetYaw
 void Drivetrain::ZeroHeading() { m_gyro.Reset(); }
 
 void Drivetrain::ZeroAbsEncoders(){
+  m_frontLeft.ZeroAbsEncoders();
+  m_frontRight.ZeroAbsEncoders();
+  m_rearLeft.ZeroAbsEncoders();
+  m_rearRight.ZeroAbsEncoders();
+}
+
+void Drivetrain::SetAbsEncoderOffset(){
   m_frontLeft.SetEncoderOffset();
   m_frontRight.SetEncoderOffset();
   m_rearLeft.SetEncoderOffset();
   m_rearRight.SetEncoderOffset();
 }
 
+void Drivetrain::SyncEncoders(){
+  m_frontLeft.SyncEncoders();
+  m_frontRight.SyncEncoders();
+  m_rearLeft.SyncEncoders();
+  m_rearRight.SyncEncoders();
+}
+
+void Drivetrain::SteerCoastMode(bool coast){
+  m_frontLeft.SteerCoastMode(coast);
+  m_frontRight.SteerCoastMode(coast);
+  m_rearLeft.SteerCoastMode(coast);
+  m_rearRight.SteerCoastMode(coast);
+}
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
   return -m_gyro.GetRate() * 1_deg_per_s;
 }

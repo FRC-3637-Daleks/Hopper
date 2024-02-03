@@ -146,6 +146,12 @@ public:
 
   void ZeroAbsEncoders();
 
+  void SetAbsEncoderOffset();
+
+  void SyncEncoders();
+
+  void SteerCoastMode(bool coast);
+
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
 
