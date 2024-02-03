@@ -16,15 +16,18 @@
 
 #include "commands/Autos.h"
 #include <frc/DriverStation.h>
-  const auto kRadius = 17.5_in;
+#include <frc/smartdashboard/SmartDashboard.h>
 
  const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants 
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
     AutoConstants::kMaxSpeed,
-    kRadius, // Drive base radius (distance from center to furthest module) 
+    DriveConstants::kRadius, // Drive base radius (distance from center to furthest module) 
     pathplanner::ReplanningConfig()
 );
+
+
+
 
 
 
@@ -36,6 +39,9 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureBindings() {
+
+    HopperAuto = pathplanner::PathPlannerAuto("Hopper").ToPtr().Unwrap();
+    frc::SmartDashboard::PutData("Hopper", HopperAuto.get());
   //m_subsystem.SetDefaultCommand(m_subsystem.FlywheelCommand(m_driverController.GetLeftY()));
 
   auto fwd = [this]() -> units::meters_per_second_t {

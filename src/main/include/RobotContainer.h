@@ -4,14 +4,12 @@
 
 #pragma once
 
-#include <frc/Joystick.h>
+#include <frc/XboxController.h>
 #include <frc/MathUtil.h>
 #include <frc2/command/CommandPtr.h>
-#include <frc2/command/button/CommandJoystick.h>
-#include <frc2/command/button/JoystickButton.h>
-#include <frc2/command/button/Trigger.h>
-
+#include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
+
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -48,6 +46,12 @@ constexpr double kPThetaController = 0.5;
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
 
+
+
+
+
+
+
 } // namespace AutoConstants
 
 
@@ -58,10 +62,10 @@ constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
 
-constexpr int kStrafeAxis = frc::Joystick::AxisType::kXAxis;
-constexpr int kForwardAxis = frc::Joystick::AxisType::kYAxis;
-constexpr int kRotationAxis = frc::Joystick::AxisType::kZAxis;
-constexpr int kFieldRelativeButton = frc::Joystick::kTriggerButton;
+constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
+constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
+constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
+constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
 }  // namespace OperatorConstants
 
@@ -77,13 +81,15 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
+    std::unique_ptr<frc2::Command> HopperAuto;
+
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandJoystick m_driverController{
+  frc2::CommandXboxController m_driverController{
       OperatorConstants::kDriverControllerPort};
 
-  frc2::CommandJoystick m_swerveController{
+  frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
   // The robot's subsystems are defined here...
