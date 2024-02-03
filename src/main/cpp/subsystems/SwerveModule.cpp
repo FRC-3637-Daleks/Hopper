@@ -188,12 +188,12 @@ void SwerveModule::SetEncoderOffset(){
 }
 
 void SwerveModule::SyncEncoders(){
-  ctre::phoenix6::configs::FeedbackConfigs falconConfig;
-  falconConfig.WithFeedbackRotorOffset(0);
+  // ctre::phoenix6::configs::FeedbackConfigs falconConfig;
+  // falconConfig.WithFeedbackRotorOffset(0);
 
-  m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
-  falconConfig.WithFeedbackRotorOffset(-m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
-  m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
+  m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
+  // falconConfig.WithFeedbackRotorOffset(m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
+  // m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
 }
 
 void SwerveModule::SetDesiredState(
