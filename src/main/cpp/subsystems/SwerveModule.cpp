@@ -191,16 +191,24 @@ void SwerveModule::SteerCoastMode(bool coast){
 
 
 void SwerveModule::SetEncoderOffset(){
-  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
-  magConfig.WithMagnetOffset(0);
-  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
-  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::Clockwise_Positive);
+  // ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  // magConfig.WithMagnetOffset(0);
+  // magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  // magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
 
-  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+  // m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+
+  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
   double position = m_absoluteEncoder.GetAbsolutePosition().GetValue().value();
   magConfig.WithMagnetOffset(-position);
+  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+
+  
 
   m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+
+  //fmt::print("{} offset: {}", m_name, position);
 
   SyncEncoders();
 }
