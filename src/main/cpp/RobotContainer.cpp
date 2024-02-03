@@ -46,12 +46,14 @@ void RobotContainer::ConfigureBindings() {
 
       
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
-  m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.RightBumper().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  // m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.X().OnTrue(m_swerve.ZeroAbsEncodersCommand());
+  //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
+  m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
 }
 
 
