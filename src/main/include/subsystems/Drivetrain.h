@@ -205,6 +205,8 @@ public:
 
   frc2::CommandPtr SetAbsEncoderOffsetCommand();
 
+  frc2::CommandPtr ConfigAbsEncoderCommand();
+
   // Returns a command that stops the robot.
   frc2::CommandPtr BrakeCommand();
 

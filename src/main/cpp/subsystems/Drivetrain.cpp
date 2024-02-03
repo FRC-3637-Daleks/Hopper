@@ -316,6 +316,21 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
   }).IgnoringDisable(true);
 }
 
+frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
+  return this->StartEnd([&] {
+    fmt::print("insdie the configabscommand ********* ");
+    SteerCoastMode(true);
+    ZeroAbsEncoders();
+  },
+  [&] {
+    SteerCoastMode(false);
+    SetAbsEncoderOffset();
+   })
+   .AndThen(frc2::WaitCommand(0.5_s).ToPtr())
+   .AndThen(this->RunOnce([&]{SyncEncoders();})
+  ).IgnoringDisable(true);
+}
+
 
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {
