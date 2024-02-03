@@ -23,6 +23,7 @@
 #include <units/moment_of_inertia.h>
 
 #include <iostream>
+#include <random>
 
 using namespace ModuleConstants;
 
@@ -35,7 +36,13 @@ public:
     m_encoderSim(std::move(module.m_absoluteEncoder.GetSimState())),
     m_wheelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kDriveEncoderReduction, ModuleConstants::kWheelMoment),
     m_swivelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kSteerGearReduction, ModuleConstants::kSteerMoment)
-  {}
+  {
+    static std::random_device rng;
+    std::uniform_real_distribution dist(-0.5, 0.5);
+
+    // randomize starting positions
+    m_encoderSim.SetRawPosition(units::turn_t{dist(rng)});
+  }
 
   void update();
 
