@@ -213,9 +213,21 @@ void SwerveModule::SetEncoderOffset(){
   SyncEncoders();
 }
 
+void SwerveModule::ZeroAbsEncoders(){
+  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  magConfig.WithMagnetOffset(0);
+  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+
+  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+}
+
+
 void SwerveModule::SyncEncoders(){
   // ctre::phoenix6::configs::FeedbackConfigs falconConfig;
   // falconConfig.WithFeedbackRotorOffset(0);
+
+  fmt::print("inside sync encoder*******");
 
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
   // falconConfig.WithFeedbackRotorOffset(m_absoluteEncoder.GetAbsolutePosition().GetValue().value());

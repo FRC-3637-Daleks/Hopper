@@ -91,6 +91,8 @@ public:
   void SteerCoastMode(bool coast);
 
   void SetEncoderOffset();
+  
+  void ZeroAbsEncoders();
 
   void SyncEncoders();
 
