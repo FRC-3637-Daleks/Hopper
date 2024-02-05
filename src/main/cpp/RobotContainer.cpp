@@ -40,8 +40,8 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureBindings() {
 
-    HopperAuto = pathplanner::PathPlannerAuto("Hopper").ToPtr().Unwrap();
-    frc::SmartDashboard::PutData("Hopper", HopperAuto.get());
+    // HopperAuto = pathplanner::PathPlannerAuto("Hopper").ToPtr().Unwrap();
+    // frc::SmartDashboard::PutData("Hopper", HopperAuto.get());
   //m_subsystem.SetDefaultCommand(m_subsystem.FlywheelCommand(m_driverController.GetLeftY()));
 
   auto fwd = [this]() -> units::meters_per_second_t {
@@ -94,8 +94,17 @@ void RobotContainer::ConfigureBindings() {
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
+      frc::Pose2d MidFarL(7.0_m, 7.40_m, 0_deg);
+      frc::Pose2d MidL(7.0_m, 5.75_m, 0_deg);
+      frc::Pose2d MidCenter(7.0_m, 4.1_m, 0_deg);
+      frc::Pose2d MidR(7.0_m, 2.45_m, 0_deg);
+      frc::Pose2d MidFarR(7.0_m, 0.75_m, 0_deg);
 
-      
+      frc::Pose2d CloseL(1.6_m, 5.55_m, 0_deg);
+      frc::Pose2d CloseCenter(1.6_m, 7.0_m, 0_deg);
+      frc::Pose2d CloseR(1.6_m, 4.1_m, 0_deg);
+
+    
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
   m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
