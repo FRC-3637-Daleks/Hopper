@@ -17,6 +17,7 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+  frc2::CommandScheduler::GetInstance().Run();
 }
 
 /**
@@ -57,10 +58,7 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {
-  
-  frc2::CommandScheduler::GetInstance().Run();
-}
+void Robot::TeleopPeriodic() {}
 
 /**
  * This function is called periodically during test mode.
