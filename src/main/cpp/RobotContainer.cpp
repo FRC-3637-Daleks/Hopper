@@ -22,7 +22,7 @@ void RobotContainer::ConfigureBindings() {
   auto fwd = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis),
                 OperatorConstants::kDeadband));
   };
   auto strafe = [this]() -> units::meters_per_second_t {

@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    },
     "PowerDistributions": {
       "14": {
         "PowerDistribution[14]": {
@@ -11,7 +16,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -84,9 +90,6 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Field": {
-          "open": true
-        },
         "Swerve": {
           "open": true
         },
