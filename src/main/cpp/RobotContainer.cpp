@@ -22,20 +22,20 @@ void RobotContainer::ConfigureBindings() {
   auto fwd = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis),
                 OperatorConstants::kDeadband));
   };
   auto strafe = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis),
                 OperatorConstants::kDeadband));
   };
 
   auto rot = [this]() -> units::revolutions_per_minute_t {
     return (AutoConstants::kMaxAngularSpeed *
             frc::ApplyDeadband(
-                m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
+                -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
                 OperatorConstants::kDeadband));
   };
 
@@ -46,11 +46,14 @@ void RobotContainer::ConfigureBindings() {
 
       
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
-  m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.RightBumper().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  // m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
+  //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
+  m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
 }
 
 
