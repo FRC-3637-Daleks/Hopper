@@ -39,7 +39,7 @@ void RobotContainer::ConfigureBindings() {
                 OperatorConstants::kDeadband));
   };
 
-  auto target = [this] () -> frc::Pose2d { return {8_m, 4_m, 0_rad}; }; //implement live apriltag targeting
+  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
 
   // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)

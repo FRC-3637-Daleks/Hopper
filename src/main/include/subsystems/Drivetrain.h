@@ -41,12 +41,12 @@ constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
 
-constexpr double kPTurn = 0.0605;  
-constexpr double kITurn = 0.001; 
-constexpr double kDTurn = 0.03;   
+constexpr double kPTurn = 0.061;// 0.0605 
+constexpr double kITurn = 0.00; // 0.001 
+constexpr double kDTurn = 0.0;  // 0.03  
 
-constexpr auto kMaxTurnRate = 3 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 3 * std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 
 
