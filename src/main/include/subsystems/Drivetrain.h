@@ -154,6 +154,14 @@ public:
   // Zeroes the robot heading.
   void ZeroHeading();
 
+  void ZeroAbsEncoders();
+
+  void SetAbsEncoderOffset();
+
+  void SyncEncoders();
+
+  void SteerCoastMode(bool coast);
+
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
 
@@ -202,6 +210,13 @@ public:
   // Returns a command that zeroes the robot heading.
   frc2::CommandPtr ZeroHeadingCommand();
 
+
+  frc2::CommandPtr ZeroAbsEncodersCommand();
+
+  frc2::CommandPtr SetAbsEncoderOffsetCommand();
+
+  frc2::CommandPtr ConfigAbsEncoderCommand();
+
   // Returns a command that stops the robot.
   frc2::CommandPtr BrakeCommand();
 
@@ -235,6 +250,7 @@ private:
                                frc::PowerDistribution::ModuleType::kRev};
 
   frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+  frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
 private:
   friend class DrivetrainSimulation;

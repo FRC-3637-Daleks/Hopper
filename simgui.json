@@ -26,7 +26,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {

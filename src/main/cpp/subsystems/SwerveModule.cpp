@@ -23,6 +23,7 @@
 #include <units/moment_of_inertia.h>
 
 #include <iostream>
+#include <random>
 
 using namespace ModuleConstants;
 
@@ -35,7 +36,13 @@ public:
     m_encoderSim(std::move(module.m_absoluteEncoder.GetSimState())),
     m_wheelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kDriveEncoderReduction, ModuleConstants::kWheelMoment),
     m_swivelModel(frc::DCMotor::Falcon500(1), ModuleConstants::kSteerGearReduction, ModuleConstants::kSteerMoment)
-  {}
+  {
+    static std::random_device rng;
+    std::uniform_real_distribution dist(-0.5, 0.5);
+
+    // randomize starting positions
+    m_encoderSim.SetRawPosition(units::turn_t{dist(rng)});
+  }
 
   void update();
 
@@ -146,6 +153,8 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
+
+  SyncEncoders();
 }
 
 SwerveModule::~SwerveModule() {}
@@ -168,6 +177,61 @@ frc::SwerveModulePosition SwerveModule::GetPosition() {
 
 frc::SwerveModuleState SwerveModule::GetState() {
   return {GetModuleVelocity(), GetModuleHeading()};
+}
+
+void SwerveModule::SteerCoastMode(bool coast){
+  ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
+  coast
+    ? steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast)
+    : steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+
+  steerOutputConfigs.WithInverted(true);
+  m_steerMotor.GetConfigurator().Apply(steerOutputConfigs,50_ms);
+}
+
+
+void SwerveModule::SetEncoderOffset(){
+  // ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  // magConfig.WithMagnetOffset(0);
+  // magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  // magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+
+  // m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+
+  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  double position = m_absoluteEncoder.GetAbsolutePosition().GetValue().value();
+  magConfig.WithMagnetOffset(-position);
+  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+
+  
+
+  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+
+  //fmt::print("{} offset: {}", m_name, position);
+
+  SyncEncoders();
+}
+
+void SwerveModule::ZeroAbsEncoders(){
+  ctre::phoenix6::configs::MagnetSensorConfigs magConfig;
+  magConfig.WithMagnetOffset(0);
+  magConfig.WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+  magConfig.WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+
+  m_absoluteEncoder.GetConfigurator().Apply(magConfig, 50_ms);
+}
+
+
+void SwerveModule::SyncEncoders(){
+  // ctre::phoenix6::configs::FeedbackConfigs falconConfig;
+  // falconConfig.WithFeedbackRotorOffset(0);
+
+  fmt::print("inside sync encoder*******");
+
+  m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
+  // falconConfig.WithFeedbackRotorOffset(m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
+  // m_steerMotor.GetConfigurator().Apply(falconConfig, 50_ms);
 }
 
 void SwerveModule::SetDesiredState(
@@ -217,6 +281,8 @@ void SwerveModule::UpdateDashboard() {
   frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
                                  state.angle.Degrees().value());
   frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
+
+  frc::SmartDashboard::PutNumber(fmt::format("{}/Abs Encoder", m_name), m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {
