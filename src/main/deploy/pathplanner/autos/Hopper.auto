@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 5.0,
+      "y": 7.5
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New New Path"
+            "pathName": "HopperTest2"
           }
         }
       ]

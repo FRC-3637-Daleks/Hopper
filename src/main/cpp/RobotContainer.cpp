@@ -19,8 +19,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
  const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
-    pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants 
-    pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
+    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
+    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants 
     AutoConstants::kMaxSpeed,
     DriveConstants::kRadius, // Drive base radius (distance from center to furthest module) 
     pathplanner::ReplanningConfig()
@@ -114,6 +114,8 @@ void RobotContainer::ConfigureBindings() {
 
   //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
   m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+
+  m_swerveController.X().WhileTrue(m_swerve.SwerveCommand([] () -> units::meters_per_second_t { return 1_mps; }, [] () -> units::meters_per_second_t { return 0_mps; }, [] () -> units::radians_per_second_t { return 0_rad_per_s; }));
 }
 
 

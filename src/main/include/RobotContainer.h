@@ -27,7 +27,7 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxSpeed = 2_mps;
 constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
 
 
