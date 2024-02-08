@@ -21,11 +21,10 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kTrackWidth = 24_in;
-
 constexpr bool kGyroReversed = true;
 
 constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxTeleopSpeed = 15_fps;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
 
@@ -52,13 +51,11 @@ constexpr auto kTurnRateTolerance = 1_deg_per_s;
 constexpr auto kMaxTurnRate = 1 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 
-// Swerve Constants (NEED TO INTEGRATE)
-
-// left out as this variable are repeated above
-// constexpr auto kTrackWidth =
-//    20.25_in; // Distance between centers of right and left wheels.
+// Swerve Constants
+constexpr auto kTrackWidth =
+    25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
-    20_in; // Distance between centers of front and back wheels.
+    25_in; // Distance between centers of front and back wheels.
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -75,12 +72,6 @@ constexpr int kRearLeftAbsoluteEncoderChannel = 10;
 constexpr int kFrontRightAbsoluteEncoderChannel = 11;
 constexpr int kRearRightAbsoluteEncoderChannel = 12;
 
-// Absolute encoder reading when modules are facing forward.
-constexpr double kFrontLeftAbsoluteEncoderOffset = 3.15246;
-constexpr double kRearLeftAbsoluteEncoderOffset = -2.25482;
-constexpr double kFrontRightAbsoluteEncoderOffset = -2.03871;
-constexpr double kRearRightAbsoluteEncoderOffset = 1.377484;
-
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
   0, 0, 0, 0, 0
@@ -96,21 +87,18 @@ constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
-  5.0, 0.0, 25, 0, 0
+  10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
-constexpr auto kMaxTeleopSpeed = 15_fps;
-// constexpr auto kPreciseSpeed = 2_fps; // left out because it already exists
-// above
 
 } // namespace DriveConstants
 
@@ -155,6 +143,14 @@ public:
 
   // Zeroes the robot heading.
   void ZeroHeading();
+
+  void ZeroAbsEncoders();
+
+  void SetAbsEncoderOffset();
+
+  void SyncEncoders();
+
+  void SteerCoastMode(bool coast);
 
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
@@ -204,6 +200,13 @@ public:
   // Returns a command that zeroes the robot heading.
   frc2::CommandPtr ZeroHeadingCommand();
 
+
+  frc2::CommandPtr ZeroAbsEncodersCommand();
+
+  frc2::CommandPtr SetAbsEncoderOffsetCommand();
+
+  frc2::CommandPtr ConfigAbsEncoderCommand();
+
   // Returns a command that stops the robot.
   frc2::CommandPtr BrakeCommand();
 
@@ -229,6 +232,8 @@ private:
 
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
+
+  frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
 private:
   friend class DrivetrainSimulation;
