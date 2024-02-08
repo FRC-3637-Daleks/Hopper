@@ -63,3 +63,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   //return autos::ExampleAuto(&m_subsystem);
   return frc2::cmd::Idle();
 }
+
+frc2::CommandPtr RobotContainer::GetDisabledCommand(){
+  return m_swerve.SteerCoastModeCommand(true).IgnoringDisable(true);
+}
