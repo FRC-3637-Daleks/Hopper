@@ -316,6 +316,12 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
   }).IgnoringDisable(true);
 }
 
+frc2::CommandPtr Drivetrain::SteerCoastModeCommand(bool coast){
+  return this->RunOnce([&]{
+    SteerCoastMode(coast);
+  }).IgnoringDisable(true);
+}
+
 frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
   return this->StartEnd([&] {
     fmt::print("insdie the configabscommand ********* ");
