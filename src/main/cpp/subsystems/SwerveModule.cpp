@@ -69,6 +69,11 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
 
+  steerConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoderId;
+  steerConfig.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+  steerConfig.Feedback.SensorToMechanismRatio = 1.0;
+  steerConfig.Feedback.RotorToSensorRatio = kSteerGearReduction;
+
   ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
   steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
   steerOutputConfigs.WithInverted(true);
@@ -154,7 +159,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   // Home the integrated rotor sensor to the cancoder position
   m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
 
-  SyncEncoders();
+  //SyncEncoders();
 }
 
 SwerveModule::~SwerveModule() {}
