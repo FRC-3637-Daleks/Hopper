@@ -16,21 +16,21 @@ Shooter::Shooter() {
 
   m_pivot.ConfigFactoryDefault();
 
-  m_pivot.SetSelectedSensorPosition(0,ShooterConstants::kPIDLoopIdx,ShooterConstants::kTimeoutMs);
+  m_pivot.SetSelectedSensorPosition(0, ShooterConstants::kPIDLoopIdx, ShooterConstants::kTimeoutMs);
 
-  m_pivot.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog,ShooterConstants::kPIDLoopIdx,ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, ShooterConstants::kPIDLoopIdx, ShooterConstants::kTimeoutMs);
 
   m_pivot.SetSensorPhase(true);
 
-  m_pivot.ConfigNominalOutputForward(0,ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigNominalOutputReverse(0,ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigPeakOutputForward(1.0,ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigPeakOutputReverse(1.0,ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigPeakOutputReverse(1.0, ShooterConstants::kTimeoutMs);
   
-  m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, 0.0,ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, 0.0,ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, 0.0,ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, 0.0,ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
   m_followMotor.Follow(m_leadMotor);
@@ -43,7 +43,7 @@ Shooter::Shooter() {
 }
 
 //Runs both shooting motors
-void Shooter::runShootMotor(){
+void Shooter::RunShootMotor(){
 
 //Starts
    m_leadMotor.SetVoltage(1.0_V);
@@ -51,7 +51,7 @@ void Shooter::runShootMotor(){
 }
 
 //Stops both shooting motors
-void Shooter::stopShootMotor(){
+void Shooter::StopShootMotor(){
 
 //Stops
   m_leadMotor.StopMotor();
@@ -59,14 +59,14 @@ void Shooter::stopShootMotor(){
 }
 
 //Runs pivoting motor
-void Shooter::runTalonMotor(){
+void Shooter::RunTalonMotor(){
 //Runs
 m_pivot.SetVoltage(1.0_V);
 
 }
 
 //Stop pivoting motor
-void Shooter::stopShootMotor(){
+void Shooter::StopShootMotor(){
 //Stops
  m_pivot.StopMotor();
 

@@ -20,24 +20,29 @@
 
 
 namespace ShooterConstants {
-    constexpr int kIntakeMotorPort = 13;
-    constexpr int kFlywheelMotorPort = 14;
+    constexpr int kPivotMotorPort = 13;
+    constexpr int kFlywheelLeaderMotorPort = 14;
+    constexpr int kFlywheelFollowMotorPort = 0;
+
+    constexpr int kTimeoutMs = 20; //in ms.
+    constexpr int kPIDLoopIdx = 0; 
+    
 }
 
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   
-  const PIDCoefficients m_pivotPIDCoefficients
+  // const PIDCoefficients m_pivotPIDCoefficients;
 
   //Runs and Stops Motors - basic voids
-  void runShootMotor(); 
+  void RunShootMotor(); 
 
-  void stopShootMotor();
+  void StopShootMotor();
 
-  void runTalonMotor();
+  void RunTalonMotor();
 
-  void stopTalonMotor();
+  void StopTalonMotor();
 
   void Periodic() override; 
 
@@ -48,11 +53,11 @@ class Shooter : public frc2::SubsystemBase {
  //Lead + Follow motors (makes motors run in parallel) what constructors?
   const int leadDeviceID = 1, followDeviceID = 2;
 
-  rev::CANSparkFlex m_leadMotor{leadDeviceID,rev::CANSparkFlex::MotorType::kBrushless};
-  rev::CANSparkFlex m_followMotor{followDeviceID,rev::CANSparkFlex::MotorType::kBrushless};
+  rev::CANSparkFlex m_leadMotor{ShooterConstants::kFlywheelLeaderMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
+  rev::CANSparkFlex m_followMotor{ShooterConstants::kFlywheelFollowMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
  
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{1.0};
+  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
 
 
 
