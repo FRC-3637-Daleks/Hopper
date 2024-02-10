@@ -16,7 +16,6 @@ Shooter::Shooter() {
 // Resets config perameters
   m_followMotor.RestoreFactoryDefaults();
   m_leadMotor.RestoreFactoryDefaults();
-
   m_pivot.ConfigFactoryDefault();
 
   m_pivot.SetSelectedSensorPosition(0, ShooterConstants::kPIDLoopIdx, ShooterConstants::kTimeoutMs);
@@ -37,11 +36,8 @@ Shooter::Shooter() {
 //Motors following + leading
 
   m_followMotor.Follow(m_leadMotor);
-  
-//Configure for use 
 
-  
-
+ 
 
 }
 
@@ -97,6 +93,19 @@ double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   return (frc::AngleModulus(rotation.Radians() - currentHeading) +
           currentHeading) /
          ShooterConstants::kPivotEncoderDistancePerCount;
+}
+
+
+ units::radian_t Shooter::GetAnglePivot() {
+  // auto offset = ShooterConstants:: kOffset;
+  
+
+  // fmt::print("motor encoder: {}\n", m_motor.GetSelectedSensorPosition());
+
+  return (units::radian_t{m_pivot.GetSelectedSensorPosition() *
+                             ShooterConstants::kPivotEncoderDistancePerCount} +
+         ShooterConstants::kOffset);
+   //return 0_rad;
 }
 
 frc2::CommandPtr Shooter::FlywheelCommand(double controllerInput) {

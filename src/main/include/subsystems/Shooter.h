@@ -12,7 +12,7 @@
 #include <rev/CANSparkFlex.h>
 #include <ctre/Phoenix.h>
 #include <frc/drive/DifferentialDrive.h>
-
+#include <frc/MathUtil.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -26,13 +26,29 @@
 #include <cmath>
 #include <numbers>
 
-namespace ShooterConstants {
-    constexpr int kPivotMotorPort = 13;
-    constexpr int kFlywheelLeaderMotorPort = 14;
-    constexpr int kFlywheelFollowMotorPort = 0;
 
-    constexpr int kTimeoutMs = 20; //in ms.
-    constexpr int kPIDLoopIdx = 0; 
+namespace ShooterConstants {
+
+  //Constant values for getAnglePivot
+    constexpr auto kOffset = 0.0_deg;
+    constexpr int kLegOffset = 0.0;
+    //constexpr auto kPivotEncoderDistancePerCount = 0.1_deg;
+    constexpr auto kEncoderCPR = 0.0;
+    constexpr auto kGearReduction = 0.0;
+    constexpr bool kEncoderReversed = true;
+    
+
+    constexpr int kIntakeMotorPort = 13;
+    constexpr int kFlywheelMotorPort = 14;
+
+  constexpr int kPivotMotorPort = 13;
+  constexpr int kFlywheelLeaderMotorPort = 14;
+  constexpr int kFlywheelFollowMotorPort = 0;
+
+ //PID Loop something
+    constexpr int kPIDLoopIdx = 0;
+
+    constexpr int kTimeoutMs = 20; // in ms.
 
     // Guess values. Need accurate measurements
 
@@ -66,8 +82,12 @@ class Shooter : public frc2::SubsystemBase {
   void StopTalonMotor();
 
   void SetPivotMotor(double encoderPosition);
+  
 
-  void Periodic() override; 
+  void Periodic() override;
+
+  
+  units::radian_t GetAnglePivot(); 
 
   units::degree_t DistanceToAngle(units::meter_t distance);
 
@@ -79,7 +99,8 @@ class Shooter : public frc2::SubsystemBase {
 
   frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
 
- //Lead + Follow motors (makes motors run in parallel) what constructors?
+
+ //initializes Lead + Follow motors (makes motors run in parallel) 
   const int leadDeviceID = 1, followDeviceID = 2;
 
   rev::CANSparkFlex m_leadMotor{ShooterConstants::kFlywheelLeaderMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
@@ -94,7 +115,8 @@ class Shooter : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
   frc::DigitalInput m_intakeBreakBeam{0};
-  
+
   frc::DigitalInput m_flywheelBreakBeam{1};
+
   
 };
