@@ -12,12 +12,19 @@
 #include <rev/CANSparkFlex.h>
 #include <ctre/Phoenix.h>
 #include <frc/drive/DifferentialDrive.h>
+
+
+#include <units/acceleration.h>
+#include <units/angle.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
+#include <units/length.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
+#include <units/moment_of_inertia.h>
+
 #include <cmath>
-
-
-
-
-
+#include <numbers>
 
 namespace ShooterConstants {
     constexpr int kPivotMotorPort = 13;
@@ -26,7 +33,15 @@ namespace ShooterConstants {
 
     constexpr int kTimeoutMs = 20; //in ms.
     constexpr int kPIDLoopIdx = 0; 
-    
+
+    // Guess values. Need accurate measurements
+
+    constexpr double kPivotEncoderReduction =
+    (double) 1 / 4;
+constexpr double kPivotEncoderCPR =
+    kPivotEncoderReduction * 28; // CPR is 4 counts/cycle * 7 cycles/revolution.
+constexpr auto kPivotEncoderDistancePerCount =
+    2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
 }
 
 class Shooter : public frc2::SubsystemBase {
@@ -44,11 +59,17 @@ class Shooter : public frc2::SubsystemBase {
 
   void StopTalonMotor();
 
+  void SetPivotMotor(double encoderPosition);
+
   void Periodic() override; 
 
-  frc2::CommandPtr IntakeCommand();
+  units::degree_t DistanceToAngle(units::meter_t distance);
 
-  frc2::CommandPtr FlywheelCommand( double controllerInput);
+  double ToTalonUnits(const frc::Rotation2d &rotation);
+
+  frc2::CommandPtr FlywheelCommand(double controllerInput);
+
+  frc2::CommandPtr PivotAngleCommand(units::degree_t angle);
 
  //Lead + Follow motors (makes motors run in parallel) what constructors?
   const int leadDeviceID = 1, followDeviceID = 2;

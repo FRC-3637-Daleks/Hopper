@@ -3,8 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Shooter.h"
+
+
 #include <frc2/command/Commands.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/MathUtil.h>
 
 
 Shooter::Shooter() {
@@ -43,7 +46,7 @@ Shooter::Shooter() {
 }
 
 //Runs both shooting motors
-void Shooter::RunShootMotor(){
+void Shooter::RunShootMotor() {
 
 //Starts
    m_leadMotor.SetVoltage(1.0_V);
@@ -51,7 +54,7 @@ void Shooter::RunShootMotor(){
 }
 
 //Stops both shooting motors
-void Shooter::StopShootMotor(){
+void Shooter::StopShootMotor() {
 
 //Stops
   m_leadMotor.StopMotor();
@@ -59,17 +62,21 @@ void Shooter::StopShootMotor(){
 }
 
 //Runs pivoting motor
-void Shooter::RunTalonMotor(){
+void Shooter::RunTalonMotor() {
 //Runs
 m_pivot.SetVoltage(1.0_V);
 
 }
 
 //Stop pivoting motor
-void Shooter::StopShootMotor(){
+void Shooter::StopTalonMotor() {
 //Stops
  m_pivot.StopMotor();
 
+}
+
+void Shooter::SetPivotMotor(double encoderPosition) {
+  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Position, encoderPosition);
 }
 
 void Shooter::Periodic(){
@@ -79,17 +86,31 @@ frc::SmartDashboard::PutNumber("motor power", m_leadMotor.Get());
 
 }
 
-frc2::CommandPtr Shooter::IntakeCommand() {
-  // Inline construction of command goes here.
-  // Subsystem::RunOnce implicitly requires `this` subsystem.
-  // return StartEnd([this] { intake.Set(0.5); }, 
-  //                 [this] { intake.Set(0.0); });
-  return frc2::cmd::Idle();
+units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
+  return 30_deg; // temporary value until math is worked out.
 }
 
-frc2::CommandPtr Shooter::FlywheelCommand( double controllerInput ) {
-  return Run([this, &controllerInput] 
-             { m_leadMotor.Set(controllerInput); });
+double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
+  units::radian_t currentHeading =
+      ShooterConstants::kPivotEncoderDistancePerCount * m_pivot.GetSelectedSensorPosition();
+  // Puts the rotation in the correct scope for the incremental encoder.
+  return (frc::AngleModulus(rotation.Radians() - currentHeading) +
+          currentHeading) /
+         ShooterConstants::kPivotEncoderDistancePerCount;
 }
 
+frc2::CommandPtr Shooter::FlywheelCommand(double controllerInput) {
+  return frc2::cmd::Run(
+    [this, controllerInput] { 
+      m_leadMotor.Set(controllerInput); 
+    }, {this}
+  );
+}
 
+frc2::CommandPtr Shooter::PivotAngleCommand(units::degree_t angle) {
+  return frc2::cmd::RunOnce(
+    [this, angle] () {
+      SetPivotMotor(ToTalonUnits(angle));
+    }, {this}
+  );
+}
