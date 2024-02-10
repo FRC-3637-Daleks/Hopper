@@ -42,6 +42,12 @@ constexpr double kPivotEncoderCPR =
     kPivotEncoderReduction * 28; // CPR is 4 counts/cycle * 7 cycles/revolution.
 constexpr auto kPivotEncoderDistancePerCount =
     2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
+
+    //Guess values for Pivot PID. Need to calculate feed forward
+    constexpr double kPPivot = 1.0;
+    constexpr double kIPivot = 0.0;
+    constexpr double kDPivot = 0.0;
+    constexpr double kFPivot = 0.0;
 }
 
 class Shooter : public frc2::SubsystemBase {

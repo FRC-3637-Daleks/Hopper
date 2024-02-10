@@ -30,10 +30,10 @@ Shooter::Shooter() {
   m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputReverse(1.0, ShooterConstants::kTimeoutMs);
   
-  m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
-  m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, 0.0, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, ShooterConstants::kIPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
   m_followMotor.Follow(m_leadMotor);
