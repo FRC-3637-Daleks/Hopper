@@ -24,6 +24,7 @@ public:
     frc2::CommandPtr ExtendClimb();
     frc2::CommandPtr RetractClimb();
     frc2::CommandPtr StopClimb();
+    frc2::CommandPtr ClimbCommand(double input);
 
 private:
 // need to know climb motor port
