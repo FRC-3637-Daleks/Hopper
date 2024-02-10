@@ -85,7 +85,7 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   
-  //Shooter m_subsystem;
+  Shooter m_shooter;
   Drivetrain m_swerve;
 
   void ConfigureBindings();
