@@ -191,6 +191,11 @@ public:
       std::function<units::meters_per_second_t()> strafe,
       std::function<units::revolutions_per_minute_t()> rot);
 
+
+frc2::CommandPtr
+  SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
+                std::function<units::meters_per_second_t()> strafe,
+                std::function<units::revolutions_per_minute_t()> rot);
   // Drive the robot to pose.
   // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
 

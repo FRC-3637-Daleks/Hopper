@@ -264,6 +264,20 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
   return this->Run([=] { Drive(forward(), strafe(), rot(), true); });
 }
 
+
+
+frc2::CommandPtr Drivetrain::SwerveSlowCommand(
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe,
+    std::function<units::revolutions_per_minute_t()> rot) {
+  // fmt::print("making command\n");
+  return this->Run([=] {
+    // fmt::print("starting drive command\n");
+    Drive(forward()/4, strafe()/4, rot()/5, true);
+    // fmt::print("sent drive command\n");
+  });
+}
+
 // // needs work
 // frc2::CommandPtr Drivetrain::DriveToPoseCommand(frc::Pose2d targetPose) {
 //   // TODO
