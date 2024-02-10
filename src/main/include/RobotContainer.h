@@ -22,6 +22,7 @@
 
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
+#include "subsystems/Intake.h"
 
 
 namespace AutoConstants {
@@ -60,6 +61,10 @@ constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeGroundPOV = 0;
+constexpr int kIntakeAMPPOV = 1;
+constexpr int kIntakeShooterPOV = 2;
+
 }  // namespace OperatorConstants
 
 /**
@@ -87,6 +92,7 @@ class RobotContainer {
   
   Shooter m_shooter;
   Drivetrain m_swerve;
+  Intake m_intake;
 
   void ConfigureBindings();
 };

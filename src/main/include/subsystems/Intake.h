@@ -24,15 +24,15 @@
 
 namespace IntakeConstants {
     //Moter IDs
-    constexpr int kIntakeMotorPort = 13;
-    constexpr int kArmlMotorPort = 14;
+    constexpr int kIntakeMotorPort = 16;
+    constexpr int kArmMotorPort = 17;
 
     //limit switch
     constexpr int kLimitSwitchIntakePort = 0;
 
     //breakbeam
     constexpr int kBreakbeamPort = 1;
-    constexpr int kShooterBreakBeamPort=2;
+    constexpr int kShooterBreakBeamPort = 2;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
@@ -92,7 +92,15 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr OutputToShooter();
 
+  /**
+   * Set intake to spin forwards and take in a game piece
+  */
+  frc2::CommandPtr IntakeIn();
 
+  /**
+   * Set intake to spin backwards to spit out a game piece
+  */
+  frc2::CommandPtr IntakeOut();
 
   /** Changes the direction of the moter
     * Makes the moter spin backwards (spitting game peice out)
@@ -158,7 +166,7 @@ class Intake : public frc2::SubsystemBase {
   /**
    * The motor used to run the intake arm. Is setup with a PID
   */
-  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmlMotorPort};
+  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmMotorPort};
 
   /**
    * The goal position of the arm used for some functions

@@ -70,6 +70,26 @@ void RobotContainer::ConfigureBindings() {
   };
 
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
+
+  // Configure Intake Bindings.
+  auto position = [this]() -> int {
+    return m_driverController.GetPOV();
+  };
+
+  m_intake.SetDefaultCommand(
+    frc2::cmd::Select<int>(
+      position,
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeRing()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.ShootOnAMP()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.OutputToShooter()}
+    )
+  );
+
+  m_driverController.A()
+    .WhileTrue(m_intake.IntakeIn());
+    
+  m_driverController.B()
+    .WhileTrue(m_intake.IntakeOut());
 }
 
 

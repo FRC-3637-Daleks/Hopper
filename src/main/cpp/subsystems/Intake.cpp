@@ -59,7 +59,21 @@ frc2::CommandPtr Intake::OutputToShooter() {
     ));
 }
 
+frc2::CommandPtr Intake::IntakeIn() {
+  return frc2::cmd::RunEnd([this] {
+    VertIntake();
+    OnIntake();
+  },
+  [this] { OffIntake(); });
+}
 
+frc2::CommandPtr Intake::IntakeOut() {
+  return frc2::cmd::RunEnd([this] {
+    InvertIntake();
+    OnIntake();
+  },
+  [this] { OffIntake(); });
+}
 
 void Intake::InvertIntake() {
   m_intake.SetInverted(true);
