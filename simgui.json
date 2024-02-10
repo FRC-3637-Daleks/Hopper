@@ -1,25 +1,15 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "navX-Sensor[4]": {
+      "Talon SRX[13]": {
         "header": {
           "open": true
         }
       },
-      "window": {
-        "visible": false
-      }
-    },
-    "PowerDistributions": {
-      "14": {
-        "PowerDistribution[14]": {
+      "Talon SRX[13]/Quad Encoder": {
+        "header": {
           "open": true
         }
-      }
-    },
-    "Timing": {
-      "window": {
-        "visible": false
       }
     }
   },
@@ -31,73 +21,11 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-<<<<<<< HEAD
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
         "top": 79,
-=======
-        "FL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "FR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "Robot": {
-          "arrowColor": [
-            255.0,
-            0.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Box/Image",
-          "weight": 3.0
-        },
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
-        "right": 1088,
-        "simulation": {
-          "arrowColor": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "arrowWeight": 3.0,
-          "color": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Hidden",
-          "weight": 2.0
-        },
-        "top": 36,
->>>>>>> origin/carolina-wip
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -106,42 +34,9 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
-      "LiveWindow": {
-        "open": true
-      },
-      "Shuffleboard": {
-        "open": true
-      },
       "SmartDashboard": {
-<<<<<<< HEAD
-        "FL": {
-          "open": true
-        },
-        "FR": {
-          "open": true
-        },
-        "RL": {
-          "open": true
-        },
-        "RR": {
-          "open": true
-        },
-=======
->>>>>>> origin/carolina-wip
-        "Swerve": {
-          "open": true
-        },
-        "TurnPID": {
-          "double[]##v_/SmartDashboard/TurnPID/PID Val": {
-            "open": true
-          },
+        "Shooter": {
           "open": true
         },
         "open": true
@@ -149,96 +44,6 @@
     }
   },
   "NetworkTables Info": {
-<<<<<<< HEAD
-    "Clients": {
-      "open": true
-    },
-    "Server": {
-      "open": true
-    },
     "visible": true
-  },
-  "Plot": {
-    "Plot <0>": {
-      "plots": [
-        {
-          "backgroundColor": [
-            0.0,
-            0.0,
-            0.0,
-            0.8500000238418579
-          ],
-          "height": 614,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "navX-Sensor[4]-Yaw"
-            },
-            {
-              "color": [
-                0.8666667342185974,
-                0.5176470875740051,
-                0.32156863808631897,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/TurnPID/Current Angle"
-            },
-            {
-              "color": [
-                0.3333333432674408,
-                0.658823549747467,
-                0.4078431725502014,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/TurnPID/Setpoint Position"
-            }
-          ]
-        }
-      ],
-      "window": {
-        "visible": false
-      }
-    },
-    "Plot <1>": {
-      "plots": [
-        {
-          "backgroundColor": [
-            0.0,
-            0.0,
-            0.0,
-            0.8500000238418579
-          ],
-          "height": -14,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/TurnPID/Current Angle"
-            },
-            {
-              "color": [
-                0.8666667342185974,
-                0.5176470875740051,
-                0.32156863808631897,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/TurnPID/Setpoint Position"
-            }
-          ]
-        }
-      ]
-    }
-=======
-    "visible": true
->>>>>>> origin/carolina-wip
   }
 }

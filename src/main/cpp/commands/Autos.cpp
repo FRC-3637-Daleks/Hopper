@@ -8,6 +8,6 @@
 
 
 frc2::CommandPtr autos::ExampleAuto(Shooter* subsystem) {
-  return frc2::cmd::Sequence(subsystem->FlywheelCommand(0.0),
+  return frc2::cmd::Sequence(frc2::cmd::Wait(1_s),
                              frc2::cmd::Print("Hello World!"));
 }

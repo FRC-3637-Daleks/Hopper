@@ -1,7 +1,12 @@
 {
-  "FMS": {
+  "Keyboard 0 Settings": {
     "window": {
-      "visible": false
+      "visible": true
+    }
+  },
+  "Keyboard 1 Settings": {
+    "window": {
+      "visible": true
     }
   },
   "keyboardJoysticks": [
@@ -59,9 +64,17 @@
         {
           "decKey": 73,
           "incKey": 75
+        },
+        {
+          "decKey": 262,
+          "incKey": 263
+        },
+        {
+          "decKey": 264,
+          "incKey": 265
         }
       ],
-      "axisCount": 2,
+      "axisCount": 7,
       "buttonCount": 4,
       "buttonKeys": [
         77,
@@ -72,16 +85,6 @@
       "povCount": 0
     },
     {
-      "axisConfig": [
-        {
-          "decKey": 263,
-          "incKey": 262
-        },
-        {
-          "decKey": 265,
-          "incKey": 264
-        }
-      ],
       "axisCount": 2,
       "buttonCount": 6,
       "buttonKeys": [
@@ -102,11 +105,10 @@
   ],
   "robotJoysticks": [
     {
-      "guid": "78696e70757401000000000000000000",
-      "useGamepad": true
+      "guid": "Keyboard0"
     },
     {
-      "useGamepad": true
+      "guid": "Keyboard1"
     }
   ]
 }

@@ -50,7 +50,7 @@ const frc::TrapezoidProfile<units::radians>::Constraints
 
 namespace OperatorConstants {
 
-constexpr int kDriverControllerPort = 0;
+constexpr int kDriverControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
