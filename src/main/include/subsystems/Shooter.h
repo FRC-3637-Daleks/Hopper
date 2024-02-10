@@ -71,6 +71,8 @@ class Shooter : public frc2::SubsystemBase {
 
   frc2::CommandPtr PivotAngleCommand(units::degree_t angle);
 
+  frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
+
  //Lead + Follow motors (makes motors run in parallel) what constructors?
   const int leadDeviceID = 1, followDeviceID = 2;
 

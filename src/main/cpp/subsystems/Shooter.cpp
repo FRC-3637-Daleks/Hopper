@@ -114,3 +114,12 @@ frc2::CommandPtr Shooter::PivotAngleCommand(units::degree_t angle) {
     }, {this}
   );
 }
+
+
+frc2::CommandPtr Shooter::PivotAngleDistanceCommand(units::meter_t distance) {
+  return frc2::cmd::RunOnce(
+    [this, distance] () {
+      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance)));
+    }, {this}
+  );
+}
