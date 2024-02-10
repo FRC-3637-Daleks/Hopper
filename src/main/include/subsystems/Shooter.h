@@ -4,6 +4,10 @@
 
 #pragma once
 
+#include <units/mass.h>
+#include <units/length.h>
+#include <units/moment_of_inertia.h>
+
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
@@ -23,7 +27,10 @@
 #include <units/voltage.h>
 #include <units/moment_of_inertia.h>
 
+#include <frc/simulation/DCMotorSim.h>
 #include <cmath>
+
+#include <memory>
 #include <numbers>
 
 
@@ -42,8 +49,8 @@ namespace ShooterConstants {
     constexpr int kFlywheelMotorPort = 14;
 
   constexpr int kPivotMotorPort = 13;
-  constexpr int kFlywheelLeaderMotorPort = 14;
-  constexpr int kFlywheelFollowMotorPort = 0;
+  constexpr int kFlywheelLeadMotorPort = 14;
+  constexpr int kFlywheelFollowMotorPort = 15;
 
  //PID Loop something
     constexpr int kPIDLoopIdx = 0;
@@ -64,11 +71,34 @@ constexpr auto kPivotEncoderDistancePerCount =
     constexpr double kIPivot = 0.0;
     constexpr double kDPivot = 0.0;
     constexpr double kFPivot = 0.0;
+
+    // Physical Constants for Simulation
+    constexpr auto kWheelMass = 1_kg;
+    constexpr auto kWheelRadius = 2_in;
+    constexpr auto kWheelMoment = 0.5*kWheelMass*kWheelRadius*kWheelRadius;
+
+    constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
+    constexpr auto kArmGearing = 10;
+    constexpr auto kArmMass = 15_lb;
+    constexpr auto kArmRadius = 10_in;
+    constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
+
+    constexpr auto kMinAngle = 10_deg;
+    constexpr auto kMaxAngle = 60_deg;
+    constexpr auto kMinAimSensor = 10;
+    constexpr auto kMaxAimSensor = 1000;
+    constexpr auto kAngleToSensor = (kMaxAimSensor - kMinAimSensor)/(kMaxAngle - kMinAngle);
 }
+
+// forward declaration
+class ShooterSimulation;
 
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
+  ~Shooter();
+
+  void SimulationPeriodic() override;
   
   // const PIDCoefficients m_pivotPIDCoefficients;
 
@@ -103,7 +133,7 @@ class Shooter : public frc2::SubsystemBase {
  //initializes Lead + Follow motors (makes motors run in parallel) 
   const int leadDeviceID = 1, followDeviceID = 2;
 
-  rev::CANSparkFlex m_leadMotor{ShooterConstants::kFlywheelLeaderMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
+  rev::CANSparkFlex m_leadMotor{ShooterConstants::kFlywheelLeadMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
   rev::CANSparkFlex m_followMotor{ShooterConstants::kFlywheelFollowMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
  
 
@@ -118,5 +148,6 @@ class Shooter : public frc2::SubsystemBase {
 
   frc::DigitalInput m_flywheelBreakBeam{1};
 
-  
+  // SIMULATION 
+  std::unique_ptr<ShooterSimulation> m_sim_state;
 };

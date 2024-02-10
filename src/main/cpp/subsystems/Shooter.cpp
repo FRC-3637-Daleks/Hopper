@@ -9,8 +9,37 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/MathUtil.h>
 
+#include <frc/simulation/FlywheelSim.h>
+#include <frc/simulation/SingleJointedArmSim.h>
+#include <frc/simulation/SimDeviceSim.h>
+#include <frc/simulation/DIOSim.h>
 
-Shooter::Shooter() {
+class ShooterSimulation
+{
+public:
+  ShooterSimulation(Shooter &shooter):
+    m_leadShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelLeadMotorPort},
+    m_followerShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelFollowMotorPort},
+    m_aimMotorSim{shooter.m_pivot.GetSimCollection()},
+    m_shooterModel{frc::DCMotor::NeoVortex(1), 1, ShooterConstants::kWheelMoment},
+    m_armModel{
+      ShooterConstants::kWindowMotor, ShooterConstants::kArmGearing,
+      ShooterConstants::kArmMoment, ShooterConstants::kArmRadius,
+      ShooterConstants::kMinAngle, ShooterConstants::kMaxAngle,
+      false, ShooterConstants::kMaxAngle
+    }
+  {}
+
+public:
+  frc::sim::SimDeviceSim m_leadShooterSim, m_followerShooterSim;
+  ctre::phoenix::motorcontrol::TalonSRXSimCollection &m_aimMotorSim;
+
+  // models the physics of the components
+  frc::sim::FlywheelSim m_shooterModel;
+  frc::sim::SingleJointedArmSim m_armModel;
+};
+
+Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 // Implementation of subsystem constructor goes here.
 // Needs arguments to work between power cycles!!
 // Resets config perameters
@@ -40,6 +69,8 @@ Shooter::Shooter() {
  
 
 }
+
+Shooter::~Shooter() {}
 
 //Runs both shooting motors
 void Shooter::RunShootMotor() {
@@ -95,8 +126,7 @@ double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
          ShooterConstants::kPivotEncoderDistancePerCount;
 }
 
-
- units::radian_t Shooter::GetAnglePivot() {
+units::radian_t Shooter::GetAnglePivot() {
   // auto offset = ShooterConstants:: kOffset;
   
 
@@ -130,5 +160,60 @@ frc2::CommandPtr Shooter::PivotAngleDistanceCommand(units::meter_t distance) {
     [this, distance] () {
       SetPivotMotor(ToTalonUnits(DistanceToAngle(distance)));
     }, {this}
+  );
+}
+
+// ************************ SIMULATION *****************************
+void Shooter::SimulationPeriodic()
+{
+  using namespace ShooterConstants;
+  if (!m_sim_state) return;
+
+ 
+  // Simulate main shooter motor
+  units::volt_t applied_voltage{
+    m_sim_state->m_leadShooterSim.GetDouble("Applied Output").Get()};
+
+  m_sim_state->m_shooterModel.SetInputVoltage(applied_voltage);
+  m_sim_state->m_shooterModel.Update(20_ms);
+  m_sim_state->m_leadShooterSim.GetDouble("Velocity").Set(
+    m_sim_state->m_shooterModel.GetAngularVelocity()
+      .convert<units::revolutions_per_minute>().value()
+  );
+  m_sim_state->m_followerShooterSim.GetDouble("Velocity").Set(
+    m_sim_state->m_shooterModel.GetAngularVelocity()
+      .convert<units::revolutions_per_minute>().value()
+  );
+  m_sim_state->m_leadShooterSim.GetDouble("Motor Current").Set(
+    m_sim_state->m_shooterModel.GetCurrentDraw().value()
+  );
+
+  // Simulate arm
+  m_sim_state->m_aimMotorSim.SetBusVoltage(
+    frc::RobotController::GetBatteryVoltage().value());
+  
+  m_sim_state->m_armModel.SetInputVoltage(
+    units::volt_t{m_sim_state->m_aimMotorSim.GetMotorOutputLeadVoltage()}
+  );
+  m_sim_state->m_armModel.Update(20_ms);
+
+  const units::degree_t arm_angle{m_sim_state->m_armModel.GetAngle()};
+  const auto sensor_angle_reading = 
+    kMinAimSensor + kAngleToSensor*(arm_angle - kMinAngle);
+  m_sim_state->m_aimMotorSim.SetAnalogPosition(sensor_angle_reading);
+
+  // Talon expects speed in terms of "sensor units per 100ms"
+  // hence multiplying by 100_ms
+  const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
+  const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
+  m_sim_state->m_aimMotorSim.SetAnalogVelocity(sensor_speed_reading);
+  m_sim_state->m_aimMotorSim.SetLimitFwd(
+    m_sim_state->m_armModel.HasHitUpperLimit()
+  );
+  m_sim_state->m_aimMotorSim.SetLimitRev(
+    m_sim_state->m_armModel.HasHitLowerLimit()
+  );
+  m_sim_state->m_aimMotorSim.SetSupplyCurrent(
+    m_sim_state->m_armModel.GetCurrentDraw().value()
   );
 }
