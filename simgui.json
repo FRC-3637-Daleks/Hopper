@@ -24,14 +24,20 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "FL": {
-          "open": true
+        "Climb": {
+          "open": true,
+          "sim": {
+            "open": true
+          }
         },
-        "Swerve": {
+        "FL": {
           "open": true
         },
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }

@@ -51,6 +51,10 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
+  auto climb = [this] () -> double { return m_driverController.GetRightY(); };
+
+  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
+
 }
 
 
