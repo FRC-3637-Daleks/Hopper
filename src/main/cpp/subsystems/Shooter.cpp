@@ -19,8 +19,8 @@ class ShooterSimulation
 {
 public:
   ShooterSimulation(Shooter &shooter):
-    m_leadShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelLeadMotorPort},
-    m_followerShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelFollowMotorPort},
+    m_leadShooterSim{"SPARK Flex ", ShooterConstants::kFlywheelLeadMotorPort},
+    m_followerShooterSim{"SPARK Flex ", ShooterConstants::kFlywheelFollowMotorPort},
     m_aimMotorSim{shooter.m_pivot.GetSimCollection()},
     m_shooterModel{frc::DCMotor::NeoVortex(1), 1, ShooterConstants::kWheelMoment},
     m_armModel{

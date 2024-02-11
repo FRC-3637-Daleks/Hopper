@@ -4,8 +4,12 @@
 
 #pragma once
 
+#include <units/moment_of_inertia.h>
+#include <units/torque.h>
+#include <units/angle.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DigitalInput.h>
+#include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/StartEndCommand.h>
@@ -21,6 +25,9 @@
 
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+#include <memory>
+#include <numbers>
 
 namespace IntakeConstants {
     //Moter IDs
@@ -39,6 +46,9 @@ namespace IntakeConstants {
     constexpr int IntakeArmIntakePos = 1;
     constexpr int IntakeArmAMPPos = 2;
     constexpr int IntakeArmSpeakerPos = 3;
+
+    constexpr bool kBeamBroken = true;
+    constexpr bool kBeamClear = false;
 
     //something to do with the type of PID loop
     constexpr int kPIDLoopIdx = 0;
@@ -60,14 +70,46 @@ namespace IntakeConstants {
     constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
     constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
     constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
+    
+    //physical characteristics
+    constexpr auto kWheelMoment = 0.001_kg_sq_m;
+    constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
+    constexpr auto kArmMass = 25_lb;
+    constexpr auto kArmRadius = 13_in;
+    constexpr auto kWheelDiameter = 1.5_in;  //< Verify this
+    constexpr auto kWheelCircum = kWheelDiameter*std::numbers::pi/1_tr;
+    constexpr double kArmGearing = 4.0;
+    //you can play with the leading constant to get the dynamics you want
+    constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
+    constexpr bool kGravityCompensation = false;  // true if there's a gas spring
+
+    // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
+    constexpr auto kMinAngle = -30_deg;
+    constexpr auto kMaxAngle = 160_deg;
+
+    // TODO: MEASURE THESE
+    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle
+    constexpr int kArmSensorFullRetract = 1000;  // corresponds to kMaxAngle
+    constexpr auto kAngleToSensor = 
+      (kArmSensorFullRetract - kArmSensorFullExtend) /
+      (kMaxAngle - kMinAngle);
+    constexpr auto kIntakeLength = 13.0_in;
+    constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
 
 }
+
+class IntakeSimulation;  // forward declaration
 
 class Intake : public frc2::SubsystemBase {
  public:
 
 
   Intake();
+  ~Intake();
+
+  void SimulationPeriodic() override;
+
+  void Periodic() override;
 
   /**
    * Sets the arm position to the intake position
@@ -156,8 +198,6 @@ class Intake : public frc2::SubsystemBase {
   bool IsAtSpeaker();
   bool IsAtIntake();
 
- private:
-
   /**
    * The motor used to run the intake.
   */
@@ -168,11 +208,6 @@ class Intake : public frc2::SubsystemBase {
   */
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmMotorPort};
 
-  /**
-   * The goal position of the arm used for some functions
-  */
-  int goal;
-
   /** Defines some digital inputs
    * Defines limitswitch used on the intake
    * Defines breakbeam used on the intake
@@ -180,4 +215,22 @@ class Intake : public frc2::SubsystemBase {
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
   frc::DigitalInput m_shooterBreakBeam{IntakeConstants::kShooterBreakBeamPort};
+
+ private:
+
+  /**
+   * The goal position of the arm used for some functions
+  */
+  int goal;
+
+private:
+  friend class IntakeSimulation;
+  std::unique_ptr<IntakeSimulation> m_sim_state;
+
+public:
+  /* For simulation only. This allows the higher level simulation
+   * to tell the intake simulation when a Note is at the spot where intake
+   * will pick it up. (for example when robot is facing feeder station)
+  */
+  void SimulateNotePickup();
 };

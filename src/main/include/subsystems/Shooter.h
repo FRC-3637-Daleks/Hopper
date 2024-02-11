@@ -144,9 +144,9 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  frc::DigitalInput m_intakeBreakBeam{0};
+  frc::DigitalInput m_intakeBreakBeam{3};
 
-  frc::DigitalInput m_flywheelBreakBeam{1};
+  frc::DigitalInput m_flywheelBreakBeam{4};
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;
