@@ -13,6 +13,7 @@
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/system/plant/DCMotor.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -26,6 +27,7 @@
 
 namespace ClimbConstants {
     // Guess values to make sim work
+    constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
     constexpr double kClimbGearReduction = 1.0 / 4.0;
     constexpr auto kClimbMass = 50_kg;
     constexpr auto kClimbDrumRadius = 3_in;

@@ -18,7 +18,7 @@ public:
         m_bottomLimitSwitchSim{climb.m_climbBottom},
         m_topLimitSwitchSim{climb.m_climbTop},
         m_climbModel{
-            frc::DCMotor::Andymark9015(1),
+            ClimbConstants::kWindowMotor,
             ClimbConstants::kClimbGearReduction,
             ClimbConstants::kClimbMass,
             ClimbConstants::kClimbDrumRadius,
