@@ -4,11 +4,6 @@
 
 #include "RobotContainer.h"
 
-#include <pathplanner/lib/auto/AutoBuilder.h>
-#include <pathplanner/lib/path/PathPlannerPath.h>
-#include <pathplanner/lib/commands/PathPlannerAuto.h>
-#include <pathplanner/lib/auto/NamedCommands.h>
-
 #include <units/math.h>
 
 #include <frc2/command/button/Trigger.h>
@@ -97,17 +92,22 @@ void RobotContainer::ConfigureBindings() {
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
-      frc::Pose2d MidFarL(7.0_m, 7.40_m, 0_deg);
-      frc::Pose2d MidL(7.0_m, 5.75_m, 0_deg);
-      frc::Pose2d MidCenter(7.0_m, 4.1_m, 0_deg);
-      frc::Pose2d MidR(7.0_m, 2.45_m, 0_deg);
-      frc::Pose2d MidFarR(7.0_m, 0.75_m, 0_deg);
 
-      frc::Pose2d CloseL(1.6_m, 5.55_m, 0_deg);
-      frc::Pose2d CloseCenter(1.6_m, 7.0_m, 0_deg);
-      frc::Pose2d CloseR(1.6_m, 4.1_m, 0_deg);
+      pathplanner::PathPoint MidFarL({7.0_m, 7.40_m});
+      pathplanner::PathPoint MidL({7.0_m, 5.75_m});
+      pathplanner::PathPoint MidCenter({7.0_m, 4.1_m});
+      pathplanner::PathPoint MidR({7.0_m, 2.45_m});
+      pathplanner::PathPoint MidFarR({7.0_m, 0.75_m});
 
-    
+      pathplanner::PathPoint CloseL({1.6_m, 5.55_m});
+      pathplanner::PathPoint CloseCenter({1.6_m, 7.0_m});
+      pathplanner::PathPoint CloseR({1.6_m, 4.1_m});
+
+      pathplanner::NamedCommands::registerCommand("RevShooter", frc2::cmd::Print("Revving Shooter"));
+      pathplanner::NamedCommands::registerCommand("ShootNote", frc2::cmd::Print("Shooting Note"));
+      pathplanner::NamedCommands::registerCommand("RevIntake", frc2::cmd::Print("Revving Intake"));
+      pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
+      
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
   m_swerveController.RightBumper().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
   // m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));

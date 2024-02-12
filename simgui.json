@@ -53,7 +53,7 @@
             255.0
           ],
           "length": 0.6859999895095825,
-          "style": "Box/Image",
+          "style": "Track",
           "weight": 3.0
         },
         "bottom": 544,
@@ -80,6 +80,7 @@
           "weight": 2.0
         },
         "top": 36,
+        "units": "inches",
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -90,9 +91,6 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Swerve": {
-          "open": true
-        },
         "open": true
       }
     }

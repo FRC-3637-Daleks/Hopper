@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.75,
+        "y": 6.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8715608929078047,
+        "y": 7.530067898937509
+      },
+      "isLocked": false,
+      "linkedName": "LeftSub"
+    },
+    {
+      "anchor": {
+        "x": 2.0,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 1.6536338921465275,
+        "y": 5.305008955239023
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCloseNoteR"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "LeftSub to PrepIntakeClose",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

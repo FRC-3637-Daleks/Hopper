@@ -10,6 +10,10 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -29,8 +33,6 @@ namespace AutoConstants {
 
 constexpr auto kMaxSpeed = 2_mps;
 constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
-
-
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -46,7 +48,7 @@ constexpr double kPThetaController = 0.5;
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
 
-
+constexpr pathplanner::PathConstraints DefaultConstraints(AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration, AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
 
 
 

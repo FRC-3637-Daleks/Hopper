@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 5.0,
-      "y": 7.5
+      "x": 1.4,
+      "y": 7.0
     },
     "rotation": 0
   },
@@ -14,7 +14,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HopperTest2"
+            "pathName": "Start to LeftSub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSub to PrepIntakeCloseL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PrepIntakeCloseL to IntakeCloseL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCloseL to CenterSub"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterSub to PrepIntakeCenterL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PrepIntakeCenterL to IntakeCenterL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterL to RightSub"
           }
         }
       ]

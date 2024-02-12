@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.95,
+        "y": 2.44
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.935229870459742,
+        "y": 4.657197006701706
+      },
+      "isLocked": false,
+      "linkedName": "IntakeCenterNoteR"
+    },
+    {
+      "anchor": {
+        "x": 0.75,
+        "y": 6.6
+      },
+      "prevControl": {
+        "x": 2.517828881811611,
+        "y": 7.4988765362146115
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LeftSub"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -120.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "IntakeCenter to LeftSub",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
