@@ -10,6 +10,7 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/smartdashboard/Mechanism2d.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -98,5 +99,10 @@ class RobotContainer {
   Drivetrain m_swerve;
   Intake m_intake;
 
+  // Global Dashboard Items
+  frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
+
+public:
   void ConfigureBindings();
+  void ConfigureDashboard();
 };

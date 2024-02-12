@@ -14,6 +14,9 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureBindings();
+
+  // Configure Dashboard
+  ConfigureDashboard();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -51,6 +54,13 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
+}
+
+void RobotContainer::ConfigureDashboard()
+{
+  m_intake.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
 }
 
 

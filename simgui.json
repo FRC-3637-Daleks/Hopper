@@ -28,7 +28,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Mechanisms": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -39,6 +40,11 @@
         "right": 1088,
         "top": 36,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Mechanisms": {
         "window": {
           "visible": true
         }
