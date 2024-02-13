@@ -38,8 +38,23 @@ public:
 };
 
 Climb::Climb():
-    m_sim_state{new ClimbSimulation(*this)}
- {}
+    m_sim_state{new ClimbSimulation(*this)} {
+
+  m_climbMotor.ConfigFactoryDefault();
+
+  m_climbMotor.SetInverted(false);
+//   m_climbMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+
+  m_climbMotor.SetSelectedSensorPosition(0, ClimbConstants::kPIDLoopIdx, ClimbConstants::kTimeoutMs);
+  m_climbMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, ClimbConstants::kPIDLoopIdx, ClimbConstants::kTimeoutMs);
+  m_climbMotor.SetSensorPhase(false);
+
+  //Configure Minimum and Maximum outputs.
+  m_climbMotor.ConfigNominalOutputForward(0.0, ClimbConstants::kTimeoutMs);
+  m_climbMotor.ConfigNominalOutputReverse(0.0, ClimbConstants::kTimeoutMs);
+  m_climbMotor.ConfigPeakOutputForward(1.0, ClimbConstants::kTimeoutMs);
+  m_climbMotor.ConfigPeakOutputReverse(-1.0, ClimbConstants::kTimeoutMs);
+}
 
 Climb::~Climb() {}
 
@@ -53,14 +68,6 @@ void Climb::SimulationPeriodic() {
 
     m_sim_state->m_motorSim.SetAnalogPosition(m_sim_state->m_climbModel.GetPosition() / ClimbConstants::kMotorEncoderDistancePerCount / 1_m);
     m_sim_state->m_motorSim.SetAnalogVelocity(m_sim_state->m_climbModel.GetVelocity() / ClimbConstants::kMotorEncoderDistancePerCount / 1_mps * 100_ms / 1_ms);
-
-    m_sim_state->m_motorSim.SetLimitFwd(
-        m_sim_state->m_climbModel.HasHitUpperLimit()
-    );
-
-    m_sim_state->m_motorSim.SetLimitRev(
-        m_sim_state->m_climbModel.HasHitLowerLimit()
-    );
 
     m_sim_state->m_motorSim.SetSupplyCurrent(
         m_sim_state->m_climbModel.GetCurrentDraw().value()
@@ -83,32 +90,25 @@ void Climb::SimulationPeriodic() {
 }
 
 frc2::CommandPtr Climb::ClimbCommand(std::function<double()> input) {
-    frc::SmartDashboard::PutNumber("Climb Input: ", input());
-    frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
-    frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
-    return frc2::cmd::RunEnd([this, input] {
-            m_climbMotor.Set(input());
+    return frc2::cmd::Run(
+        [this, input] {
             frc::SmartDashboard::PutNumber("Climb Input: ", input());
-        }, [this] () {
-             m_climbMotor.Set(0);
-             frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
-             frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
-        }, {this})
-        .Until([this, input] () -> bool {
-            return ( 
-            ((input() > 0.0)/*when going up*/ &&/*and*/ (m_climbTop.Get())/*max out*/) /*stop*/
-            || /*or*/ ((input() < 0.0)/*when going down*/ &&/*and*/ (m_climbBottom.Get())/*hit bottom*/) /*stop*/
-            );
-        });
+            frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
+            frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
+            if (((input() > 0.0) && (m_climbTop.Get())) || ((input() < 0.0) && (m_climbBottom.Get()))) {
+                m_climbMotor.Set(0.0);
+            } else{
+                m_climbMotor.Set(input());
+            }
+        }, {this}
+    );
 }
 
 frc2::CommandPtr Climb::ExtendClimb() {
-    //return Run([this] {m_climbMotor.Set(1);});
-
     frc::SmartDashboard::PutNumber("Climb Input: ", 1);
     frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
     frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
-    return frc2::cmd::RunEnd([this] {
+    return frc2::cmd::StartEnd([this] {
             m_climbMotor.Set(1);
         }, [this] () {
              m_climbMotor.Set(0);
@@ -116,22 +116,15 @@ frc2::CommandPtr Climb::ExtendClimb() {
              frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
         }, {this})
         .Until([this] () -> bool {
-            return (m_climbBottom.Get() || m_climbTop.Get());
+            return (m_climbTop.Get());
         });
-    // return frc2::ConditionalCommand(
-    //     frc2::cmd::Run([this] {m_climbMotor.Set(1);}),
-    //     frc2::cmd::Run([this] {m_climbMotor.Set(0);}),
-    //     [this] () -> bool {return (m_climbBottom.Get() && m_climbTop.Get());}
-    // ).ToPtr();
-
 }
 
 frc2::CommandPtr Climb::RetractClimb() {
-    //return Run([this] {m_climbMotor.Set(-1);});
     frc::SmartDashboard::PutNumber("Climb Input: ", -1);
     frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
     frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
-    return frc2::cmd::RunEnd([this] {
+    return frc2::cmd::StartEnd([this] {
             m_climbMotor.Set(-1);
         }, [this] () {
              m_climbMotor.Set(0);
@@ -139,18 +132,12 @@ frc2::CommandPtr Climb::RetractClimb() {
              frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
         }, {this})
         .Until([this] () -> bool {
-            return (m_climbBottom.Get() || m_climbTop.Get());
-        });
-
-    // return frc2::ConditionalCommand(
-    //                                 frc2::CommandPtr([this] {m_climbMotor.Set(-1);}),
-    //                                 frc2::CommandPtr([this] {m_climbMotor.Set(0);}),
-    //                                 [this] () -> bool {return (m_climbBottom.Get() && m_climbTop.Get());});
-                        
+            return (m_climbBottom.Get());
+        });                
 }
 
 
-//frc2::CommandPtr Climb::StopClimb() {
-//    return Run([this] {m_climbMotor.Set(0);});
-//}
+frc2::CommandPtr Climb::StopClimb() {
+   return Run([this] {m_climbMotor.Set(0);});
+}
 

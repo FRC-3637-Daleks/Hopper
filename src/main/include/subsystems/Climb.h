@@ -25,23 +25,27 @@
 #include <units/moment_of_inertia.h>
 #include <units/mass.h>
 
+#include <numbers>
+
 namespace ClimbConstants {
     // Guess values to make sim work
     constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
-    constexpr double kClimbGearReduction = 1.0 / 4.0;
-    constexpr auto kClimbMass = 50_kg;
-    constexpr auto kClimbDrumRadius = 3_in;
-    constexpr auto kClimbStartingHeight = 2_ft + 4_in;
-    constexpr auto kClimbMaxHeight = 2_ft + 6_in;
+    constexpr double kClimbGearReduction = 72.0 / 18.0;
+    constexpr auto kClimbMass = 100_lb; // Weight of the Robot.
+    constexpr auto kClimbDrumRadius = 2_in;
+    constexpr auto kClimbStartingHeight = 0_in;
+    constexpr auto kClimbMaxHeight = 2_in;
 
     constexpr int kClimbMotorPort = 18;
     constexpr int kClimbBottomLimitSwitch = 5;
     constexpr int kClimbTopLimitSwitch = 6;
 
-    constexpr double kDistancePerRevolution = 10; // Guess value to make sim work
+    constexpr double kDistancePerRevolution = kClimbDrumRadius * std::numbers::pi / 1_in; // Guess value to make sim work
     constexpr double kClimbMotorCPR = 1023 * kClimbGearReduction;
     constexpr double kMotorEncoderDistancePerCount =  kDistancePerRevolution / kClimbMotorCPR;
     
+    constexpr int kTimeoutMs = 20; // in ms.
+    constexpr int kPIDLoopIdx = 0;
 };
 
 class ClimbSimulation;
