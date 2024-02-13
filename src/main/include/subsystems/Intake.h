@@ -43,8 +43,8 @@ namespace IntakeConstants {
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
     constexpr int IntakeArmIntakePos = 10;
-    constexpr int IntakeArmAMPPos = 2048;
-    constexpr int IntakeArmSpeakerPos = 4096;
+    constexpr int IntakeArmAMPPos = 500; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
+    constexpr int IntakeArmSpeakerPos = 1000;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
@@ -57,9 +57,9 @@ namespace IntakeConstants {
 
     //pid configurations
     constexpr int kF = 0.0;
-    constexpr int kP = 0.0;
+    constexpr int kP = 1.0;
     constexpr int kI = 0.0;
-    constexpr int kD = 10.0;
+    constexpr int kD = 0.0;
 
     //margin of error for detecting if arm is in specific spot
     constexpr int kAllowableMarginOfError = 1;
@@ -73,14 +73,14 @@ namespace IntakeConstants {
     //physical characteristics
     constexpr auto kWheelMoment = 0.001_kg_sq_m;
     constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
-    constexpr auto kArmMass = 25_lb;
+    constexpr auto kArmMass = 12_lb;
     constexpr auto kArmRadius = 13_in;
     constexpr auto kWheelDiameter = 1.5_in;  //< Verify this
     constexpr auto kWheelCircum = kWheelDiameter*std::numbers::pi/1_tr;
     constexpr double kArmGearing = 4.0;
     //you can play with the leading constant to get the dynamics you want
     constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
-    constexpr bool kGravityCompensation = false;  // true if there's a gas spring
+    constexpr bool kGravityCompensation = true;  // true if there's a gas spring
 
     // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
     constexpr auto kMinAngle = -30_deg;
@@ -143,6 +143,9 @@ class Intake : public frc2::SubsystemBase {
    * Set intake to spin backwards to spit out a game piece
   */
   frc2::CommandPtr IntakeOut();
+
+  // Keep intake Idle if no buttons are pressed
+  frc2::CommandPtr IdleIntakeCommand();
 
   /** Changes the direction of the moter
     * Makes the moter spin backwards (spitting game peice out)

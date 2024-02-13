@@ -48,7 +48,8 @@ Intake::Intake():
   m_arm.SetSelectedSensorPosition(0 /*starting position*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
   m_arm.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
   //I think this sets the direction of the sensor, not too sure
-  m_arm.SetSensorPhase(true/*idk if correct*/);
+  m_arm.SetSensorPhase(false/*idk if correct*/);
+  // m_arm.SetInverted(false);
 
   //something with power or something
   m_arm.ConfigNominalOutputForward(0.0, IntakeConstants::kTimeoutMs);
@@ -212,6 +213,10 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand() {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand() {
   return Run([this] {IntakeArmIntake();})
   .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IdleIntakeCommand() {
+  return frc2::cmd::None();
 }
 
 bool Intake::GetStateLimitSwitchIntake() {

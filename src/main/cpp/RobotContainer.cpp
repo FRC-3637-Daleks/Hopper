@@ -79,6 +79,7 @@ void RobotContainer::ConfigureBindings() {
   m_intake.SetDefaultCommand(
     frc2::cmd::Select<int>(
       position,
+      std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand()},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand()},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand()}
