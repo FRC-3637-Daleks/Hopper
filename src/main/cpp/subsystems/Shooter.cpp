@@ -53,11 +53,6 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
   m_pivot.SetSensorPhase(true);
 
-  m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigPeakOutputReverse(1.0, ShooterConstants::kTimeoutMs);
-  
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, ShooterConstants::kIPivot, ShooterConstants::kTimeoutMs);
