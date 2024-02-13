@@ -66,9 +66,6 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 //Motors following + leading
 
   m_followMotor.Follow(m_leadMotor);
-
- 
-
 }
 
 Shooter::~Shooter() {}

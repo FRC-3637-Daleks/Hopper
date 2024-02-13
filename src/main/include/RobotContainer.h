@@ -52,9 +52,8 @@ const frc::TrapezoidProfile<units::radians>::Constraints
 
 namespace OperatorConstants {
 
-constexpr int kDriverControllerPort = 1;
+constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
-constexpr int kInputControllerPort = 1;
 
 constexpr double kDeadband = 0.08;
 
@@ -91,14 +90,11 @@ class RobotContainer {
 
  public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_copilotController{
+      OperatorConstants::kCopilotControllerPort};
 
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
-
-  frc2::CommandXboxController m_intakeController{
-      OperatorConstants::kInputControllerPort};
 
   // The robot's subsystems are defined here...
   

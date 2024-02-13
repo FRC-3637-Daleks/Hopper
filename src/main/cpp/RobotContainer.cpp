@@ -61,48 +61,35 @@ void RobotContainer::ConfigureBindings() {
       
   //Configure Shooter Bindings.
   auto flywheel = [this] () -> double {
-    return m_driverController.GetRightTriggerAxis();
+    return m_copilotController.GetRightTriggerAxis();
   };
 
   auto pivot = [this] () -> units::degree_t {
     return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
-            frc::ApplyDeadband(m_driverController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
+            frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
   };
 
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
 
   // Configure Intake Bindings.
   auto position = [this]() -> int {
-    return m_driverController.GetPOV();
+    return m_copilotController.GetPOV();
   };
 
   m_intake.SetDefaultCommand(
     frc2::cmd::Select<int>(
       position,
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeRing()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.ShootOnAMP()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.OutputToShooter()}
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand()}
     )
   );
 
-  m_driverController.A()
+  m_copilotController.A()
     .WhileTrue(m_intake.IntakeIn());
     
-  m_driverController.B()
+  m_copilotController.B()
     .WhileTrue(m_intake.IntakeOut());
-
-
-  // Extra controller for testing commands in Sim.
-  
-  m_intakeController.A()
-      .OnTrue(m_intake.IntakeArmAMPCommand());
-  
-  m_intakeController.Y()
-      .OnTrue(m_intake.IntakeArmSpeakerCommand());
-
-  m_intakeController.B()
-      .OnTrue(m_intake.IntakeArmIntakeCommand());
-
 }
 
 
