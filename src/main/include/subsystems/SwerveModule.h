@@ -88,7 +88,7 @@ public:
   // Combines GetModuleVelocity() and GetModuleHeading().
   frc::SwerveModuleState GetState();
 
-  void SteerCoastMode(bool coast);
+  void CoastMode(bool coast);
 
   void SetEncoderOffset();
   

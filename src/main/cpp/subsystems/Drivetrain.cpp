@@ -143,11 +143,11 @@ void Drivetrain::SyncEncoders(){
   m_rearRight.SyncEncoders();
 }
 
-void Drivetrain::SteerCoastMode(bool coast){
-  m_frontLeft.SteerCoastMode(coast);
-  m_frontRight.SteerCoastMode(coast);
-  m_rearLeft.SteerCoastMode(coast);
-  m_rearRight.SteerCoastMode(coast);
+void Drivetrain::CoastMode(bool coast){
+  m_frontLeft.CoastMode(coast);
+  m_frontRight.CoastMode(coast);
+  m_rearLeft.CoastMode(coast);
+  m_rearRight.CoastMode(coast);
 }
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
   return -m_gyro.GetRate() * 1_deg_per_s;
@@ -330,20 +330,20 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
   }).IgnoringDisable(true);
 }
 
-frc2::CommandPtr Drivetrain::SteerCoastModeCommand(bool coast){
+frc2::CommandPtr Drivetrain::CoastModeCommand(bool coast){
   return this->RunOnce([&]{
-    SteerCoastMode(coast);
+    CoastMode(coast);
   }).IgnoringDisable(true);
 }
 
 frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
   return this->StartEnd([&] {
     fmt::print("insdie the configabscommand ********* ");
-    SteerCoastMode(true);
+    CoastMode(true);
     ZeroAbsEncoders();
   },
   [&] {
-    SteerCoastMode(false);
+    CoastMode(false);
     SetAbsEncoderOffset();
    })
    .AndThen(frc2::WaitCommand(0.5_s).ToPtr())

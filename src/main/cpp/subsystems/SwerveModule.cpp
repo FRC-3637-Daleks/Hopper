@@ -184,14 +184,21 @@ frc::SwerveModuleState SwerveModule::GetState() {
   return {GetModuleVelocity(), GetModuleHeading()};
 }
 
-void SwerveModule::SteerCoastMode(bool coast){
-  ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
-  coast
-    ? steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast)
-    : steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+void SwerveModule::CoastMode(bool coast){
+  ctre::phoenix6::configs::MotorOutputConfigs SteerOutputConfigs;
+  ctre::phoenix6::configs::MotorOutputConfigs DriveOutputConfigs;
+  if (coast){
+    SteerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+    DriveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+  }
+  else{
+    SteerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+    DriveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  }
 
-  steerOutputConfigs.WithInverted(true);
-  m_steerMotor.GetConfigurator().Apply(steerOutputConfigs,50_ms);
+  SteerOutputConfigs.WithInverted(true);
+  m_steerMotor.GetConfigurator().Apply(SteerOutputConfigs,50_ms);
+  m_driveMotor.GetConfigurator().Apply(DriveOutputConfigs,50_ms);
 }
 
 
