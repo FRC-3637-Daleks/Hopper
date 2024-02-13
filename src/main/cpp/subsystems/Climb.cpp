@@ -94,8 +94,11 @@ frc2::CommandPtr Climb::ClimbCommand(std::function<double()> input) {
              frc::SmartDashboard::PutBoolean("Climb Top Limit: ", m_climbTop.Get());
              frc::SmartDashboard::PutBoolean("Climb Bottom Limit: ", m_climbBottom.Get());
         }, {this})
-        .Until([this] () -> bool {
-            return (m_climbBottom.Get() || m_climbTop.Get());
+        .Until([this, input] () -> bool {
+            return ( 
+            ((input() > 0.0)/*when going up*/ &&/*and*/ (m_climbTop.Get())/*max out*/) /*stop*/
+            || /*or*/ ((input() < 0.0)/*when going down*/ &&/*and*/ (m_climbBottom.Get())/*hit bottom*/) /*stop*/
+            );
         });
 }
 
