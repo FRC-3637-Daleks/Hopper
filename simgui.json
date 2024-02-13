@@ -22,7 +22,12 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Intake": {
+        "Climb": {
+          "sim": {
+            "open": true
+          }
+        },
+        "Shooter": {
           "open": true
         },
         "open": true

@@ -77,7 +77,7 @@ Intake::Intake():
 }
 
 void Intake::Periodic() {
-  frc::SmartDashboard::PutNumber("Intake/Goal", goal);
+  frc::SmartDashboard::PutNumber("Intake/Goal", m_goal);
   frc::SmartDashboard::PutNumber("Intake/Intake Motor Percent Out", m_intake.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Percent Out", m_arm.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Position", m_arm.GetSelectedSensorPosition());
@@ -184,19 +184,19 @@ void Intake::OutputAMPIntake() {
 
 void Intake::IntakeArmAMP() {
   m_goal = IntakeConstants::IntakeArmAMPPos;
-  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  frc::SmartDashboard::PutNumber("Intake/Goal", m_goal);
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmAMPPos);
 }
 
 void Intake::IntakeArmSpeaker() {
   m_goal = IntakeConstants::IntakeArmSpeakerPos;
-  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  frc::SmartDashboard::PutNumber("Intake/Goal", m_goal);
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmSpeakerPos);
 }
 
 void Intake::IntakeArmIntake() {
   m_goal = IntakeConstants::IntakeArmIntakePos;
-  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  frc::SmartDashboard::PutNumber("Intake/Goal", m_goal);
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmIntakePos);
 }
 

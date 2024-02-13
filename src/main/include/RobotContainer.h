@@ -24,6 +24,7 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Climb.h"
 
 
 namespace AutoConstants {
@@ -101,6 +102,7 @@ class RobotContainer {
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
+  Climb m_climb;
 
   void ConfigureBindings();
 };

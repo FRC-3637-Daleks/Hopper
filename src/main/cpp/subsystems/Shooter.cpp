@@ -153,11 +153,11 @@ frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInpu
 }
 
 frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> angle) {
-  return frc2::cmd::RunOnce(
+  return frc2::cmd::Run(
     [this, angle] () {
       SetPivotMotor(ToTalonUnits(angle()));
 
-      fmt::print("inside pivot angle command {}", angle());
+      //fmt::print("inside pivot angle command {}\n", angle());
     }, {this}
   );
 }
