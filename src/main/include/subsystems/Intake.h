@@ -43,9 +43,9 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 1;
-    constexpr int IntakeArmAMPPos = 2;
-    constexpr int IntakeArmSpeakerPos = 3;
+    constexpr int IntakeArmIntakePos = 10;
+    constexpr int IntakeArmAMPPos = 2048;
+    constexpr int IntakeArmSpeakerPos = 4096;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;

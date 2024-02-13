@@ -57,7 +57,7 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigPeakOutputReverse(1.0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
   
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
@@ -210,13 +210,13 @@ void Shooter::SimulationPeriodic()
 
   const units::degree_t arm_angle{m_sim_state->m_armModel.GetAngle()};
   const auto sensor_angle_reading = 
-    kMinAimSensor + kAngleToSensor*(arm_angle - kMinAngle);
+    kMinAimSensor + kAngleToSensor * (arm_angle - kMinAngle);
   m_sim_state->m_aimMotorSim.SetAnalogPosition(sensor_angle_reading);
 
   // Talon expects speed in terms of "sensor units per 100ms"
   // hence multiplying by 100_ms
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
-  const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
+  const auto sensor_speed_reading = arm_speed * kAngleToSensor * 100_ms;
   m_sim_state->m_aimMotorSim.SetAnalogVelocity(sensor_speed_reading);
   m_sim_state->m_aimMotorSim.SetLimitFwd(
     m_sim_state->m_armModel.HasHitUpperLimit()
@@ -227,4 +227,7 @@ void Shooter::SimulationPeriodic()
   m_sim_state->m_aimMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );
+
+  frc::SmartDashboard::PutNumber("Shooter/Analog Position", sensor_angle_reading.value());
+  frc::SmartDashboard::PutNumber("Shooter/Analog Velocity", sensor_speed_reading.value());
 }
