@@ -39,7 +39,6 @@ namespace IntakeConstants {
 
     //breakbeam
     constexpr int kBreakbeamPort = 1;
-    constexpr int kShooterBreakBeamPort = 2;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
@@ -60,7 +59,7 @@ namespace IntakeConstants {
     constexpr int kF = 0.0;
     constexpr int kP = 0.0;
     constexpr int kI = 0.0;
-    constexpr int kD = 0.0;
+    constexpr int kD = 10.0;
 
     //margin of error for detecting if arm is in specific spot
     constexpr int kAllowableMarginOfError = 1;
@@ -95,7 +94,6 @@ namespace IntakeConstants {
       (kMaxAngle - kMinAngle);
     constexpr auto kIntakeLength = 13.0_in;
     constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
-
 }
 
 class IntakeSimulation;  // forward declaration
@@ -139,6 +137,8 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr IntakeIn();
 
+  frc2::CommandPtr AutoIntake();
+
   /**
    * Set intake to spin backwards to spit out a game piece
   */
@@ -174,14 +174,17 @@ class Intake : public frc2::SubsystemBase {
   void IntakeArmSpeaker();
   void IntakeArmIntake();
 
+  frc2::CommandPtr IntakeArmAMPCommand();
+  frc2::CommandPtr IntakeArmSpeakerCommand();
+  frc2::CommandPtr IntakeArmIntakeCommand();
+
   /** Gets the state of Limit switches and break beams for intake
   * Gets the state of the limit switch for the intake
   * Gets the state of the break beam for the intake
   */
   bool GetStateLimitSwitchIntake();  
-  bool GetStateBreakBeamIntake();
-  bool GetStateShooterBeamIntake();
 
+  bool GetStateBreakBeamIntake();
 
   /** 
   * Gets the difference between were the arm is going and were it is 
@@ -208,13 +211,17 @@ class Intake : public frc2::SubsystemBase {
   */
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmMotorPort};
 
+  /**
+   * The goal position of the arm used for some functions
+  */
+  int m_goal;
+
   /** Defines some digital inputs
    * Defines limitswitch used on the intake
    * Defines breakbeam used on the intake
   */
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
-  frc::DigitalInput m_shooterBreakBeam{IntakeConstants::kShooterBreakBeamPort};
 
  private:
 
@@ -222,7 +229,6 @@ class Intake : public frc2::SubsystemBase {
    * The goal position of the arm used for some functions
   */
   int goal;
-
 private:
   friend class IntakeSimulation;
   std::unique_ptr<IntakeSimulation> m_sim_state;

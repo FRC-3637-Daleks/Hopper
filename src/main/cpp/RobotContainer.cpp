@@ -90,6 +90,19 @@ void RobotContainer::ConfigureBindings() {
     
   m_driverController.B()
     .WhileTrue(m_intake.IntakeOut());
+
+
+  // Extra controller for testing commands in Sim.
+  
+  m_intakeController.A()
+      .OnTrue(m_intake.IntakeArmAMPCommand());
+  
+  m_intakeController.Y()
+      .OnTrue(m_intake.IntakeArmSpeakerCommand());
+
+  m_intakeController.B()
+      .OnTrue(m_intake.IntakeArmIntakeCommand());
+
 }
 
 

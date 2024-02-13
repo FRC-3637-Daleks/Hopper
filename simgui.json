@@ -20,7 +20,25 @@
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
+      "FMSInfo": {
+        "open": true
+      },
+      "LiveWindow": {
+        ".status": {
+          "open": true
+        },
+        "open": true
+      },
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "Intake": {
           "open": true,
@@ -28,14 +46,40 @@
             "open": true
           }
         },
+<<<<<<< HEAD
         "Shooter": {
           "open": true
+=======
+        "Intake": {
+          "open": true,
+          "sim": {
+            "open": true
+          }
+>>>>>>> origin/danield-wip
         },
         "open": true
       }
     }
   },
   "NetworkTables Info": {
+<<<<<<< HEAD
+=======
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+>>>>>>> origin/danield-wip
     "visible": true
   }
 }

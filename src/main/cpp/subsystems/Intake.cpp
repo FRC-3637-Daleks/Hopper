@@ -28,8 +28,8 @@ public:
 public:
   frc::sim::SimDeviceSim m_intakeMotorSim;
   ctre::phoenix::motorcontrol::TalonSRXSimCollection &m_armMotorSim;
-  frc::sim::DIOSim m_breakBeamSim;
   frc::sim::DIOSim m_limitSwitchSim;
+  frc::sim::DIOSim m_breakBeamSim;
 
   // models the physics of the components
   frc::sim::FlywheelSim m_intakeModel;
@@ -57,9 +57,21 @@ Intake::Intake():
   m_arm.ConfigPeakOutputReverse(-1.0, IntakeConstants::kTimeoutMs);
 
   m_arm.Config_kF(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kP(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kP(IntakeConstants::kPIDLoopIdx, IntakeConstants::kP, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kI, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kD, IntakeConstants::kTimeoutMs);
+
+  /**
+   * I am just pasting from documentation for this motion magic config and stuff
+  */
+
+  // set Motion Magic settings
+  m_arm.ConfigMotionCruiseVelocity(20); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_arm.ConfigMotionAcceleration(20); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
+
+  // periodic, run Motion Magic with slot 0 configs
+  m_arm.SelectProfileSlot(0, 0);
    
 }
 
@@ -130,6 +142,18 @@ Intake::~Intake() {}
  * variable and having a function that sees if GetArmDiffrence and current 
  * position has a diffrence of less or equal to kAllowableMarginOfError
 */
+/*
+_____
+*****
+-|    |
+*****
+-----
+*/
+
+frc2::CommandPtr Intake::AutoIntake() {
+  return Run([this] {OnIntake();}).Until([this] () -> bool {return (GetStateBreakBeamIntake()  || GetStateLimitSwitchIntake());});
+}
+
 void Intake::InvertIntake() {
   m_intake.SetInverted(true);
 }
@@ -158,18 +182,36 @@ void Intake::OutputAMPIntake() {
 }
 
 void Intake::IntakeArmAMP() {
-  goal = IntakeConstants::IntakeArmAMPPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmAMPPos);
+  m_goal = IntakeConstants::IntakeArmAMPPos;
+  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmAMPPos);
 }
 
 void Intake::IntakeArmSpeaker() {
-  goal = IntakeConstants::IntakeArmSpeakerPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmSpeakerPos);
+  m_goal = IntakeConstants::IntakeArmSpeakerPos;
+  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmSpeakerPos);
 }
 
 void Intake::IntakeArmIntake() {
-  goal = IntakeConstants::IntakeArmIntakePos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmIntakePos);
+  m_goal = IntakeConstants::IntakeArmIntakePos;
+  frc::SmartDashboard::PutNumber("Goal: ", m_goal);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmIntakePos);
+}
+
+frc2::CommandPtr Intake::IntakeArmAMPCommand() {
+  return Run([this] {IntakeArmAMP();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IntakeArmSpeakerCommand() {
+  return Run([this] {IntakeArmSpeaker();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IntakeArmIntakeCommand() {
+  return Run([this] {IntakeArmIntake();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
 }
 
 bool Intake::GetStateLimitSwitchIntake() {
@@ -180,12 +222,8 @@ bool Intake::GetStateBreakBeamIntake() {
   return m_breakbeam.Get();
 }
 
-bool Intake::GetStateShooterBeamIntake() {
-  return m_shooterBreakBeam.Get();
-}
-
 int Intake::GetArmDiffrence() {
-  return goal - m_arm.GetSelectedSensorPosition();
+  return m_goal - m_arm.GetSelectedSensorPosition();
 }
 
 bool Intake::IsAtAMP() {
