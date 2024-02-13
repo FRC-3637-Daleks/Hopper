@@ -31,13 +31,13 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 2_mps;
+constexpr auto kMaxSpeed = 1.5_mps;
 constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 180_rpm;
-constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kMaxAngularSpeed = 120_rpm;
+constexpr auto kMaxAngularAcceleration = 120_deg_per_s;
 
 // XXX Very untrustworthy placeholder values.
 constexpr double kPXController = 0.5;

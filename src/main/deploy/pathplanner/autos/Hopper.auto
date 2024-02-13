@@ -12,27 +12,15 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Start to LeftSub"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftSub to PrepIntakeCloseL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "PrepIntakeCloseL to IntakeCloseL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeCloseL to CenterSub"
           }
         },
         {
@@ -44,19 +32,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterSub to PrepIntakeCenterL"
+            "pathName": "LeftSub to PrepIntakeCloseL"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "PrepIntakeCenterL to IntakeCenterL"
+            "pathName": "PrepIntakeCloseL to IntakeCloseL"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterL to RightSub"
+            "pathName": "IntakeCloseL to LeftSub"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSub to PrepIntakeCloseR"
           }
         }
       ]
