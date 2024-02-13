@@ -91,6 +91,7 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-    "charconv": "cpp"
+    "charconv": "cpp",
+    "*.inc": "cpp"
   }
 }

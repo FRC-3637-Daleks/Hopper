@@ -99,6 +99,7 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
+constexpr double kS = 0.0545;
 
 } // namespace DriveConstants
 
@@ -150,7 +151,7 @@ public:
 
   void SyncEncoders();
 
-  void SteerCoastMode(bool coast);
+  void CoastMode(bool coast);
 
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
@@ -210,7 +211,7 @@ frc2::CommandPtr
 
   frc2::CommandPtr SetAbsEncoderOffsetCommand();
 
-  frc2::CommandPtr SteerCoastModeCommand(bool coast);
+  frc2::CommandPtr CoastModeCommand(bool coast);
 
   frc2::CommandPtr ConfigAbsEncoderCommand();
 
