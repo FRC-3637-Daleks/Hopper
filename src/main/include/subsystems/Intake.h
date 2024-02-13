@@ -31,8 +31,8 @@ namespace IntakeConstants {
     constexpr int kLimitSwitchIntakePort = 0;
 
     //breakbeam
-    constexpr int kBreakbeamPort = 1;
-    constexpr int kShooterBreakBeamPort=2;
+    constexpr int kBreakBeamFrontPort = 1;
+    constexpr int kBreakBeamBackPort = 2;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
@@ -50,7 +50,7 @@ namespace IntakeConstants {
     constexpr int kF = 0.0;
     constexpr int kP = 0.0;
     constexpr int kI = 0.0;
-    constexpr int kD = 0.0;
+    constexpr int kD = 10.0;
 
     //margin of error for detecting if arm is in specific spot
     constexpr int kAllowableMarginOfError = 1;
@@ -60,6 +60,22 @@ namespace IntakeConstants {
     constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
     constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
     constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
+
+    //physical characteristics
+    constexpr auto kWheelMoment = 0.001_kg_sq_m;
+    constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
+    constexpr auto kArmMass = 25_lb;
+    constexpr auto kArmRadius = 13_in;
+    constexpr auto kWheelDiameter = 1.5_in;  //< Verify this
+    constexpr auto kWheelCircum = kWheelDiameter*std::numbers::pi/1_tr;
+    constexpr double kArmGearing = 4.0;
+    //you can play with the leading constant to get the dynamics you want
+    constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
+    constexpr bool kGravityCompensation = false;  // true if there's a gas spring
+
+    // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
+    constexpr auto kMinAngle = -30_deg;
+    constexpr auto kMaxAngle = 160_deg;
 
 }
 
@@ -92,6 +108,9 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr OutputToShooter();
 
+  frc2::CommandPtr AutoIntake();
+
+  void SimulationPeriodic() override;
 
 
   /** Changes the direction of the moter
@@ -124,14 +143,17 @@ class Intake : public frc2::SubsystemBase {
   void IntakeArmSpeaker();
   void IntakeArmIntake();
 
+  frc2::CommandPtr IntakeArmAMPCommand();
+  frc2::CommandPtr IntakeArmSpeakerCommand();
+  frc2::CommandPtr IntakeArmIntakeCommand();
+
   /** Gets the state of Limit switches and break beams for intake
   * Gets the state of the limit switch for the intake
   * Gets the state of the break beam for the intake
   */
   bool GetStateLimitSwitchIntake();  
-  bool GetStateBreakBeamIntake();
-  bool GetStateShooterBeamIntake();
-
+  bool GetStateBreakBeamFrontIntake();
+  bool GetStateBreakBeamBackIntake();
 
   /** 
   * Gets the difference between were the arm is going and were it is 
@@ -163,13 +185,25 @@ class Intake : public frc2::SubsystemBase {
   /**
    * The goal position of the arm used for some functions
   */
-  int goal;
+  int m_goal;
 
   /** Defines some digital inputs
    * Defines limitswitch used on the intake
    * Defines breakbeam used on the intake
   */
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
-  frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
-  frc::DigitalInput m_shooterBreakBeam{IntakeConstants::kShooterBreakBeamPort};
+  frc::DigitalInput m_breakBeamFront{IntakeConstants::kBreakBeamFrontPort};
+  frc::DigitalInput m_breakBeamBack{IntakeConstants::kBreakBeamBackPort};
+
+
+private:
+  friend class IntakeSimulation;
+  std::unique_ptr<IntakeSimulation> m_sim_state;
+
+public:
+  /* For simulation only. This allows the higher level simulation
+   * to tell the intake simulation when a Note is at the spot where intake
+   * will pick it up. (for example when robot is facing feeder station)
+  */
+  void SimulateNotePickup();
 };

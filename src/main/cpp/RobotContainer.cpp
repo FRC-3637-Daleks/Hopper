@@ -39,9 +39,27 @@ void RobotContainer::ConfigureBindings() {
                 OperatorConstants::kDeadband));
   };
 
-  m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
-  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
-      .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
+  //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
+  //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+
+
+      
+  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+
+  m_swerveController.A()
+      .OnTrue(m_swerve.ZeroHeadingCommand());
+
+  m_intakeController.A()
+      .OnTrue(m_intake.IntakeArmAMPCommand());
+  
+  m_intakeController.Y()
+      .OnTrue(m_intake.IntakeArmSpeakerCommand());
+
+  m_intakeController.B()
+      .OnTrue(m_intake.IntakeArmIntakeCommand());
+
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

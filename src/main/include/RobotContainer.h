@@ -52,6 +52,7 @@ namespace OperatorConstants {
 
 constexpr int kDriverControllerPort = 0;
 constexpr int kSwerveControllerPort = 0;
+constexpr int kInputControllerPort = 1;
 
 constexpr double kDeadband = 0.08;
 
@@ -82,6 +83,9 @@ class RobotContainer {
 
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
+
+  frc2::CommandXboxController m_intakeController{
+      OperatorConstants::kInputControllerPort};
 
   // The robot's subsystems are defined here...
   
