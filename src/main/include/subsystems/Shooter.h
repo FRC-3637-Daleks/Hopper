@@ -17,6 +17,8 @@
 #include <ctre/Phoenix.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/MathUtil.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -98,6 +100,9 @@ class Shooter : public frc2::SubsystemBase {
   Shooter();
   ~Shooter();
 
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
+
   void SimulationPeriodic() override;
   
   // const PIDCoefficients m_pivotPIDCoefficients;
@@ -147,6 +152,9 @@ class Shooter : public frc2::SubsystemBase {
   frc::DigitalInput m_intakeBreakBeam{0};
 
   frc::DigitalInput m_flywheelBreakBeam{1};
+
+ private:
+  frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;
