@@ -9,6 +9,7 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
+#include <frc/geometry/Pose2d.h>
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/path/PathPlannerPath.h>
@@ -27,6 +28,8 @@
 
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
+#include "subsystems/Intake.h"
+#include "subsystems/Climb.h"
 
 
 namespace AutoConstants {
@@ -59,7 +62,7 @@ constexpr pathplanner::PathConstraints DefaultConstraints(AutoConstants::kMaxSpe
 
 namespace OperatorConstants {
 
-constexpr int kDriverControllerPort = 0;
+constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
@@ -69,7 +72,18 @@ constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeGroundPOV = 90;
+constexpr int kIntakeAMPPOV = 0;
+constexpr int kIntakeShooterPOV = 270;
+
 }  // namespace OperatorConstants
+
+namespace FieldConstants
+{
+
+constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
+
+}
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -86,18 +100,20 @@ class RobotContainer {
     std::unique_ptr<frc2::Command> HopperAuto;
 
 
- private:
+ public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_copilotController{
+      OperatorConstants::kCopilotControllerPort};
 
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
   // The robot's subsystems are defined here...
   
-  //Shooter m_subsystem;
+  Shooter m_shooter;
   Drivetrain m_swerve;
+  Intake m_intake;
+  Climb m_climb;
 
   void ConfigureBindings();
 };
