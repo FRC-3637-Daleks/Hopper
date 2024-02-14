@@ -9,6 +9,7 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
+#include <frc/geometry/Pose2d.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -22,6 +23,7 @@
 
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
+#include "subsystems/Intake.h"
 
 
 namespace AutoConstants {
@@ -50,7 +52,7 @@ const frc::TrapezoidProfile<units::radians>::Constraints
 
 namespace OperatorConstants {
 
-constexpr int kDriverControllerPort = 0;
+constexpr int kDriverControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
@@ -60,7 +62,18 @@ constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeGroundPOV = 90;
+constexpr int kIntakeAMPPOV = 0;
+constexpr int kIntakeShooterPOV = 270;
+
 }  // namespace OperatorConstants
+
+namespace FieldConstants
+{
+
+constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
+
+}
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -75,7 +88,7 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
- private:
+ public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_driverController{
       OperatorConstants::kDriverControllerPort};
@@ -87,6 +100,7 @@ class RobotContainer {
   
   Shooter m_shooter;
   Drivetrain m_swerve;
+  Intake m_intake;
 
   void ConfigureBindings();
 };

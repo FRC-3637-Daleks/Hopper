@@ -71,7 +71,13 @@ void Robot::SimulationInit() {}
 /**
  * This function is called periodically whilst in simulation.
  */
-void Robot::SimulationPeriodic() {}
+void Robot::SimulationPeriodic() {
+  const auto pose = m_container.m_swerve.GetPose();
+  if (pose.Translation().Distance(FieldConstants::feeder_station.Translation()) < 0.5_m)
+  {
+    m_container.m_intake.SimulateNotePickup();
+  }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

@@ -97,6 +97,8 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   ~Shooter();
+  
+  void Periodic() override;
 
   void SimulationPeriodic() override;
   
@@ -112,20 +114,18 @@ class Shooter : public frc2::SubsystemBase {
   void StopTalonMotor();
 
   void SetPivotMotor(double encoderPosition);
-  
 
-  void Periodic() override;
-
-  
   units::radian_t GetAnglePivot(); 
 
   units::degree_t DistanceToAngle(units::meter_t distance);
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
-  frc2::CommandPtr FlywheelCommand(double controllerInput);
+  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
 
-  frc2::CommandPtr PivotAngleCommand(units::degree_t angle);
+  frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
+
+  frc2::CommandPtr PivotAngleCommand(std::function<units::degree_t()> pivotAngle);
 
   frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
 
@@ -144,9 +144,9 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  frc::DigitalInput m_intakeBreakBeam{0};
+  frc::DigitalInput m_intakeBreakBeam{3};
 
-  frc::DigitalInput m_flywheelBreakBeam{1};
+  frc::DigitalInput m_flywheelBreakBeam{4};
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;

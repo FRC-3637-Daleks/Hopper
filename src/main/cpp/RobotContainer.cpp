@@ -17,14 +17,15 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureBindings() {
-  //m_subsystem.SetDefaultCommand(m_subsystem.FlywheelCommand(m_driverController.GetLeftY()));
 
+// Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
                 -m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis),
                 OperatorConstants::kDeadband));
   };
+
   auto strafe = [this]() -> units::meters_per_second_t {
     return (DriveConstants::kMaxTeleopSpeed *
             frc::ApplyDeadband(
@@ -39,21 +40,56 @@ void RobotContainer::ConfigureBindings() {
                 OperatorConstants::kDeadband));
   };
 
-  // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
-  //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
-  //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
 
-
-      
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
-  m_swerveController.RightBumper().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
-  // m_swerveController.Button(OperatorConstants::kFieldRelativeButton).WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+
+  m_swerveController.RightBumper()
+      .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
-  //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
-  m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+  m_swerveController.B()
+      .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
+
+  m_swerveController.X()
+    .WhileTrue(m_swerve.ZTargetPoseCommand(target, fwd, strafe));
+
+  m_swerveController.LeftBumper()
+      .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+
+  //Configure Shooter Bindings.
+  auto flywheel = [this] () -> double {
+    return frc::ApplyDeadband(m_driverController.GetLeftY(), OperatorConstants::kDeadband);
+  };
+
+  auto pivot = [this] () -> units::degree_t {
+    return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
+            m_driverController.GetRightTriggerAxis() + ShooterConstants::kMinAngle;
+  };
+
+  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
+
+  // Configure Intake Bindings.
+  auto position = [this]() -> int {
+    return m_driverController.GetPOV();
+  };
+
+  m_intake.SetDefaultCommand(
+    frc2::cmd::Select<int>(
+      position,
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeRing()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.ShootOnAMP()},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.OutputToShooter()}
+    )
+  );
+
+  m_driverController.A()
+    .WhileTrue(m_intake.IntakeIn());
+    
+  m_driverController.B()
+    .WhileTrue(m_intake.IntakeOut());
 }
 
 

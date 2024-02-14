@@ -1,92 +1,19 @@
 {
-  "HALProvider": {
-    "PowerDistributions": {
-      "14": {
-        "PowerDistribution[14]": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
-    },
-    "windows": {
-      "/SmartDashboard/Field": {
-        "FL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "FR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "Robot": {
-          "arrowColor": [
-            255.0,
-            0.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Box/Image",
-          "weight": 3.0
-        },
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
-        "right": 1088,
-        "simulation": {
-          "arrowColor": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "arrowWeight": 3.0,
-          "color": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Hidden",
-          "weight": 2.0
-        },
-        "top": 36,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Swerve": {
-          "open": true
+        "Intake": {
+          "open": true,
+          "sim": {
+            "open": true
+          }
         },
         "open": true
       }

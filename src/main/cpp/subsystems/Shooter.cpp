@@ -6,6 +6,7 @@
 
 
 #include <frc2/command/Commands.h>
+
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/MathUtil.h>
 
@@ -18,8 +19,8 @@ class ShooterSimulation
 {
 public:
   ShooterSimulation(Shooter &shooter):
-    m_leadShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelLeadMotorPort},
-    m_followerShooterSim{"SPARK MAX ", ShooterConstants::kFlywheelFollowMotorPort},
+    m_leadShooterSim{"SPARK Flex ", ShooterConstants::kFlywheelLeadMotorPort},
+    m_followerShooterSim{"SPARK Flex ", ShooterConstants::kFlywheelFollowMotorPort},
     m_aimMotorSim{shooter.m_pivot.GetSimCollection()},
     m_shooterModel{frc::DCMotor::NeoVortex(1), 1, ShooterConstants::kWheelMoment},
     m_armModel{
@@ -102,9 +103,10 @@ void Shooter::SetPivotMotor(double encoderPosition) {
 }
 
 void Shooter::Periodic(){
-
-//SmartDashboard 
-frc::SmartDashboard::PutNumber("motor power", m_leadMotor.Get()); 
+  //SmartDashboard 
+  frc::SmartDashboard::PutNumber("Shooter/Flywheel power", m_leadMotor.Get()); 
+  frc::SmartDashboard::PutNumber("Shooter/Pivot power", m_pivot.Get());
+  frc::SmartDashboard::PutNumber("Shooter/Pivot encoder", m_pivot.GetSelectedSensorPosition());
 
 }
 
@@ -133,18 +135,27 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
-frc2::CommandPtr Shooter::FlywheelCommand(double controllerInput) {
-  return frc2::cmd::Run(
-    [this, controllerInput] { 
-      m_leadMotor.Set(controllerInput); 
-    }, {this}
+frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
+  return frc2::cmd::Parallel(
+    FlywheelCommand(flywheelInput),
+    PivotAngleCommand(pivotAngle)
   );
 }
 
-frc2::CommandPtr Shooter::PivotAngleCommand(units::degree_t angle) {
+frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
+  return frc2::cmd::Run(
+    [this, controllerInput] { 
+      m_leadMotor.Set(controllerInput()); 
+    }, {}
+  );
+}
+
+frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> angle) {
   return frc2::cmd::RunOnce(
     [this, angle] () {
-      SetPivotMotor(ToTalonUnits(angle));
+      SetPivotMotor(ToTalonUnits(angle()));
+
+      fmt::print("inside pivot angle command {}", angle());
     }, {this}
   );
 }
