@@ -15,6 +15,8 @@
 #include <hal/SimDevice.h>
 #include <hal/simulation/SimDeviceData.h>
 
+#include <frc/controller/ProfiledPIDController.h>
+
 #include <memory>
 #include <numbers>
 
@@ -23,7 +25,7 @@
 namespace DriveConstants {
 constexpr bool kGyroReversed = true;
 
-constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxSpeed = 12_fps;
 constexpr auto kMaxTeleopSpeed = 15_fps;
 constexpr auto kArcadeMaxSpeed = 10_fps;
 constexpr auto kPreciseSpeed = 2_fps;
@@ -38,7 +40,17 @@ constexpr double kIzDriveSpeed = 1000;
 constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
-constexpr double kPTurn = 2.2;
+
+constexpr double kPTurn = 0.061;// 0.0605 
+constexpr double kITurn = 0.00; // 0.001 
+constexpr double kDTurn = 0.0;  // 0.03  
+
+constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
+
+
+
+
 constexpr double kPDistance = 2;
 constexpr auto kDistanceTolerance = 7_cm;
 
@@ -48,8 +60,6 @@ constexpr double kPRightStraight = 0.2;
 constexpr auto kTurnTolerance = 3_deg;
 constexpr auto kTurnRateTolerance = 1_deg_per_s;
 
-constexpr auto kMaxTurnRate = 1 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -217,6 +227,12 @@ public:
   // Add Vision Pose to SwerveDrivePoseEstimator.
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
+  frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
+
+  frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
@@ -237,6 +253,7 @@ private:
   frc::PowerDistribution m_pdh{15,
                                frc::PowerDistribution::ModuleType::kRev};
 
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
 private:

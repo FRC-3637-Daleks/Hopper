@@ -62,6 +62,10 @@ void RobotContainer::ConfigureBindings() {
                 OperatorConstants::kDeadband));
   };
 
+  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
+
+  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
+
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
       .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
@@ -114,6 +118,12 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.A()
       .OnTrue(m_swerve.ZeroHeadingCommand());
+
+  m_swerveController.B()
+      .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
+
+  m_swerveController.X()
+    .WhileTrue(m_swerve.ZTargetPoseCommand(target, fwd, strafe));
 
   //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
   //m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
