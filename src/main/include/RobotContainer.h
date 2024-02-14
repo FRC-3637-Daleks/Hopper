@@ -37,7 +37,7 @@ constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
 constexpr auto kMaxAngularSpeed = 120_rpm;
-constexpr auto kMaxAngularAcceleration = 120_deg_per_s;
+constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
 constexpr double kPXController = 0.5;

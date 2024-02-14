@@ -116,7 +116,7 @@ void RobotContainer::ConfigureBindings() {
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
   //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
-  m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+  //m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
 
   m_swerveController.X().WhileTrue(m_swerve.SwerveCommand([] () -> units::meters_per_second_t { return 1_mps; }, [] () -> units::meters_per_second_t { return 0_mps; }, [] () -> units::radians_per_second_t { return 0_rad_per_s; }));
 }
