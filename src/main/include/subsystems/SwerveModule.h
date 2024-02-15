@@ -23,6 +23,7 @@
 
 namespace ModuleConstants {
 
+constexpr double NeutralDeadBand = 0.01;
 constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
 constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
 constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
@@ -42,7 +43,7 @@ constexpr double kSteerGearReduction = 150.0/7.0;
 constexpr auto kSteerMoment = 0.005_kg_sq_m;
 
 // Values measured with the drivetrain suspended.
-constexpr auto kPhysicalMaxSpeed = 16.5_fps;
+constexpr auto kPhysicalMaxSpeed = 15.7_fps;
 } // namespace ModuleConstants
 
 // forward declaration
