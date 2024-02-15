@@ -3,11 +3,8 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
-<<<<<<< HEAD
+      "/SmartDashboard/Mechanisms": "Mechanism2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
-=======
-      "/SmartDashboard/Mechanisms": "Mechanism2d"
->>>>>>> origin/intake-sim
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -31,7 +28,14 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Climb": {
+        "Field": {
+          "double[]##v_/SmartDashboard/Field/simulation": {
+            "open": true
+          },
+          "open": true
+        },
+        "Intake": {
+          "open": true,
           "sim": {
             "open": true
           }

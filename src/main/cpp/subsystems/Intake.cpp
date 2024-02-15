@@ -81,6 +81,8 @@ void Intake::Periodic() {
   frc::SmartDashboard::PutNumber("Intake/Intake Motor Percent Out", m_intake.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Percent Out", m_arm.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Position", m_arm.GetSelectedSensorPosition());
+
+  UpdateVisualization();
 }
 
 frc2::CommandPtr Intake::IntakeRing() {
@@ -133,11 +135,6 @@ frc2::CommandPtr Intake::IntakeOut() {
 }
 
 Intake::~Intake() {}
-
-void Intake::Periodic()
-{
-  UpdateVisualization();
-}
 
 void Intake::InitVisualization(frc::Mechanism2d* mech)
 {

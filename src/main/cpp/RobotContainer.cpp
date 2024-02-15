@@ -104,6 +104,7 @@ void RobotContainer::ConfigureBindings() {
 void RobotContainer::ConfigureDashboard()
 {
   m_intake.InitVisualization(&m_mech_sideview);
+  m_shooter.InitVisualization(&m_mech_sideview);
 
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
 }

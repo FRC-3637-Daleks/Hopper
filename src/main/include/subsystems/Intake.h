@@ -117,8 +117,6 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  void Periodic() override;
-
   /**
    * Sets the arm position to the intake position
    * runs intake until break beam or limit switch is hit

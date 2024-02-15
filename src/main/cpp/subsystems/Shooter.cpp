@@ -146,7 +146,7 @@ void Shooter::Periodic(){
   frc::SmartDashboard::PutNumber("Shooter/Pivot power", m_pivot.Get());
   frc::SmartDashboard::PutNumber("Shooter/Pivot encoder", m_pivot.GetSelectedSensorPosition());
 
-UpdateVisualization();
+  UpdateVisualization();
 }
 
 units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
