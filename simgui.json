@@ -31,8 +31,7 @@
         "Field": {
           "double[]##v_/SmartDashboard/Field/simulation": {
             "open": true
-          },
-          "open": true
+          }
         },
         "Intake": {
           "open": true,

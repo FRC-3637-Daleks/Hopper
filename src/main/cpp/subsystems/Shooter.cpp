@@ -155,11 +155,11 @@ units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
-      ShooterConstants::kPivotEncoderDistancePerCount * m_pivot.GetSelectedSensorPosition();
+      m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
   // Puts the rotation in the correct scope for the incremental encoder.
   return (frc::AngleModulus(rotation.Radians() - currentHeading) +
-          currentHeading) /
-         ShooterConstants::kPivotEncoderDistancePerCount;
+          currentHeading) *
+         ShooterConstants::kAngleToSensor;
 }
 
 units::radian_t Shooter::GetAnglePivot() {
@@ -185,6 +185,8 @@ frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInpu
   return frc2::cmd::Run(
     [this, controllerInput] { 
       m_leadMotor.Set(controllerInput()); 
+
+      // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
   );
 }
@@ -193,7 +195,8 @@ frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> ang
   return frc2::cmd::Run(
     [this, angle] () {
       SetPivotMotor(ToTalonUnits(angle()));
-
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal", angle().value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal", ToTalonUnits(angle()));
       //fmt::print("inside pivot angle command {}\n", angle());
     }, {this}
   );
