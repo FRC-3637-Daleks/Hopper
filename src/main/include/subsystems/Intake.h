@@ -4,29 +4,21 @@
 
 #pragma once
 
-#include <units/moment_of_inertia.h>
-#include <units/torque.h>
-#include <units/angle.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/MechanismLigament2d.h>
 #include <frc/DigitalInput.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 
 #include <rev/CANSparkFlex.h>
 
-#include <frc2/command/ConditionalCommand.h>
-#include <frc2/command/Commands.h>
-#include <frc2/command/RunCommand.h>
-
-#include <rev/CANSparkLowLevel.h>
-
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+#include <units/moment_of_inertia.h>
+#include <units/torque.h>
+#include <units/angle.h>
 
 #include <memory>
 #include <numbers>
@@ -236,12 +228,6 @@ class Intake : public frc2::SubsystemBase {
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
- private:
-
-  /**
-   * The goal position of the arm used for some functions
-  */
-  int goal;
 private:
   frc::MechanismRoot2d* m_mech_root;
   frc::MechanismLigament2d *m_mech_arm;

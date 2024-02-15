@@ -2,6 +2,7 @@
 //Please look at intake.h for documentation
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/Commands.h>
 
 #include <frc/simulation/FlywheelSim.h>
 #include <frc/simulation/SingleJointedArmSim.h>
@@ -89,9 +90,9 @@ frc2::CommandPtr Intake::IntakeRing() {
   return this->RunOnce([this] {
     IntakeArmIntake();})
     .AndThen(this->StartEnd(
-      [this] {frc2::ConditionalCommand(
-                                      frc2::RunCommand([this] {OnIntake();}),
-                                      frc2::RunCommand([this] {OffIntake();}),
+      [this] {frc2::cmd::Either(
+                                      frc2::cmd::Run([this] {OnIntake();}),
+                                      frc2::cmd::Run([this] {OffIntake();}),
                                       [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ || !GetStateLimitSwitchIntake()/*when untouched*/;});
       },
       [this] {OffIntake();}
@@ -109,9 +110,9 @@ frc2::CommandPtr Intake::OutputToShooter() {
   return this->RunOnce([this] {
     IntakeArmSpeaker();})
     .AndThen(this->RunEnd(
-      [this] {frc2::ConditionalCommand(
-                                      frc2::RunCommand([this] {OutputShooterIntake();}),
-                                      frc2::RunCommand([this] {OffIntake();}),
+      [this] {frc2::cmd::Either(
+                                      frc2::cmd::Run([this] {OutputShooterIntake();}),
+                                      frc2::cmd::Run([this] {OffIntake();}),
                                       [this] () -> bool {return true/*replace with break beam from the shooter*/;});
       },
       [this] {OffIntake();}
@@ -180,7 +181,7 @@ void Intake::UpdateVisualization()
   if (!m_mech_root) return;
 
   m_mech_arm->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
-  m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(goal));
+  m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
   m_mech_spinner->SetAngle(
     units::degree_t{m_mech_spinner->GetAngle()} + m_intake.GetAppliedOutput()*66.66_deg);
   m_mech_note->SetAngle(units::degree_t{m_mech_arm->GetAngle()});

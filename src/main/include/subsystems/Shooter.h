@@ -4,22 +4,15 @@
 
 #pragma once
 
-#include <units/mass.h>
-#include <units/length.h>
-#include <units/moment_of_inertia.h>
-
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 #include <rev/CANSparkFlex.h>
 #include <ctre/Phoenix.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/MathUtil.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/MechanismLigament2d.h>
 
+#include <units/mass.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/angular_acceleration.h>
@@ -30,7 +23,6 @@
 #include <units/moment_of_inertia.h>
 
 #include <frc/simulation/DCMotorSim.h>
-#include <cmath>
 
 #include <memory>
 #include <numbers>

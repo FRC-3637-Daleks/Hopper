@@ -4,10 +4,9 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
-
-#include "commands/Autos.h"
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -43,7 +42,7 @@ void RobotContainer::ConfigureBindings() {
                 OperatorConstants::kDeadband));
   };
 
-  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
+  constexpr auto target = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
