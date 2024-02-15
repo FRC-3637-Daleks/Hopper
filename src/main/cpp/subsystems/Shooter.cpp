@@ -70,6 +70,42 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
 Shooter::~Shooter() {}
 
+void Shooter::InitVisualization(frc::Mechanism2d* mech)
+{
+  auto root = mech->GetRoot("shooter", 1.5, 1.5);
+
+  m_mech_pivot_goal = root->Append<frc::MechanismLigament2d>(
+    "aim goal",  // name
+    1,  // feet long
+    180_deg,  // start angle
+    4,  // pixel width
+    frc::Color8Bit{20, 200, 20}  // RGB, green
+  );
+
+  m_mech_pivot = root->Append<frc::MechanismLigament2d>(
+    "aim",
+    1,
+    180_deg,
+    10,
+    frc::Color8Bit{240, 240, 240}  // white
+  );
+}
+
+void Shooter::UpdateVisualization()
+{
+  const auto sensor_goal = m_pivot.GetClosedLoopTarget();
+  const auto angle_goal = (sensor_goal - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_pivot_goal->SetAngle(180_deg - angle_goal);
+
+  const auto sensor_measured = m_pivot.GetSelectedSensorPosition();
+  const auto angle_measured = (sensor_measured - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_pivot->SetAngle(180_deg - angle_measured);
+
+  // scale blueness of shooter on flywheel speed
+  const auto wheel_vel = m_leadMotor.GetAppliedOutput();
+  m_mech_pivot->SetColor({240 - int(wheel_vel*200), 240 - int(wheel_vel*200), 240});
+}
+
 //Runs both shooting motors
 void Shooter::RunShootMotor() {
 
@@ -110,6 +146,7 @@ void Shooter::Periodic(){
   frc::SmartDashboard::PutNumber("Shooter/Pivot power", m_pivot.Get());
   frc::SmartDashboard::PutNumber("Shooter/Pivot encoder", m_pivot.GetSelectedSensorPosition());
 
+UpdateVisualization();
 }
 
 units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
