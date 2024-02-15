@@ -3,7 +3,11 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
+<<<<<<< HEAD
       "/SmartDashboard/zeroEncodersCommand": "Command"
+=======
+      "/SmartDashboard/Mechanisms": "Mechanism2d"
+>>>>>>> origin/intake-sim
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -13,6 +17,11 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Mechanisms": {
         "window": {
           "visible": true
         }

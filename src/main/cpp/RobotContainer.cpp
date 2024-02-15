@@ -14,6 +14,9 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureBindings();
+
+  // Configure Dashboard
+  ConfigureDashboard();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -96,6 +99,13 @@ void RobotContainer::ConfigureBindings() {
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
+}
+
+void RobotContainer::ConfigureDashboard()
+{
+  m_intake.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
 }
 
 

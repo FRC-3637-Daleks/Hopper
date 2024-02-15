@@ -8,6 +8,8 @@
 #include <units/torque.h>
 #include <units/angle.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 #include <frc/DigitalInput.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
@@ -94,6 +96,13 @@ namespace IntakeConstants {
       (kMaxAngle - kMinAngle);
     constexpr auto kIntakeLength = 13.0_in;
     constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
+    
+    constexpr auto sensorToAngle(int sensor)
+    {return (sensor - kArmSensorFullExtend)/kAngleToSensor + kMinAngle;}
+
+    constexpr auto angleToSensor(units::degree_t angle)
+    {return (angle - kMinAngle)*kAngleToSensor + kArmSensorFullExtend;}
+
 }
 
 class IntakeSimulation;  // forward declaration
@@ -105,6 +114,7 @@ class Intake : public frc2::SubsystemBase {
   Intake();
   ~Intake();
 
+  void Periodic() override;
   void SimulationPeriodic() override;
 
   void Periodic() override;
@@ -146,6 +156,8 @@ class Intake : public frc2::SubsystemBase {
 
   // Keep intake Idle if no buttons are pressed
   frc2::CommandPtr IdleIntakeCommand();
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
 
   /** Changes the direction of the moter
     * Makes the moter spin backwards (spitting game peice out)
@@ -232,6 +244,13 @@ class Intake : public frc2::SubsystemBase {
    * The goal position of the arm used for some functions
   */
   int goal;
+private:
+  frc::MechanismRoot2d* m_mech_root;
+  frc::MechanismLigament2d *m_mech_arm;
+  frc::MechanismLigament2d *m_mech_arm_goal;
+  frc::MechanismLigament2d *m_mech_spinner;
+  frc::MechanismLigament2d *m_mech_note;
+
 private:
   friend class IntakeSimulation;
   std::unique_ptr<IntakeSimulation> m_sim_state;
