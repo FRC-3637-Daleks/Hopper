@@ -81,6 +81,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   ctre::phoenix6::configs::MotorOutputConfigs driveOutputConfigs;
   driveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  driveOutputConfigs.WithDutyCycleNeutralDeadband(NeutralDeadBand);
   driveConfig.WithMotorOutput(driveOutputConfigs);
 
   ctre::phoenix6::configs::OpenLoopRampsConfigs driveOpenLoopConfigs{};
@@ -185,20 +186,14 @@ frc::SwerveModuleState SwerveModule::GetState() {
 }
 
 void SwerveModule::CoastMode(bool coast){
-  ctre::phoenix6::configs::MotorOutputConfigs SteerOutputConfigs;
-  ctre::phoenix6::configs::MotorOutputConfigs DriveOutputConfigs;
   if (coast){
-    SteerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
-    DriveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+    m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+    m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
   }
   else{
-    SteerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
-    DriveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+    m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+    m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
   }
-
-  SteerOutputConfigs.WithInverted(true);
-  m_steerMotor.GetConfigurator().Apply(SteerOutputConfigs,50_ms);
-  m_driveMotor.GetConfigurator().Apply(DriveOutputConfigs,50_ms);
 }
 
 
@@ -252,7 +247,7 @@ void SwerveModule::SetDesiredState(
   const auto state =
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
-  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, false};
+  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, true};
   m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / kDistanceToRotations));
   
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps, false};
@@ -292,7 +287,7 @@ void SwerveModule::UpdateDashboard() {
 
   frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
                                  state.angle.Degrees().value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
+  // frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
 
   frc::SmartDashboard::PutNumber(fmt::format("{}/Abs Encoder", m_name), m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
 }
