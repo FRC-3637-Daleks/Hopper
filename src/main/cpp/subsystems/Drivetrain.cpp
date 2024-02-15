@@ -74,7 +74,7 @@ void Drivetrain::Periodic() {
 
 Drivetrain::~Drivetrain() {}
 
-/*
+
 void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
                        units::meters_per_second_t strafeSpeed,
                        units::radians_per_second_t angularSpeed,
@@ -107,44 +107,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   m_frontRight.SetDesiredState(fr);
   m_rearLeft.SetDesiredState(rl);
   m_rearRight.SetDesiredState(rr);
-
-  CoastMode(false);
-
 }
-*/
-
-void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
-                       units::meters_per_second_t strafeSpeed,
-                       units::radians_per_second_t angularSpeed, bool fieldRelative) {
-  //  Use the kinematics model to get from the set of commanded speeds to a set
-  //  of states that can be commanded to each module.
-    auto states = kDriveKinematics.ToSwerveModuleStates(
-        fieldRelative
-            ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                  forwardSpeed, strafeSpeed, angularSpeed, GetHeading())
-            : frc::ChassisSpeeds{forwardSpeed, strafeSpeed, angularSpeed});
-
-    // Apply kS as a static friction feedforward term
-    for (auto& state : states) {
-        double speedAdjustment = DriveConstants::kS * (state.speed.value() > 0 ? 1 : -1);
-        state.speed = state.speed + units::velocity::meters_per_second_t{speedAdjustment};
-    }
-
-    kDriveKinematics.DesaturateWheelSpeeds(&states, DriveConstants::kMaxSpeed);
-    SetModuleStates(states);
-
-    // Finally each of the desired states can be sent as commands to the modules.
-  auto [fl, fr, rl, rr] = states;
-
-  fmt::print("setting swerve module states\n");
-  fmt::print("{} FL\n", fl.speed.value());
-  fmt::print("{} FR\n", fr.speed.value());
-  fmt::print("{} RL\n", rl.speed.value());
-  fmt::print("{} RR\n", rr.speed.value());
-
-    CoastMode(false);
-}
-
 
 
 void Drivetrain::SetModuleStates(
@@ -370,9 +333,11 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
 }
 
 frc2::CommandPtr Drivetrain::CoastModeCommand(bool coast){
-  return this->RunOnce([&]{
-    CoastMode(coast);
-  }).IgnoringDisable(true);
+  return this->StartEnd([&]{
+    this->CoastMode(true);
+  }, [&]{
+    this->CoastMode(false);
+  });
 }
 
 frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
