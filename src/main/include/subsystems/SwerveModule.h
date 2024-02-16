@@ -74,6 +74,9 @@ public:
   // Need to define destructor to make simulation code compile
   ~SwerveModule();
 
+  // IMPORTANT: Need to call this once per robot loop to refresh sensor readings
+  void RefreshSignals();
+
   // Returns the meters driven based on encoder reading.
   units::meter_t GetModuleDistance();
 
@@ -119,6 +122,12 @@ private:
 
   // Keeps track of the module heading between power cycles.
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
+
+private:  // signal objects to cache
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity;
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_steerPosition;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_steerVelocity;
 
 private:
   friend class SwerveModuleSim;

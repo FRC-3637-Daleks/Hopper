@@ -64,6 +64,12 @@ Drivetrain::Drivetrain()
       m_sim_state(new DrivetrainSimulation(*this)) { }
 
 void Drivetrain::Periodic() {
+
+  // Do this once per loop
+  m_frontLeft.RefreshSignals();
+  m_frontRight.RefreshSignals();
+  m_rearLeft.RefreshSignals();
+  m_rearRight.RefreshSignals();
   // Update the odometry with the current gyro angle and module states.
   m_poseEstimator.Update(
       GetHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),

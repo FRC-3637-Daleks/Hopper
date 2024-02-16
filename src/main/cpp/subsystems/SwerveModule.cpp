@@ -65,6 +65,10 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       m_driveMotor(driveMotorId),
       m_steerMotor(steerMotorId),
       m_absoluteEncoder(absoluteEncoderId),
+      m_drivePosition(m_driveMotor.GetPosition()),
+      m_driveVelocity(m_driveMotor.GetVelocity()),
+      m_steerPosition(m_steerMotor.GetPosition()),  //< FusedCANCoder
+      m_steerVelocity(m_steerMotor.GetVelocity()),
       m_sim_state(new SwerveModuleSim(*this)) {
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
@@ -156,25 +160,39 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       break;
     }
   }
-
-  // Home the integrated rotor sensor to the cancoder position
-  m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
-
-  //SyncEncoders();
 }
 
 SwerveModule::~SwerveModule() {}
 
+void SwerveModule::RefreshSignals()
+{
+  /* Refreshes all this modules signals at once.
+   * This should improve performance
+  */
+  ctre::phoenix6::BaseStatusSignal::RefreshAll(
+    m_drivePosition,
+    m_driveVelocity,
+    m_steerPosition,
+    m_steerVelocity
+  );
+}
+
 units::meter_t SwerveModule::GetModuleDistance() {
-  return m_driveMotor.GetPosition().GetValue() * kDistanceToRotations;
+  const auto position = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(
+      m_drivePosition, m_driveVelocity
+  );
+  return position * kDistanceToRotations;
 }
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
-  return m_driveMotor.GetVelocity().GetValue() * kDistanceToRotations;
+  return m_driveVelocity.GetValue() * kDistanceToRotations;
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {
-  return m_absoluteEncoder.GetAbsolutePosition().GetValue().convert<units::degree>();
+  const auto position = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(
+    m_steerPosition, m_steerVelocity
+  );
+  return position.convert<units::degree>();
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
