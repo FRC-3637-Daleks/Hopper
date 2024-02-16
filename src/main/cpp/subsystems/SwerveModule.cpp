@@ -73,11 +73,6 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
 
-  steerConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoderId;
-  steerConfig.Feedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
-  steerConfig.Feedback.SensorToMechanismRatio = 1.0;
-  steerConfig.Feedback.RotorToSensorRatio = kSteerGearReduction;
-
   ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
   steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
   steerOutputConfigs.WithInverted(true);
@@ -133,9 +128,12 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerClosedLoopConfig.ContinuousWrap = true;
   steerConfig.WithClosedLoopGeneral(steerClosedLoopConfig);
 
-  // This automatically scales future setpoints and readings by gear ratio
   ctre::phoenix6::configs::FeedbackConfigs steerFeedbackConfigs{};
-  steerFeedbackConfigs.SensorToMechanismRatio = kSteerGearReduction;  
+  steerFeedbackConfigs.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+  steerFeedbackConfigs.FeedbackRemoteSensorID = m_absoluteEncoder.GetDeviceID();
+  // This automatically scales future setpoints and readings by gear ratio
+  steerFeedbackConfigs.RotorToSensorRatio = kSteerGearReduction;
+  steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
   int retries = 4;
@@ -179,7 +177,7 @@ void SwerveModule::RefreshSignals()
 
 units::meter_t SwerveModule::GetModuleDistance() {
   const auto position = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(
-      m_drivePosition, m_driveVelocity
+    m_drivePosition, m_driveVelocity
   );
   return position * kDistanceToRotations;
 }
@@ -281,33 +279,10 @@ void SwerveModule::SetDesiredState(
 // TODO Display things neater on the SmartDashboard.
 void SwerveModule::UpdateDashboard() {
   const auto state = GetState();
-
-  auto& steerRotorPosSignal = m_steerMotor.GetPosition();
-
-  auto steerRotorPos = steerRotorPosSignal.GetValue();
-
-  frc::SmartDashboard::PutString(fmt::format("{}/module state", m_name),
-                                 fmt::format("{:4f}@{:4f}°",
-                                             state.speed.value(),
-                                             state.angle.Degrees().value()));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/absolute position", m_name),
-                                 units::degree_t{GetAbsoluteEncoderPosition()}.value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/steer talon angle", m_name),
-                                 steerRotorPos.convert<units::degree>().value());
-  // TODO: Fix Error Accumulation.
-  // frc::SmartDashboard::PutNumber(fmt::format("{}/steer err accum", m_name),
-  //                                m_steerMotor.GetIntegralAccumulator());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity state (mps)", m_name), state.speed.value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/drive voltage", m_name), m_driveMotor.GetSupplyVoltage().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/turn voltage", m_name), m_steerMotor.GetSupplyVoltage().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/drive current", m_name), m_driveMotor.GetSupplyCurrent().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/turn current", m_name), m_steerMotor.GetSupplyCurrent().GetValueAsDouble());
-
-  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+  frc::SmartDashboard::PutNumber(fmt::format("{}/heading (degrees)", m_name),
                                  state.angle.Degrees().value());
-  // frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
-
-  frc::SmartDashboard::PutNumber(fmt::format("{}/Abs Encoder", m_name), m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
+  frc::SmartDashboard::PutNumber(fmt::format("{}/speed (mps)", m_name),
+                                 state.speed.convert<units::mps>().value());
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {

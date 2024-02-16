@@ -1,10 +1,5 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "window": {
-        "visible": false
-      }
-    },
     "PowerDistributions": {
       "14": {
         "PowerDistribution[14]": {
@@ -84,12 +79,20 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/zeroEncodersCommand": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "FL": {
+          "open": true
+        },
         "Swerve": {
           "open": true
         },
