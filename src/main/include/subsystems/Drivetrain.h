@@ -75,16 +75,16 @@ constexpr int kRearRightAbsoluteEncoderChannel = 12;
 
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
-  0, 0.01, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftDriveMotorPIDCoefficients {
-  0, 0.01, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightDriveMotorPIDCoefficients {
-  0, 0.01, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
-  0, 0.01, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
