@@ -34,7 +34,7 @@ namespace ClimbConstants {
     constexpr auto kClimbStartingHeight = 0_in;
     constexpr auto kClimbMaxHeight = 3_in;
 
-    constexpr int kClimbMotorPort = 18;
+    constexpr int kClimbMotorPort = 13;
     constexpr int kClimbBottomLimitSwitch = 5;
     constexpr int kClimbTopLimitSwitch = 6;
 

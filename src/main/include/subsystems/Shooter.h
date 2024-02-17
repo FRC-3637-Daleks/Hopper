@@ -37,14 +37,10 @@ namespace ShooterConstants {
     constexpr auto kEncoderCPR = 0.0;
     constexpr auto kGearReduction = 0.0;
     constexpr bool kEncoderReversed = true;
-    
 
-    constexpr int kIntakeMotorPort = 13;
-    constexpr int kFlywheelMotorPort = 14;
-
-  constexpr int kPivotMotorPort = 13;
-  constexpr int kFlywheelLeadMotorPort = 14;
-  constexpr int kFlywheelFollowMotorPort = 15;
+  constexpr int kPivotMotorPort = 14;
+  constexpr int kFlywheelLeadMotorPort = 16;
+  constexpr int kFlywheelFollowMotorPort = 18;
 
  //PID Loop something
     constexpr int kPIDLoopIdx = 0;

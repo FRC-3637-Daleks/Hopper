@@ -25,8 +25,8 @@
 
 namespace IntakeConstants {
     //Moter IDs
-    constexpr int kIntakeMotorPort = 16;
-    constexpr int kArmMotorPort = 17;
+    constexpr int kIntakeMotorPort = 17;
+    constexpr int kArmMotorPort = 15;
 
     //limit switch
     constexpr int kLimitSwitchIntakePort = 0;
