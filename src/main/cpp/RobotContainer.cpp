@@ -12,6 +12,7 @@
 #include "commands/Autos.h"
 #include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <subsystems/Intake.h>
 
   //
 
@@ -66,7 +67,7 @@ void RobotContainer::ConfigureBindings() {
 
   auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
 
-  auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
+  // auto target = [this] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
@@ -99,19 +100,9 @@ void RobotContainer::ConfigureBindings() {
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
 
-      pathplanner::PathPoint MidFarL({7.0_m, 7.40_m});
-      pathplanner::PathPoint MidL({7.0_m, 5.75_m});
-      pathplanner::PathPoint MidCenter({7.0_m, 4.1_m});
-      pathplanner::PathPoint MidR({7.0_m, 2.45_m});
-      pathplanner::PathPoint MidFarR({7.0_m, 0.75_m});
-
-      pathplanner::PathPoint CloseL({1.6_m, 5.55_m});
-      pathplanner::PathPoint CloseCenter({1.6_m, 7.0_m});
-      pathplanner::PathPoint CloseR({1.6_m, 4.1_m});
-
-      pathplanner::NamedCommands::registerCommand("RevShooter", frc2::cmd::Print("Revving Shooter"));
-      pathplanner::NamedCommands::registerCommand("ShootNote", frc2::cmd::Print("Shooting Note"));
-      pathplanner::NamedCommands::registerCommand("RevIntake", frc2::cmd::Print("Revving Intake"));
+      pathplanner::NamedCommands::registerCommand("ShootCommand", frc2::cmd::Print("Revving Shooter"));
+      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
+      pathplanner::NamedCommands::registerCommand("IntakeNote", m_intake.AutoIntake());
       pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
       
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
@@ -131,42 +122,42 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.LeftBumper()
       .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
       
-  //Configure Shooter Bindings.
-  auto flywheel = [this] () -> double {
-    return m_copilotController.GetRightTriggerAxis();
-  };
+//   //Configure Shooter Bindings.
+//   auto flywheel = [this] () -> double {
+//     return m_copilotController.GetRightTriggerAxis();
+//   };
 
-  auto pivot = [this] () -> units::degree_t {
-    return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
-            frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
-  };
+//   auto pivot = [this] () -> units::degree_t {
+//     return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
+//             frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
+//   };
 
-  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
+//   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
 
-  // Configure Intake Bindings.
-  auto position = [this]() -> int {
-    return m_copilotController.GetPOV();
-  };
+//   // Configure Intake Bindings.
+//   auto position = [this]() -> int {
+//     return m_copilotController.GetPOV();
+//   };
 
-  m_intake.SetDefaultCommand(
-    frc2::cmd::Select<int>(
-      position,
-      std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand()}
-    )
-  );
+//   m_intake.SetDefaultCommand(
+//     frc2::cmd::Select<int>(
+//       position,
+//       std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
+//       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand()},
+//       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand()},
+//       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand()}
+//     )
+//   );
 
-  m_copilotController.A()
-    .WhileTrue(m_intake.IntakeIn());
+//   //m_copilotController.A()
+//     .WhileTrue(m_intake.IntakeIn());
     
-  m_copilotController.B()
-    .WhileTrue(m_intake.IntakeOut());
+//   //m_copilotController.B()
+//     .WhileTrue(m_intake.IntakeOut());
 
-  auto climb = [this] () -> double { return frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
+//   //auto climb = [this] () -> double { return frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
 
-  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
+//  // m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
 }
 
