@@ -55,18 +55,19 @@ constexpr int kRearLeftAbsoluteEncoderChannel = 10;
 constexpr int kFrontRightAbsoluteEncoderChannel = 11;
 constexpr int kRearRightAbsoluteEncoderChannel = 12;
 
+
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
@@ -82,6 +83,7 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
+constexpr double kS = 0.0545;
 
 } // namespace DriveConstants
 
@@ -133,7 +135,7 @@ public:
 
   void SyncEncoders();
 
-  void SteerCoastMode(bool coast);
+  void CoastMode(bool coast);
 
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
@@ -174,6 +176,14 @@ public:
       std::function<units::meters_per_second_t()> strafe,
       std::function<units::revolutions_per_minute_t()> rot);
 
+
+frc2::CommandPtr
+  SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
+                std::function<units::meters_per_second_t()> strafe,
+                std::function<units::revolutions_per_minute_t()> rot);
+  // Drive the robot to pose.
+  // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
+
   // Check if the robot has reached a pose.
   bool IsFinished(frc::Pose2d targetPose);
 
@@ -183,6 +193,8 @@ public:
   frc2::CommandPtr ZeroAbsEncodersCommand();
 
   frc2::CommandPtr SetAbsEncoderOffsetCommand();
+
+  frc2::CommandPtr CoastModeCommand(bool coast);
 
   frc2::CommandPtr ConfigAbsEncoderCommand();
 

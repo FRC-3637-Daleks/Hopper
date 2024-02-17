@@ -92,6 +92,7 @@
     "valarray": "cpp",
     "variant": "cpp",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "*.inc": "cpp",
     "xmemory": "cpp",
     "xstddef": "cpp",
@@ -100,5 +101,9 @@
 =======
     "charconv": "cpp"
 >>>>>>> origin/carolina-wip
+=======
+    "charconv": "cpp",
+    "*.inc": "cpp"
+>>>>>>> origin/arnav-wip
   }
 }

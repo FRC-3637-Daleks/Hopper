@@ -132,15 +132,6 @@ class Shooter : public frc2::SubsystemBase {
 
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
 
-
-
- private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  frc::DigitalInput m_intakeBreakBeam{3};
-
-  frc::DigitalInput m_flywheelBreakBeam{4};
-
  private:
   frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;
 

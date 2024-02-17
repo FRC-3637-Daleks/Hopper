@@ -89,6 +89,9 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
+  
+  frc2::CommandPtr GetDisabledCommand();
+
 
  public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
