@@ -91,7 +91,7 @@ frc2::CommandPtr Intake::IntakeRing() {
     IntakeArmIntake();})
     .AndThen(this->StartEnd(
       [this] {frc2::cmd::Either(
-                                      frc2::cmd::Run([this] {OnIntake();}),
+                                      frc2::cmd::Run([this] {IntakeBackward();}),
                                       frc2::cmd::Run([this] {OffIntake();}),
                                       [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ || !GetStateLimitSwitchIntake()/*when untouched*/;});
       },
@@ -121,16 +121,14 @@ frc2::CommandPtr Intake::OutputToShooter() {
 
 frc2::CommandPtr Intake::IntakeIn() {
   return frc2::cmd::RunEnd([this] {
-    VertIntake();
-    OnIntake();
+    IntakeBackward();
   },
   [this] { OffIntake(); });
 }
 
 frc2::CommandPtr Intake::IntakeOut() {
   return frc2::cmd::RunEnd([this] {
-    InvertIntake();
-    OnIntake();
+    IntakeBackward();
   },
   [this] { OffIntake(); });
 }
@@ -214,34 +212,29 @@ _____
 -----
 */
 
+
+
 frc2::CommandPtr Intake::AutoIntake() {
-  return Run([this] {OnIntake();}).Until([this] () -> bool {return (GetStateBreakBeamIntake()  || GetStateLimitSwitchIntake());});
+  return Run([this] {IntakeBackward();}).Until([this] () -> bool {return (GetStateBreakBeamIntake()  || GetStateLimitSwitchIntake());});
 }
 
-void Intake::InvertIntake() {
-  m_intake.SetInverted(true);
-}
-
-void Intake::VertIntake() {
-  m_arm.SetInverted(false);
-}
-
-void Intake::OnIntake() {
-  VertIntake();
+void Intake::IntakeForward() {
   m_intake.SetVoltage(IntakeConstants::kIntakeVoltage);
 }
 
+void Intake::IntakeBackward() {
+  m_intake.SetVoltage(-1*(IntakeConstants::kIntakeVoltage));
+}
+
 void Intake::OffIntake() {
-  m_intake.SetVoltage(IntakeConstants::kOffVoltage);
+  m_intake.SetVoltage(-1*(IntakeConstants::kOffVoltage));
 }
 
 void Intake::OutputShooterIntake() {
-  InvertIntake();
   m_intake.SetVoltage(IntakeConstants::kShooterVoltage);
 }
 
 void Intake::OutputAMPIntake() {
-  InvertIntake();
   m_intake.SetVoltage(IntakeConstants::kAMPVoltage);
 }
 

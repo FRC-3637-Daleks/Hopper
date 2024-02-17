@@ -36,9 +36,9 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 10;
-    constexpr int IntakeArmAMPPos = 500; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
-    constexpr int IntakeArmSpeakerPos = 1000;
+    constexpr int IntakeArmIntakePos = 10 *11.3777778;
+    constexpr int IntakeArmAMPPos = 59.4  *11.3777778; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
+    constexpr int IntakeArmSpeakerPos = 70*11.3777778;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
@@ -54,6 +54,9 @@ namespace IntakeConstants {
     constexpr int kP = 1.0;
     constexpr int kI = 0.0;
     constexpr int kD = 0.0;
+
+    //consts for conversion
+    constexpr int totalEncoders = 4096;
 
     //margin of error for detecting if arm is in specific spot
     constexpr int kAllowableMarginOfError = 1;
@@ -81,7 +84,7 @@ namespace IntakeConstants {
     constexpr auto kMaxAngle = 160_deg;
 
     // TODO: MEASURE THESE
-    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle
+    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle //amp angle = 1.365 radians
     constexpr int kArmSensorFullRetract = 1000;  // corresponds to kMaxAngle
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
@@ -149,18 +152,13 @@ class Intake : public frc2::SubsystemBase {
   void InitVisualization(frc::Mechanism2d* mech);
   void UpdateVisualization();
 
-  /** Changes the direction of the moter
-    * Makes the moter spin backwards (spitting game peice out)
-    * Makes the moter spin forwards (intaking game peice)
-  */
-  void InvertIntake();
-  void VertIntake();
 
   /** Simeple on off for intake
    * Turns on intake spinning forward for intaking game peice
    * Turns off intake for stopping intake
   */
-  void OnIntake();
+  void IntakeForward();
+  void IntakeBackward();
   void OffIntake();
 
   /**
