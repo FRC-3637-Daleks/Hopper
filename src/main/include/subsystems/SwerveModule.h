@@ -74,8 +74,13 @@ public:
   // Need to define destructor to make simulation code compile
   ~SwerveModule();
 
-  // IMPORTANT: Need to call this once per robot loop to refresh sensor readings
+  // IMPORTANT: Need to refresh signals once per loop
   void RefreshSignals();
+
+  // This one is even more efficient than RefreshSignals as it groups ALL
+  // swerve module signals into a single call
+  template<typename... T>
+  static void RefreshAllSignals(T&... modules);
 
   // Returns the meters driven based on encoder reading.
   units::meter_t GetModuleDistance();
@@ -134,3 +139,15 @@ private:
   std::unique_ptr<SwerveModuleSim> m_sim_state;
 };
 
+// Template method must be defined in .h
+template<typename... T>
+void SwerveModule::RefreshAllSignals(T&... modules)
+{
+  // This passes all 4N signals to one call to RefreshAll
+  ctre::phoenix6::BaseStatusSignal::RefreshAll(
+    modules.m_drivePosition...,
+    modules.m_driveVelocity...,
+    modules.m_steerPosition...,
+    modules.m_steerVelocity...
+  );
+}
