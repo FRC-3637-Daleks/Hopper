@@ -260,5 +260,5 @@ frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
 
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {
-  m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+  m_poseEstimator.AddVisionMeasurement(pose, timestamp, );
 }
