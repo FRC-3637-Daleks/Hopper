@@ -1,9 +1,4 @@
 {
-  "Keyboard 0 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "Keyboard 1 Settings": {
     "window": {
       "visible": true
@@ -86,9 +81,9 @@
       ],
       "povConfig": [
         {
-          "key0": 328,
-          "key270": 324,
-          "key90": 326
+          "key0": 56,
+          "key270": 52,
+          "key90": 54
         }
       ],
       "povCount": 1

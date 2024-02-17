@@ -29,14 +29,13 @@ namespace IntakeConstants {
     constexpr int kArmMotorPort = 17;
 
     //limit switch
-    constexpr int kLimitSwitchIntakePort = 0;
 
     //breakbeam
-    constexpr int kBreakbeamPort = 1;
+    constexpr int kBreakbeamPort = 0;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 10 *11.3777778;
+    constexpr int IntakeArmIntakePos = 10 *11.3777778; // -
     constexpr int IntakeArmAMPPos = 59.4  *11.3777778; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
     constexpr int IntakeArmSpeakerPos = 70*11.3777778;
 
@@ -51,7 +50,7 @@ namespace IntakeConstants {
 
     //pid configurations
     constexpr int kF = 0.0;
-    constexpr int kP = 1.0;
+    constexpr int kP = 10.0;
     constexpr int kI = 0.0;
     constexpr int kD = 0.0;
 
@@ -80,17 +79,17 @@ namespace IntakeConstants {
     constexpr bool kGravityCompensation = true;  // true if there's a gas spring
 
     // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
-    constexpr auto kMinAngle = -30_deg;
-    constexpr auto kMaxAngle = 160_deg;
+    constexpr auto kMinAngle = -15.4_deg;
+    constexpr auto kMaxAngle = 145_deg;
 
     // TODO: MEASURE THESE
-    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle //amp angle = 1.365 radians
-    constexpr int kArmSensorFullRetract = 1000;  // corresponds to kMaxAngle
+    constexpr int kArmSensorFullExtend = 995;  // corresponds to kMinAngle //amp angle = 1.365 radians
+    constexpr int kArmSensorFullRetract = 463;  // corresponds to kMaxAngle
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
       (kMaxAngle - kMinAngle);
     constexpr auto kIntakeLength = 13.0_in;
-    constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
+    constexpr auto kIntakeSensorPosition = 0.5_in;
     
     constexpr auto sensorToAngle(int sensor)
     {return (sensor - kArmSensorFullExtend)/kAngleToSensor + kMinAngle;}
@@ -185,7 +184,6 @@ class Intake : public frc2::SubsystemBase {
   * Gets the state of the limit switch for the intake
   * Gets the state of the break beam for the intake
   */
-  bool GetStateLimitSwitchIntake();  
 
   bool GetStateBreakBeamIntake();
 
@@ -223,7 +221,6 @@ class Intake : public frc2::SubsystemBase {
    * Defines limitswitch used on the intake
    * Defines breakbeam used on the intake
   */
-  frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
 private:
