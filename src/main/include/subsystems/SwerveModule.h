@@ -17,6 +17,7 @@
 #include <units/voltage.h>
 #include <units/moment_of_inertia.h>
 
+#include <memory>
 #include <numbers>
 
 

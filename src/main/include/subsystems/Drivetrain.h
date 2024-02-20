@@ -12,6 +12,8 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/PowerDistribution.h>
+#include <hal/SimDevice.h>
+#include <hal/simulation/SimDeviceData.h>
 
 #include <frc/controller/ProfiledPIDController.h>
 
@@ -21,17 +23,42 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 15_fps;
-constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr bool kGyroReversed = true;
 
-constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kMaxSpeed = 12_fps;
+constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr auto kArcadeMaxSpeed = 10_fps;
+constexpr auto kPreciseSpeed = 2_fps;
+
+// PID coefficients for closed-loop control of velocity.
+constexpr double kFDriveSpeed = 0.0656;
+constexpr double kPDriveSpeed = 0.1;
+constexpr double kIDriveSpeed = 0.000;
+constexpr double kDDriveSpeed = 0;
+constexpr double kIzDriveSpeed = 1000;
+
+constexpr double kIBrake = 0.0001;
 
 // NOTE: Guess value!
 
 constexpr double kPTurn = 0.061;// 0.0605 
 constexpr double kITurn = 0.00; // 0.001 
 constexpr double kDTurn = 0.0;  // 0.03  
+
+constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
+
+
+
+
+constexpr double kPDistance = 2;
+constexpr auto kDistanceTolerance = 7_cm;
+
+constexpr double kPLeftStraight = 0.2;
+constexpr double kPRightStraight = 0.2;
+
+constexpr auto kTurnTolerance = 3_deg;
+constexpr auto kTurnRateTolerance = 1_deg_per_s;
 
 
 // Swerve Constants
@@ -167,8 +194,8 @@ public:
   void UpdateDashboard();
 
   // Drive the robot with swerve controls.
-  frc2::CommandPtr SwerveCommand(
-                std::function<units::meters_per_second_t()> forward,
+  frc2::CommandPtr
+  SwerveCommand(std::function<units::meters_per_second_t()> forward,
                 std::function<units::meters_per_second_t()> strafe,
                 std::function<units::revolutions_per_minute_t()> rot);
 
@@ -178,11 +205,15 @@ public:
       std::function<units::meters_per_second_t()> strafe,
       std::function<units::revolutions_per_minute_t()> rot);
 
+  // Drive the robot to pose.
+  // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
+
   // Check if the robot has reached a pose.
   bool IsFinished(frc::Pose2d targetPose);
 
   // Returns a command that zeroes the robot heading.
   frc2::CommandPtr ZeroHeadingCommand();
+
 
   frc2::CommandPtr ZeroAbsEncodersCommand();
 
@@ -209,6 +240,9 @@ private:
   SwerveModule m_rearRight;
 
   AHRS m_gyro;
+
+  // Odometer for tracking the robot's position on the field.
+  // frc::SwerveDriveOdometry<4> m_odometry;
 
   // Pose Estimator for estimating the robot's position on the field.
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;

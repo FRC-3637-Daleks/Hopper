@@ -3,7 +3,6 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Mechanisms": "Mechanism2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
@@ -72,24 +71,13 @@
         "window": {
           "visible": true
         }
-      },
-      "/SmartDashboard/Mechanisms": {
-        "window": {
-          "visible": true
-        }
       }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Field": {
-          "double[]##v_/SmartDashboard/Field/simulation": {
-            "open": true
-          }
-        },
-        "Intake": {
-          "open": true,
+        "Climb": {
           "sim": {
             "open": true
           }

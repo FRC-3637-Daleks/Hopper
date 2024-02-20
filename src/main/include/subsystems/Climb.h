@@ -9,7 +9,10 @@
 #include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/ConditionalCommand.h>
 #include <frc/DigitalInput.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/SubsystemBase.h>
 #include <frc/system/plant/DCMotor.h>
 
 #include <units/acceleration.h>
@@ -22,7 +25,6 @@
 #include <units/moment_of_inertia.h>
 #include <units/mass.h>
 
-#include <memory>
 #include <numbers>
 
 namespace ClimbConstants {
@@ -64,6 +66,5 @@ public:
     frc::DigitalInput m_climbBottom{ClimbConstants::kClimbBottomLimitSwitch};
     frc::DigitalInput m_climbTop{ClimbConstants::kClimbTopLimitSwitch};
 private:
-    friend class ClimbSimulation;
     std::unique_ptr<ClimbSimulation> m_sim_state;
 };

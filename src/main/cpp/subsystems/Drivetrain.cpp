@@ -13,9 +13,6 @@
 #include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/WaitCommand.h>
 
-#include <hal/SimDevice.h>
-#include <hal/simulation/SimDeviceData.h>
-
 using namespace DriveConstants;
 
 class DrivetrainSimulation
@@ -96,7 +93,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   // Occasionally a drive motor is commanded to go faster than its maximum
   // output can sustain. Desaturation lowers the module speeds so that no motor
   // is driven above its maximum speed, while preserving the intended motion.
-  kDriveKinematics.DesaturateWheelSpeeds(&states, DriveConstants::kMaxSpeed);
+  kDriveKinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
   // fmt::print("desaturated wheel speeds\n");
 
@@ -276,6 +273,41 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
     std::function<units::revolutions_per_minute_t()> rot) {
   return this->Run([=] { Drive(forward(), strafe(), rot(), true); });
 }
+
+// // needs work
+// frc2::CommandPtr Drivetrain::DriveToPoseCommand(frc::Pose2d targetPose) {
+//   // TODO
+//   frc::Pose2d startPose = m_odometry.GetPose();
+//   const double kDistanceTolerance =
+//       0.1; // Tolerance for position error in meters
+
+//   units::meter_t hypotenuse =
+//       units::meter_t{std::hypot((targetPose.X() - startPose.X()).value(),
+//                            (targetPose.Y() - startPose.Y()).value())};
+
+//   while (std::hypot((targetPose.X() - startPose.X()).value(),
+//                     (targetPose.Y() - startPose.Y()).value()) >
+//          kDistanceTolerance) {
+//     // todo
+//     break;
+//   }
+
+//   return {nullptr};
+// }
+
+// // Check if the robot has reached the target pose
+// // need to fix
+// bool Drivetrain::IsFinished(frc::Pose2d targetPose) {
+
+//   frc::Pose2d startPose = m_odometry.GetPose();
+
+//   auto distanceError =
+//       targetPose.Translation().Distance(startPose.Translation());
+//   auto angleError =
+//       targetPose.Rotation().Radians() - startPose.Rotation().Radians();
+//   return distanceError < kDistanceTolerance &&
+//          std::fabs((double)angleError) < 0.05;
+// }
 
 frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
   return this->RunOnce([&] { ZeroHeading(); });
