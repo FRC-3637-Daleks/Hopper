@@ -4,27 +4,21 @@
 
 #pragma once
 
-#include <units/moment_of_inertia.h>
-#include <units/torque.h>
-#include <units/angle.h>
-#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 #include <frc/DigitalInput.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 
 #include <rev/CANSparkFlex.h>
 
-#include <frc2/command/ConditionalCommand.h>
-#include <frc2/command/Commands.h>
-#include <frc2/command/RunCommand.h>
-
-#include <rev/CANSparkLowLevel.h>
-
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+#include <units/moment_of_inertia.h>
+#include <units/torque.h>
+#include <units/angle.h>
 
 #include <memory>
 #include <numbers>
@@ -94,6 +88,13 @@ namespace IntakeConstants {
       (kMaxAngle - kMinAngle);
     constexpr auto kIntakeLength = 13.0_in;
     constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
+    
+    constexpr auto sensorToAngle(int sensor)
+    {return (sensor - kArmSensorFullExtend)/kAngleToSensor + kMinAngle;}
+
+    constexpr auto angleToSensor(units::degree_t angle)
+    {return (angle - kMinAngle)*kAngleToSensor + kArmSensorFullExtend;}
+
 }
 
 class IntakeSimulation;  // forward declaration
@@ -105,9 +106,8 @@ class Intake : public frc2::SubsystemBase {
   Intake();
   ~Intake();
 
-  void SimulationPeriodic() override;
-
   void Periodic() override;
+  void SimulationPeriodic() override;
 
   /**
    * Sets the arm position to the intake position
@@ -146,6 +146,8 @@ class Intake : public frc2::SubsystemBase {
 
   // Keep intake Idle if no buttons are pressed
   frc2::CommandPtr IdleIntakeCommand();
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
 
   /** Changes the direction of the moter
     * Makes the moter spin backwards (spitting game peice out)
@@ -226,12 +228,13 @@ class Intake : public frc2::SubsystemBase {
   frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
- private:
+private:
+  frc::MechanismRoot2d* m_mech_root;
+  frc::MechanismLigament2d *m_mech_arm;
+  frc::MechanismLigament2d *m_mech_arm_goal;
+  frc::MechanismLigament2d *m_mech_spinner;
+  frc::MechanismLigament2d *m_mech_note;
 
-  /**
-   * The goal position of the arm used for some functions
-  */
-  int goal;
 private:
   friend class IntakeSimulation;
   std::unique_ptr<IntakeSimulation> m_sim_state;

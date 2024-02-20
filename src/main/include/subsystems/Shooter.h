@@ -4,20 +4,15 @@
 
 #pragma once
 
-#include <units/mass.h>
-#include <units/length.h>
-#include <units/moment_of_inertia.h>
-
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 #include <rev/CANSparkFlex.h>
 #include <ctre/Phoenix.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/MathUtil.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 
+#include <units/mass.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/angular_acceleration.h>
@@ -28,7 +23,6 @@
 #include <units/moment_of_inertia.h>
 
 #include <frc/simulation/DCMotorSim.h>
-#include <cmath>
 
 #include <memory>
 #include <numbers>
@@ -100,6 +94,9 @@ class Shooter : public frc2::SubsystemBase {
   
   void Periodic() override;
 
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
+
   void SimulationPeriodic() override;
   
   // const PIDCoefficients m_pivotPIDCoefficients;
@@ -147,6 +144,9 @@ class Shooter : public frc2::SubsystemBase {
   frc::DigitalInput m_intakeBreakBeam{3};
 
   frc::DigitalInput m_flywheelBreakBeam{4};
+
+ private:
+  frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;
