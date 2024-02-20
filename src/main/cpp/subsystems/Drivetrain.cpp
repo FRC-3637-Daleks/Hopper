@@ -13,6 +13,9 @@
 #include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/WaitCommand.h>
 
+#include <hal/SimDevice.h>
+#include <hal/simulation/SimDeviceData.h>
+
 using namespace DriveConstants;
 
 class DrivetrainSimulation
@@ -68,6 +71,12 @@ Drivetrain::Drivetrain()
       m_sim_state(new DrivetrainSimulation(*this)) { }
 
 void Drivetrain::Periodic() {
+
+  // Do this once per loop
+  SwerveModule::RefreshAllSignals(
+    m_frontLeft, m_frontRight, m_rearLeft, m_rearRight
+  );
+  
   // Update the odometry with the current gyro angle and module states.
   m_poseEstimator.Update(
       GetHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
@@ -77,6 +86,7 @@ void Drivetrain::Periodic() {
 }
 
 Drivetrain::~Drivetrain() {}
+
 
 void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
                        units::meters_per_second_t strafeSpeed,
@@ -93,7 +103,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   // Occasionally a drive motor is commanded to go faster than its maximum
   // output can sustain. Desaturation lowers the module speeds so that no motor
   // is driven above its maximum speed, while preserving the intended motion.
-  kDriveKinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
+  kDriveKinematics.DesaturateWheelSpeeds(&states, DriveConstants::kMaxSpeed);
 
   // fmt::print("desaturated wheel speeds\n");
 
@@ -111,6 +121,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   m_rearLeft.SetDesiredState(rl);
   m_rearRight.SetDesiredState(rr);
 }
+
 
 void Drivetrain::SetModuleStates(
     wpi::array<frc::SwerveModuleState, 4> desiredStates) {
@@ -147,11 +158,11 @@ void Drivetrain::SyncEncoders(){
   m_rearRight.SyncEncoders();
 }
 
-void Drivetrain::SteerCoastMode(bool coast){
-  m_frontLeft.SteerCoastMode(coast);
-  m_frontRight.SteerCoastMode(coast);
-  m_rearLeft.SteerCoastMode(coast);
-  m_rearRight.SteerCoastMode(coast);
+void Drivetrain::CoastMode(bool coast){
+  m_frontLeft.CoastMode(coast);
+  m_frontRight.CoastMode(coast);
+  m_rearLeft.CoastMode(coast);
+  m_rearRight.CoastMode(coast);
 }
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
   return -m_gyro.GetRate() * 1_deg_per_s;
@@ -268,40 +279,19 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
   return this->Run([=] { Drive(forward(), strafe(), rot(), true); });
 }
 
-// // needs work
-// frc2::CommandPtr Drivetrain::DriveToPoseCommand(frc::Pose2d targetPose) {
-//   // TODO
-//   frc::Pose2d startPose = m_odometry.GetPose();
-//   const double kDistanceTolerance =
-//       0.1; // Tolerance for position error in meters
 
-//   units::meter_t hypotenuse =
-//       units::meter_t{std::hypot((targetPose.X() - startPose.X()).value(),
-//                            (targetPose.Y() - startPose.Y()).value())};
 
-//   while (std::hypot((targetPose.X() - startPose.X()).value(),
-//                     (targetPose.Y() - startPose.Y()).value()) >
-//          kDistanceTolerance) {
-//     // todo
-//     break;
-//   }
-
-//   return {nullptr};
-// }
-
-// // Check if the robot has reached the target pose
-// // need to fix
-// bool Drivetrain::IsFinished(frc::Pose2d targetPose) {
-
-//   frc::Pose2d startPose = m_odometry.GetPose();
-
-//   auto distanceError =
-//       targetPose.Translation().Distance(startPose.Translation());
-//   auto angleError =
-//       targetPose.Rotation().Radians() - startPose.Rotation().Radians();
-//   return distanceError < kDistanceTolerance &&
-//          std::fabs((double)angleError) < 0.05;
-// }
+frc2::CommandPtr Drivetrain::SwerveSlowCommand(
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe,
+    std::function<units::revolutions_per_minute_t()> rot) {
+  // fmt::print("making command\n");
+  return this->Run([=] {
+    // fmt::print("starting drive command\n");
+    Drive(forward()/4, strafe()/4, rot()/5, true);
+    // fmt::print("sent drive command\n");
+  });
+}
 
 frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
   return this->RunOnce([&] { ZeroHeading(); });
@@ -320,14 +310,22 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
   }).IgnoringDisable(true);
 }
 
+frc2::CommandPtr Drivetrain::CoastModeCommand(bool coast){
+  return this->StartEnd([&]{
+    this->CoastMode(true);
+  }, [&]{
+    this->CoastMode(false);
+  });
+}
+
 frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
   return this->StartEnd([&] {
     fmt::print("insdie the configabscommand ********* ");
-    SteerCoastMode(true);
+    CoastMode(true);
     ZeroAbsEncoders();
   },
   [&] {
-    SteerCoastMode(false);
+    CoastMode(false);
     SetAbsEncoderOffset();
    })
    .AndThen(frc2::WaitCommand(0.5_s).ToPtr())

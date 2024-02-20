@@ -10,6 +10,7 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/smartdashboard/Mechanism2d.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -24,6 +25,7 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Climb.h"
 
 
 namespace AutoConstants {
@@ -52,7 +54,7 @@ const frc::TrapezoidProfile<units::radians>::Constraints
 
 namespace OperatorConstants {
 
-constexpr int kDriverControllerPort = 1;
+constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
@@ -87,11 +89,14 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
+  
+  frc2::CommandPtr GetDisabledCommand();
+
 
  public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_copilotController{
+      OperatorConstants::kCopilotControllerPort};
 
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
@@ -101,6 +106,12 @@ class RobotContainer {
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
+  Climb m_climb;
 
+  // Global Dashboard Items
+  frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
+
+public:
   void ConfigureBindings();
+  void ConfigureDashboard();
 };

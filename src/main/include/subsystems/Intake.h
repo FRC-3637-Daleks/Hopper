@@ -4,48 +4,40 @@
 
 #pragma once
 
-#include <units/moment_of_inertia.h>
-#include <units/torque.h>
-#include <units/angle.h>
-#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 #include <frc/DigitalInput.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 
 #include <rev/CANSparkFlex.h>
 
-#include <frc2/command/ConditionalCommand.h>
-#include <frc2/command/Commands.h>
-#include <frc2/command/RunCommand.h>
-
-#include <rev/CANSparkLowLevel.h>
-
 #include <ctre/Phoenix.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+
+#include <units/moment_of_inertia.h>
+#include <units/torque.h>
+#include <units/angle.h>
 
 #include <memory>
 #include <numbers>
 
 namespace IntakeConstants {
     //Moter IDs
-    constexpr int kIntakeMotorPort = 16;
-    constexpr int kArmMotorPort = 17;
+    constexpr int kIntakeMotorPort = 17;
+    constexpr int kArmMotorPort = 15;
 
     //limit switch
-    constexpr int kLimitSwitchIntakePort = 0;
 
     //breakbeam
-    constexpr int kBreakbeamPort = 1;
-    constexpr int kShooterBreakBeamPort = 2;
+    constexpr int kBreakbeamPort = 0;
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 1;
-    constexpr int IntakeArmAMPPos = 2;
-    constexpr int IntakeArmSpeakerPos = 3;
+    constexpr int IntakeArmIntakePos = 10 *11.3777778; // -
+    constexpr int IntakeArmAMPPos = 59.4  *11.3777778; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
+    constexpr int IntakeArmSpeakerPos = 70*11.3777778;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
@@ -58,9 +50,12 @@ namespace IntakeConstants {
 
     //pid configurations
     constexpr int kF = 0.0;
-    constexpr int kP = 0.0;
+    constexpr int kP = 10.0;
     constexpr int kI = 0.0;
     constexpr int kD = 0.0;
+
+    //consts for conversion
+    constexpr int totalEncoders = 4096;
 
     //margin of error for detecting if arm is in specific spot
     constexpr int kAllowableMarginOfError = 1;
@@ -74,27 +69,33 @@ namespace IntakeConstants {
     //physical characteristics
     constexpr auto kWheelMoment = 0.001_kg_sq_m;
     constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
-    constexpr auto kArmMass = 25_lb;
+    constexpr auto kArmMass = 12_lb;
     constexpr auto kArmRadius = 13_in;
     constexpr auto kWheelDiameter = 1.5_in;  //< Verify this
     constexpr auto kWheelCircum = kWheelDiameter*std::numbers::pi/1_tr;
     constexpr double kArmGearing = 4.0;
     //you can play with the leading constant to get the dynamics you want
     constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
-    constexpr bool kGravityCompensation = false;  // true if there's a gas spring
+    constexpr bool kGravityCompensation = true;  // true if there's a gas spring
 
     // modeling 0 as intake horizontal in front of robot, and positive angle is counterclockwise
-    constexpr auto kMinAngle = -30_deg;
-    constexpr auto kMaxAngle = 160_deg;
+    constexpr auto kMinAngle = -15.4_deg;
+    constexpr auto kMaxAngle = 145_deg;
 
     // TODO: MEASURE THESE
-    constexpr int kArmSensorFullExtend = 10;  // corresponds to kMinAngle
-    constexpr int kArmSensorFullRetract = 1000;  // corresponds to kMaxAngle
+    constexpr int kArmSensorFullExtend = 995;  // corresponds to kMinAngle //amp angle = 1.365 radians
+    constexpr int kArmSensorFullRetract = 463;  // corresponds to kMaxAngle
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
       (kMaxAngle - kMinAngle);
     constexpr auto kIntakeLength = 13.0_in;
-    constexpr auto kIntakeSensorPosition = kIntakeLength - 1.0_in;
+    constexpr auto kIntakeSensorPosition = 0.5_in;
+    
+    constexpr auto sensorToAngle(int sensor)
+    {return (sensor - kArmSensorFullExtend)/kAngleToSensor + kMinAngle;}
+
+    constexpr auto angleToSensor(units::degree_t angle)
+    {return (angle - kMinAngle)*kAngleToSensor + kArmSensorFullExtend;}
 
 }
 
@@ -107,9 +108,8 @@ class Intake : public frc2::SubsystemBase {
   Intake();
   ~Intake();
 
-  void SimulationPeriodic() override;
-
   void Periodic() override;
+  void SimulationPeriodic() override;
 
   /**
    * Sets the arm position to the intake position
@@ -139,23 +139,25 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr IntakeIn();
 
+  frc2::CommandPtr AutoIntake();
+
   /**
    * Set intake to spin backwards to spit out a game piece
   */
   frc2::CommandPtr IntakeOut();
 
-  /** Changes the direction of the moter
-    * Makes the moter spin backwards (spitting game peice out)
-    * Makes the moter spin forwards (intaking game peice)
-  */
-  void InvertIntake();
-  void VertIntake();
+  // Keep intake Idle if no buttons are pressed
+  frc2::CommandPtr IdleIntakeCommand();
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
+
 
   /** Simeple on off for intake
    * Turns on intake spinning forward for intaking game peice
    * Turns off intake for stopping intake
   */
-  void OnIntake();
+  void IntakeForward();
+  void IntakeBackward();
   void OffIntake();
 
   /**
@@ -174,14 +176,16 @@ class Intake : public frc2::SubsystemBase {
   void IntakeArmSpeaker();
   void IntakeArmIntake();
 
+  frc2::CommandPtr IntakeArmAMPCommand();
+  frc2::CommandPtr IntakeArmSpeakerCommand();
+  frc2::CommandPtr IntakeArmIntakeCommand();
+
   /** Gets the state of Limit switches and break beams for intake
   * Gets the state of the limit switch for the intake
   * Gets the state of the break beam for the intake
   */
-  bool GetStateLimitSwitchIntake();  
-  bool GetStateBreakBeamIntake();
-  bool GetStateShooterBeamIntake();
 
+  bool GetStateBreakBeamIntake();
 
   /** 
   * Gets the difference between were the arm is going and were it is 
@@ -208,20 +212,23 @@ class Intake : public frc2::SubsystemBase {
   */
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmMotorPort};
 
+  /**
+   * The goal position of the arm used for some functions
+  */
+  int m_goal;
+
   /** Defines some digital inputs
    * Defines limitswitch used on the intake
    * Defines breakbeam used on the intake
   */
-  frc::DigitalInput m_limitSwitchIntake{IntakeConstants::kLimitSwitchIntakePort};
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
-  frc::DigitalInput m_shooterBreakBeam{IntakeConstants::kShooterBreakBeamPort};
 
- private:
-
-  /**
-   * The goal position of the arm used for some functions
-  */
-  int goal;
+private:
+  frc::MechanismRoot2d* m_mech_root;
+  frc::MechanismLigament2d *m_mech_arm;
+  frc::MechanismLigament2d *m_mech_arm_goal;
+  frc::MechanismLigament2d *m_mech_spinner;
+  frc::MechanismLigament2d *m_mech_note;
 
 private:
   friend class IntakeSimulation;

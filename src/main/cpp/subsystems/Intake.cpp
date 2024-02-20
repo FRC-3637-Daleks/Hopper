@@ -2,6 +2,7 @@
 //Please look at intake.h for documentation
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/Commands.h>
 
 #include <frc/simulation/FlywheelSim.h>
 #include <frc/simulation/SingleJointedArmSim.h>
@@ -14,7 +15,6 @@ public:
   IntakeSimulation(Intake &intake):
     m_intakeMotorSim{"SPARK MAX ", IntakeConstants::kIntakeMotorPort},
     m_armMotorSim{intake.m_arm.GetSimCollection()},
-    m_limitSwitchSim{intake.m_limitSwitchIntake},
     m_breakBeamSim{intake.m_breakbeam},
     m_intakeModel{frc::DCMotor::NeoVortex(1), 2, IntakeConstants::kWheelMoment},
     m_armModel{
@@ -29,7 +29,6 @@ public:
   frc::sim::SimDeviceSim m_intakeMotorSim;
   ctre::phoenix::motorcontrol::TalonSRXSimCollection &m_armMotorSim;
   frc::sim::DIOSim m_breakBeamSim;
-  frc::sim::DIOSim m_limitSwitchSim;
 
   // models the physics of the components
   frc::sim::FlywheelSim m_intakeModel;
@@ -48,7 +47,8 @@ Intake::Intake():
   m_arm.SetSelectedSensorPosition(0 /*starting position*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
   m_arm.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
   //I think this sets the direction of the sensor, not too sure
-  m_arm.SetSensorPhase(true/*idk if correct*/);
+  m_arm.SetSensorPhase(false/*idk if correct*/);
+  // m_arm.SetInverted(false);
 
   //something with power or something
   m_arm.ConfigNominalOutputForward(0.0, IntakeConstants::kTimeoutMs);
@@ -57,27 +57,42 @@ Intake::Intake():
   m_arm.ConfigPeakOutputReverse(-1.0, IntakeConstants::kTimeoutMs);
 
   m_arm.Config_kF(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kP(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
-  m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kF, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kP(IntakeConstants::kPIDLoopIdx, IntakeConstants::kP, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kI, IntakeConstants::kTimeoutMs);
+  m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kD, IntakeConstants::kTimeoutMs);
+
+  /**
+   * I am just pasting from documentation for this motion magic config and stuff
+  */
+
+  // set Motion Magic settings
+  m_arm.ConfigMotionCruiseVelocity(320); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_arm.ConfigMotionAcceleration(80); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
+
+  // periodic, run Motion Magic with slot 0 configs
+  m_arm.SelectProfileSlot(0, 0);
    
 }
 
 void Intake::Periodic() {
-  frc::SmartDashboard::PutNumber("Intake/Goal", goal);
+  frc::SmartDashboard::PutNumber("Intake/Goal", m_goal);
   frc::SmartDashboard::PutNumber("Intake/Intake Motor Percent Out", m_intake.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Percent Out", m_arm.Get());
   frc::SmartDashboard::PutNumber("Intake/Arm Motor Position", m_arm.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutBoolean("Break Beam State", m_breakbeam.Get());
+
+  UpdateVisualization();
 }
 
 frc2::CommandPtr Intake::IntakeRing() {
   return this->RunOnce([this] {
     IntakeArmIntake();})
     .AndThen(this->StartEnd(
-      [this] {frc2::ConditionalCommand(
-                                      frc2::RunCommand([this] {OnIntake();}),
-                                      frc2::RunCommand([this] {OffIntake();}),
-                                      [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ || !GetStateLimitSwitchIntake()/*when untouched*/;});
+      [this] {frc2::cmd::Either(
+                                      frc2::cmd::Run([this] {IntakeBackward();}),
+                                      frc2::cmd::Run([this] {OffIntake();}),
+                                      [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ /*|| !GetStateLimitSwitchIntake()when untouched*/;});
       },
       [this] {OffIntake();}
     ));
@@ -94,9 +109,9 @@ frc2::CommandPtr Intake::OutputToShooter() {
   return this->RunOnce([this] {
     IntakeArmSpeaker();})
     .AndThen(this->RunEnd(
-      [this] {frc2::ConditionalCommand(
-                                      frc2::RunCommand([this] {OutputShooterIntake();}),
-                                      frc2::RunCommand([this] {OffIntake();}),
+      [this] {frc2::cmd::Either(
+                                      frc2::cmd::Run([this] {OutputShooterIntake();}),
+                                      frc2::cmd::Run([this] {OffIntake();}),
                                       [this] () -> bool {return true/*replace with break beam from the shooter*/;});
       },
       [this] {OffIntake();}
@@ -105,21 +120,79 @@ frc2::CommandPtr Intake::OutputToShooter() {
 
 frc2::CommandPtr Intake::IntakeIn() {
   return frc2::cmd::RunEnd([this] {
-    VertIntake();
-    OnIntake();
+    IntakeBackward();
   },
   [this] { OffIntake(); });
 }
 
 frc2::CommandPtr Intake::IntakeOut() {
   return frc2::cmd::RunEnd([this] {
-    InvertIntake();
-    OnIntake();
+    IntakeForward();
   },
   [this] { OffIntake(); });
 }
 
 Intake::~Intake() {}
+
+void Intake::InitVisualization(frc::Mechanism2d* mech)
+{
+  // position of pivot approximated in feet
+  m_mech_root = mech->GetRoot("intake", 3, 1);
+
+  m_mech_arm_goal = m_mech_root->Append<frc::MechanismLigament2d>(
+    "arm goal",
+    IntakeConstants::kArmRadius.convert<units::feet>().value(), // line length in feet
+    0_deg, // line angle
+    6, // line width in pixels
+    frc::Color8Bit{20, 200, 20} // RGB, green
+  );
+
+  m_mech_arm = m_mech_root->Append<frc::MechanismLigament2d>(
+    "arm",
+    IntakeConstants::kArmRadius.convert<units::feet>().value(),
+    0_deg,
+    6,
+    frc::Color8Bit{200, 20, 200}  // magenta
+  );
+
+  m_mech_spinner = m_mech_arm->Append<frc::MechanismLigament2d>(
+    "wheel",
+    (IntakeConstants::kWheelDiameter/2).convert<units::feet>().value(),
+    0_deg,
+    2,
+    frc::Color8Bit{20, 200, 200}  // cyan
+  );
+
+  m_mech_note = m_mech_root->Append<frc::MechanismLigament2d>(
+    "note",
+    0.8,  // lets say 0.8_ft with compression
+    0_deg,
+    1,
+    frc::Color8Bit{240, 20, 180}  // orange
+  );
+}
+
+void Intake::UpdateVisualization()
+{
+  // Visualization wasn't initialized
+  if (!m_mech_root) return;
+
+  m_mech_arm->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
+  m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
+  m_mech_spinner->SetAngle(
+    units::degree_t{m_mech_spinner->GetAngle()} + m_intake.GetAppliedOutput()*66.66_deg);
+  m_mech_note->SetAngle(units::degree_t{m_mech_arm->GetAngle()});
+  if (m_breakbeam.Get())
+  {
+    m_mech_note->SetLineWeight(10);
+    m_mech_note->SetColor({200, 200, 40});
+  }
+  else
+  {
+    m_mech_note->SetLineWeight(1);
+    m_mech_note->SetColor({200, 20, 200});
+  }
+}
 
 /**
  * I could proboly consolidate OutputShooterIntake and OutputAMPIntake into OnIntake
@@ -130,17 +203,26 @@ Intake::~Intake() {}
  * variable and having a function that sees if GetArmDiffrence and current 
  * position has a diffrence of less or equal to kAllowableMarginOfError
 */
-void Intake::InvertIntake() {
-  m_intake.SetInverted(true);
+/*
+_____
+*****
+-|    |
+*****
+-----
+*/
+
+
+
+frc2::CommandPtr Intake::AutoIntake() {
+  return Run([this] {IntakeBackward();}).Until([this] () -> bool {return (GetStateBreakBeamIntake()  /*|| GetStateLimitSwitchIntake()*/);});
 }
 
-void Intake::VertIntake() {
-  m_arm.SetInverted(false);
-}
-
-void Intake::OnIntake() {
-  VertIntake();
+void Intake::IntakeForward() {
   m_intake.SetVoltage(IntakeConstants::kIntakeVoltage);
+}
+
+void Intake::IntakeBackward() {
+  m_intake.SetVoltage(-1*(IntakeConstants::kIntakeVoltage));
 }
 
 void Intake::OffIntake() {
@@ -148,44 +230,53 @@ void Intake::OffIntake() {
 }
 
 void Intake::OutputShooterIntake() {
-  InvertIntake();
   m_intake.SetVoltage(IntakeConstants::kShooterVoltage);
 }
 
 void Intake::OutputAMPIntake() {
-  InvertIntake();
   m_intake.SetVoltage(IntakeConstants::kAMPVoltage);
 }
 
 void Intake::IntakeArmAMP() {
-  goal = IntakeConstants::IntakeArmAMPPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmAMPPos);
+  m_goal = IntakeConstants::IntakeArmAMPPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmAMPPos);
 }
 
 void Intake::IntakeArmSpeaker() {
-  goal = IntakeConstants::IntakeArmSpeakerPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmSpeakerPos);
+  m_goal = IntakeConstants::IntakeArmSpeakerPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmSpeakerPos);
 }
 
 void Intake::IntakeArmIntake() {
-  goal = IntakeConstants::IntakeArmIntakePos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Position, IntakeConstants::IntakeArmIntakePos);
+  m_goal = IntakeConstants::IntakeArmIntakePos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmIntakePos);
 }
 
-bool Intake::GetStateLimitSwitchIntake() {
-  return m_limitSwitchIntake.Get();
+frc2::CommandPtr Intake::IntakeArmAMPCommand() {
+  return Run([this] {IntakeArmAMP();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IntakeArmSpeakerCommand() {
+  return Run([this] {IntakeArmSpeaker();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IntakeArmIntakeCommand() {
+  return Run([this] {IntakeArmIntake();})
+  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+}
+
+frc2::CommandPtr Intake::IdleIntakeCommand() {
+  return frc2::cmd::None();
 }
 
 bool Intake::GetStateBreakBeamIntake() {
   return m_breakbeam.Get();
 }
 
-bool Intake::GetStateShooterBeamIntake() {
-  return m_shooterBreakBeam.Get();
-}
-
 int Intake::GetArmDiffrence() {
-  return goal - m_arm.GetSelectedSensorPosition();
+  return abs(m_goal - m_arm.GetSelectedSensorPosition());
 }
 
 bool Intake::IsAtAMP() {

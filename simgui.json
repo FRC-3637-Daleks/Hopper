@@ -1,19 +1,69 @@
 {
+<<<<<<< HEAD
+=======
+  "HALProvider": {
+    "PowerDistributions": {
+      "14": {
+        "PowerDistribution[14]": {
+          "open": true
+        }
+      }
+    }
+  },
+>>>>>>> origin/arnav-wip
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Mechanisms": "Mechanism2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+<<<<<<< HEAD
+      "/SmartDashboard/Mechanisms": {
+=======
+      "/SmartDashboard/zeroEncodersCommand": {
+>>>>>>> origin/arnav-wip
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+<<<<<<< HEAD
+        "Field": {
+          "double[]##v_/SmartDashboard/Field/simulation": {
+            "open": true
+          }
+        },
         "Intake": {
           "open": true,
           "sim": {
             "open": true
           }
+        },
+        "Shooter": {
+=======
+        "FL": {
+          "open": true
+        },
+        "Swerve": {
+>>>>>>> origin/arnav-wip
+          "open": true
         },
         "open": true
       }

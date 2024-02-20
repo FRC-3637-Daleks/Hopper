@@ -17,13 +17,13 @@
 #include <units/voltage.h>
 #include <units/moment_of_inertia.h>
 
-#include <memory>
 #include <numbers>
 
 
 
 namespace ModuleConstants {
 
+constexpr double NeutralDeadBand = 0.01;
 constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
 constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
 constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
@@ -43,7 +43,7 @@ constexpr double kSteerGearReduction = 150.0/7.0;
 constexpr auto kSteerMoment = 0.005_kg_sq_m;
 
 // Values measured with the drivetrain suspended.
-constexpr auto kPhysicalMaxSpeed = 16.5_fps;
+constexpr auto kPhysicalMaxSpeed = 15.7_fps;
 } // namespace ModuleConstants
 
 // forward declaration
@@ -74,6 +74,14 @@ public:
   // Need to define destructor to make simulation code compile
   ~SwerveModule();
 
+  // IMPORTANT: Need to refresh signals once per loop
+  void RefreshSignals();
+
+  // This one is even more efficient than RefreshSignals as it groups ALL
+  // swerve module signals into a single call
+  template<typename... T>
+  static void RefreshAllSignals(T&... modules);
+
   // Returns the meters driven based on encoder reading.
   units::meter_t GetModuleDistance();
 
@@ -89,7 +97,7 @@ public:
   // Combines GetModuleVelocity() and GetModuleHeading().
   frc::SwerveModuleState GetState();
 
-  void SteerCoastMode(bool coast);
+  void CoastMode(bool coast);
 
   void SetEncoderOffset();
   
@@ -120,8 +128,26 @@ private:
   // Keeps track of the module heading between power cycles.
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
+private:  // signal objects to cache
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity;
+  ctre::phoenix6::StatusSignal<units::angle::turn_t> m_steerPosition;
+  ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_steerVelocity;
+
 private:
   friend class SwerveModuleSim;
   std::unique_ptr<SwerveModuleSim> m_sim_state;
 };
 
+// Template method must be defined in .h
+template<typename... T>
+void SwerveModule::RefreshAllSignals(T&... modules)
+{
+  // This passes all 4N signals to one call to RefreshAll
+  ctre::phoenix6::BaseStatusSignal::RefreshAll(
+    modules.m_drivePosition...,
+    modules.m_driveVelocity...,
+    modules.m_steerPosition...,
+    modules.m_steerVelocity...
+  );
+}

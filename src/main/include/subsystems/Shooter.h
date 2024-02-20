@@ -4,20 +4,15 @@
 
 #pragma once
 
-#include <units/mass.h>
-#include <units/length.h>
-#include <units/moment_of_inertia.h>
-
 #include <frc/DigitalInput.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc2/command/StartEndCommand.h>
-#include <frc2/command/WaitUntilCommand.h>
 #include <rev/CANSparkFlex.h>
 #include <ctre/Phoenix.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/MathUtil.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 
+#include <units/mass.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/angular_acceleration.h>
@@ -28,7 +23,6 @@
 #include <units/moment_of_inertia.h>
 
 #include <frc/simulation/DCMotorSim.h>
-#include <cmath>
 
 #include <memory>
 #include <numbers>
@@ -43,14 +37,10 @@ namespace ShooterConstants {
     constexpr auto kEncoderCPR = 0.0;
     constexpr auto kGearReduction = 0.0;
     constexpr bool kEncoderReversed = true;
-    
 
-    constexpr int kIntakeMotorPort = 13;
-    constexpr int kFlywheelMotorPort = 14;
-
-  constexpr int kPivotMotorPort = 13;
-  constexpr int kFlywheelLeadMotorPort = 14;
-  constexpr int kFlywheelFollowMotorPort = 15;
+  constexpr int kPivotMotorPort = 14;
+  constexpr int kFlywheelLeadMotorPort = 16;
+  constexpr int kFlywheelFollowMotorPort = 18;
 
  //PID Loop something
     constexpr int kPIDLoopIdx = 0;
@@ -100,6 +90,9 @@ class Shooter : public frc2::SubsystemBase {
   
   void Periodic() override;
 
+  void InitVisualization(frc::Mechanism2d* mech);
+  void UpdateVisualization();
+
   void SimulationPeriodic() override;
   
   // const PIDCoefficients m_pivotPIDCoefficients;
@@ -139,14 +132,8 @@ class Shooter : public frc2::SubsystemBase {
 
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
 
-
-
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  frc::DigitalInput m_intakeBreakBeam{3};
-
-  frc::DigitalInput m_flywheelBreakBeam{4};
+  frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;

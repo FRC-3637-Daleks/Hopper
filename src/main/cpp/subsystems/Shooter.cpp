@@ -54,6 +54,11 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
   m_pivot.SetSensorPhase(true);
 
+  m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
+  
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, ShooterConstants::kIPivot, ShooterConstants::kTimeoutMs);
@@ -61,12 +66,45 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 //Motors following + leading
 
   m_followMotor.Follow(m_leadMotor);
-
- 
-
 }
 
 Shooter::~Shooter() {}
+
+void Shooter::InitVisualization(frc::Mechanism2d* mech)
+{
+  auto root = mech->GetRoot("shooter", 1.5, 1.5);
+
+  m_mech_pivot_goal = root->Append<frc::MechanismLigament2d>(
+    "aim goal",  // name
+    1,  // feet long
+    180_deg,  // start angle
+    4,  // pixel width
+    frc::Color8Bit{20, 200, 20}  // RGB, green
+  );
+
+  m_mech_pivot = root->Append<frc::MechanismLigament2d>(
+    "aim",
+    1,
+    180_deg,
+    10,
+    frc::Color8Bit{240, 240, 240}  // white
+  );
+}
+
+void Shooter::UpdateVisualization()
+{
+  const auto sensor_goal = m_pivot.GetClosedLoopTarget();
+  const auto angle_goal = (sensor_goal - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_pivot_goal->SetAngle(180_deg - angle_goal);
+
+  const auto sensor_measured = m_pivot.GetSelectedSensorPosition();
+  const auto angle_measured = (sensor_measured - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_pivot->SetAngle(180_deg - angle_measured);
+
+  // scale blueness of shooter on flywheel speed
+  const auto wheel_vel = m_leadMotor.GetAppliedOutput();
+  m_mech_pivot->SetColor({240 - int(wheel_vel*200), 240 - int(wheel_vel*200), 240});
+}
 
 //Runs both shooting motors
 void Shooter::RunShootMotor() {
@@ -108,6 +146,7 @@ void Shooter::Periodic(){
   frc::SmartDashboard::PutNumber("Shooter/Pivot power", m_pivot.Get());
   frc::SmartDashboard::PutNumber("Shooter/Pivot encoder", m_pivot.GetSelectedSensorPosition());
 
+  UpdateVisualization();
 }
 
 units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
@@ -116,11 +155,11 @@ units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
-      ShooterConstants::kPivotEncoderDistancePerCount * m_pivot.GetSelectedSensorPosition();
+      m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
   // Puts the rotation in the correct scope for the incremental encoder.
   return (frc::AngleModulus(rotation.Radians() - currentHeading) +
-          currentHeading) /
-         ShooterConstants::kPivotEncoderDistancePerCount;
+          currentHeading) *
+         ShooterConstants::kAngleToSensor;
 }
 
 units::radian_t Shooter::GetAnglePivot() {
@@ -146,16 +185,19 @@ frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInpu
   return frc2::cmd::Run(
     [this, controllerInput] { 
       m_leadMotor.Set(controllerInput()); 
+
+      // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
   );
 }
 
 frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> angle) {
-  return frc2::cmd::RunOnce(
+  return frc2::cmd::Run(
     [this, angle] () {
       SetPivotMotor(ToTalonUnits(angle()));
-
-      fmt::print("inside pivot angle command {}", angle());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal", angle().value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal", ToTalonUnits(angle()));
+      //fmt::print("inside pivot angle command {}\n", angle());
     }, {this}
   );
 }
@@ -205,13 +247,13 @@ void Shooter::SimulationPeriodic()
 
   const units::degree_t arm_angle{m_sim_state->m_armModel.GetAngle()};
   const auto sensor_angle_reading = 
-    kMinAimSensor + kAngleToSensor*(arm_angle - kMinAngle);
+    kMinAimSensor + kAngleToSensor * (arm_angle - kMinAngle);
   m_sim_state->m_aimMotorSim.SetAnalogPosition(sensor_angle_reading);
 
   // Talon expects speed in terms of "sensor units per 100ms"
   // hence multiplying by 100_ms
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
-  const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
+  const auto sensor_speed_reading = arm_speed * kAngleToSensor * 100_ms;
   m_sim_state->m_aimMotorSim.SetAnalogVelocity(sensor_speed_reading);
   m_sim_state->m_aimMotorSim.SetLimitFwd(
     m_sim_state->m_armModel.HasHitUpperLimit()
@@ -222,4 +264,7 @@ void Shooter::SimulationPeriodic()
   m_sim_state->m_aimMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );
+
+  frc::SmartDashboard::PutNumber("Shooter/Analog Position", sensor_angle_reading.value());
+  frc::SmartDashboard::PutNumber("Shooter/Analog Velocity", sensor_speed_reading.value());
 }
