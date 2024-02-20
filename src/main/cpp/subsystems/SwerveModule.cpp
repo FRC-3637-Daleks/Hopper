@@ -2,7 +2,6 @@
 
 #include <frc/MathUtil.h>
 #include <frc/RobotController.h>
-#include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/phoenix6/configs/Configs.hpp>
 #include <ctre/phoenix6/signals/SpnEnums.hpp>
