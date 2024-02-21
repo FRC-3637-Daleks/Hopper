@@ -11,14 +11,20 @@
 
 Vision::Vision(
     std::function<void(frc::Pose3d, units::second_t)> addVisionMeasurement,
-    std::function<frc::Pose3d()> getRobotPose)
-    : m_estimator{
-          frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
-          photon::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(m_camera), // change to the multitag detection algorithm
-          VisionConstants::kCameraToRobot} {
-          addVisionMeasurement;
-          getRobotPose;
-          }
+    std::function<frc::Pose3d()> getRobotPose,
+    const Eigen::Matrix<double, 3, 1>& initialStdDevs) 
+    : m_estimator(
+        frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
+        photon::MULTI_TAG_PNP_ON_COPROCESSOR,
+        std::move(m_camera),  // change to the multitag detection algorithm
+        VisionConstants::kCameraToRobot)
+{
+    // Inside the constructor body, you can perform additional operations if needed
+    addVisionMeasurement(frc::Pose3d(), units::second_t(0));  // Call the addVisionMeasurement function
+    frc::Pose3d robotPose = getRobotPose();  // Call the getRobotPose function
+    frc::Pose2d robotPose2d = robotPose.ToPose2d();  // Convert the robotPose to Pose2d
+    m_estimatedStdDevs = GetEstimationStdDevs(robotPose2d);  
+}
 
 bool Vision::HasTargets() {
   photon::PhotonPipelineResult result = m_camera.GetLatestResult();
