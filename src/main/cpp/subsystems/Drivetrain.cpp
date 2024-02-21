@@ -1,5 +1,7 @@
 #include "subsystems/Drivetrain.h"
 
+#include <cmath> // Make sure to include cmath for std::fmod
+
 #include <frc/I2C.h>
 #include <frc/SPI.h>
 #include <frc/geometry/Pose2d.h>
@@ -7,7 +9,12 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/array.h>
 #include <frc/simulation/LinearSystemSim.h>
+#include <frc2/command/ProfiledPIDCommand.h>
+#include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/WaitCommand.h>
+
+#include <hal/SimDevice.h>
+#include <hal/simulation/SimDeviceData.h>
 
 using namespace DriveConstants;
 
@@ -64,6 +71,12 @@ Drivetrain::Drivetrain()
       m_sim_state(new DrivetrainSimulation(*this)) { }
 
 void Drivetrain::Periodic() {
+
+  // Do this once per loop
+  SwerveModule::RefreshAllSignals(
+    m_frontLeft, m_frontRight, m_rearLeft, m_rearRight
+  );
+  
   // Update the odometry with the current gyro angle and module states.
   m_poseEstimator.Update(
       GetHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
@@ -73,6 +86,7 @@ void Drivetrain::Periodic() {
 }
 
 Drivetrain::~Drivetrain() {}
+
 
 void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
                        units::meters_per_second_t strafeSpeed,
@@ -89,7 +103,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   // Occasionally a drive motor is commanded to go faster than its maximum
   // output can sustain. Desaturation lowers the module speeds so that no motor
   // is driven above its maximum speed, while preserving the intended motion.
-  kDriveKinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
+  kDriveKinematics.DesaturateWheelSpeeds(&states, DriveConstants::kMaxSpeed);
 
   // fmt::print("desaturated wheel speeds\n");
 
@@ -107,6 +121,7 @@ void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
   m_rearLeft.SetDesiredState(rl);
   m_rearRight.SetDesiredState(rr);
 }
+
 
 void Drivetrain::SetModuleStates(
     wpi::array<frc::SwerveModuleState, 4> desiredStates) {
@@ -143,11 +158,11 @@ void Drivetrain::SyncEncoders(){
   m_rearRight.SyncEncoders();
 }
 
-void Drivetrain::SteerCoastMode(bool coast){
-  m_frontLeft.SteerCoastMode(coast);
-  m_frontRight.SteerCoastMode(coast);
-  m_rearLeft.SteerCoastMode(coast);
-  m_rearRight.SteerCoastMode(coast);
+void Drivetrain::CoastMode(bool coast){
+  m_frontLeft.CoastMode(coast);
+  m_frontRight.CoastMode(coast);
+  m_rearLeft.CoastMode(coast);
+  m_rearRight.CoastMode(coast);
 }
 units::degrees_per_second_t Drivetrain::GetTurnRate() {
   return -m_gyro.GetRate() * 1_deg_per_s;
@@ -264,40 +279,19 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
   return this->Run([=] { Drive(forward(), strafe(), rot(), true); });
 }
 
-// // needs work
-// frc2::CommandPtr Drivetrain::DriveToPoseCommand(frc::Pose2d targetPose) {
-//   // TODO
-//   frc::Pose2d startPose = m_odometry.GetPose();
-//   const double kDistanceTolerance =
-//       0.1; // Tolerance for position error in meters
 
-//   units::meter_t hypotenuse =
-//       units::meter_t{std::hypot((targetPose.X() - startPose.X()).value(),
-//                            (targetPose.Y() - startPose.Y()).value())};
 
-//   while (std::hypot((targetPose.X() - startPose.X()).value(),
-//                     (targetPose.Y() - startPose.Y()).value()) >
-//          kDistanceTolerance) {
-//     // todo
-//     break;
-//   }
-
-//   return {nullptr};
-// }
-
-// // Check if the robot has reached the target pose
-// // need to fix
-// bool Drivetrain::IsFinished(frc::Pose2d targetPose) {
-
-//   frc::Pose2d startPose = m_odometry.GetPose();
-
-//   auto distanceError =
-//       targetPose.Translation().Distance(startPose.Translation());
-//   auto angleError =
-//       targetPose.Rotation().Radians() - startPose.Rotation().Radians();
-//   return distanceError < kDistanceTolerance &&
-//          std::fabs((double)angleError) < 0.05;
-// }
+frc2::CommandPtr Drivetrain::SwerveSlowCommand(
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe,
+    std::function<units::revolutions_per_minute_t()> rot) {
+  // fmt::print("making command\n");
+  return this->Run([=] {
+    // fmt::print("starting drive command\n");
+    Drive(forward()/4, strafe()/4, rot()/5, true);
+    // fmt::print("sent drive command\n");
+  });
+}
 
 frc2::CommandPtr Drivetrain::ZeroHeadingCommand() {
   return this->RunOnce([&] { ZeroHeading(); });
@@ -316,14 +310,22 @@ frc2::CommandPtr Drivetrain::SetAbsEncoderOffsetCommand(){
   }).IgnoringDisable(true);
 }
 
+frc2::CommandPtr Drivetrain::CoastModeCommand(bool coast){
+  return this->StartEnd([&]{
+    this->CoastMode(true);
+  }, [&]{
+    this->CoastMode(false);
+  });
+}
+
 frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
   return this->StartEnd([&] {
     fmt::print("insdie the configabscommand ********* ");
-    SteerCoastMode(true);
+    CoastMode(true);
     ZeroAbsEncoders();
   },
   [&] {
-    SteerCoastMode(false);
+    CoastMode(false);
     SetAbsEncoderOffset();
    })
    .AndThen(frc2::WaitCommand(0.5_s).ToPtr())
@@ -335,4 +337,66 @@ frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp) {
   m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+}
+
+frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
+  /* 
+      Profiled PID Command for turning to angle.
+      m_turnPID - Profiled PID Controller, in degrees.
+      Lambda to measure angle.
+      Final state: angle at 0 radians per second.
+      Move at setpoint velocity from Profiled PID Controller.
+  */
+  //continuous and wraps around 
+  m_turnPID.EnableContinuousInput(-180_deg, 180_deg);
+
+  return frc2::ProfiledPIDCommand<units::degree>(
+    m_turnPID,
+    [this] () -> units::degree_t {
+      auto currentAngle = GetHeading().Degrees();
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
+      //return GetHeading().Degrees();
+      return currentAngle;
+    },
+    {angle, 0_rad_per_s},
+    [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false);
+      // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.value()); // Debugging print
+      double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
+      frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
+    }, {this}
+  ).ToPtr();
+}
+
+
+frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe) {
+
+  auto angle = [this, pose] () -> units::radian_t {
+    return units::math::atan2<units::meter_t, units::meter_t>( pose().Y() - GetPose().Y(), pose().X() - GetPose().X() );
+  };
+
+  return frc2::ProfiledPIDCommand<units::degree>(
+    m_turnPID,
+    [this, angle] () -> units::degree_t {
+      auto currentAngle = GetHeading().Degrees() - angle();
+      frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
+      //return GetHeading().Degrees();
+      return currentAngle;
+    },
+    {0_rad, 0_rad_per_s},
+    [this, forward, strafe] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true);
+      // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
+      frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position", setpoint.position.value()); // Debugging print
+      double pidVal [] = {DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn};
+      frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
+    }, {this}
+  ).ToPtr();
 }

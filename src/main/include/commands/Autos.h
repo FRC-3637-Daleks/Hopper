@@ -6,7 +6,7 @@
 
 #include <frc2/command/CommandPtr.h>
 
-#include "subsystems/Shooter.h"
+class Shooter;
 
 namespace autos {
 /**

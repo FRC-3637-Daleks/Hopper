@@ -91,6 +91,19 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "*.inc": "cpp",
+    "xmemory": "cpp",
+    "xstddef": "cpp",
+    "xtr1common": "cpp",
+    "xutility": "cpp"
+=======
     "charconv": "cpp"
+>>>>>>> origin/carolina-wip
+=======
+    "charconv": "cpp",
+    "*.inc": "cpp"
+>>>>>>> origin/arnav-wip
   }
 }

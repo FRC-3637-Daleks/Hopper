@@ -2,7 +2,6 @@
 
 #include <frc/MathUtil.h>
 #include <frc/RobotController.h>
-#include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/phoenix6/configs/Configs.hpp>
 #include <ctre/phoenix6/signals/SpnEnums.hpp>
@@ -65,6 +64,10 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       m_driveMotor(driveMotorId),
       m_steerMotor(steerMotorId),
       m_absoluteEncoder(absoluteEncoderId),
+      m_drivePosition(m_driveMotor.GetPosition()),
+      m_driveVelocity(m_driveMotor.GetVelocity()),
+      m_steerPosition(m_steerMotor.GetPosition()),  //< FusedCANCoder
+      m_steerVelocity(m_steerMotor.GetVelocity()),
       m_sim_state(new SwerveModuleSim(*this)) {
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
@@ -76,6 +79,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
 
   ctre::phoenix6::configs::MotorOutputConfigs driveOutputConfigs;
   driveOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  driveOutputConfigs.WithDutyCycleNeutralDeadband(NeutralDeadBand);
   driveConfig.WithMotorOutput(driveOutputConfigs);
 
   ctre::phoenix6::configs::OpenLoopRampsConfigs driveOpenLoopConfigs{};
@@ -123,9 +127,12 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerClosedLoopConfig.ContinuousWrap = true;
   steerConfig.WithClosedLoopGeneral(steerClosedLoopConfig);
 
-  // This automatically scales future setpoints and readings by gear ratio
   ctre::phoenix6::configs::FeedbackConfigs steerFeedbackConfigs{};
-  steerFeedbackConfigs.SensorToMechanismRatio = kSteerGearReduction;  
+  steerFeedbackConfigs.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+  steerFeedbackConfigs.FeedbackRemoteSensorID = m_absoluteEncoder.GetDeviceID();
+  // This automatically scales future setpoints and readings by gear ratio
+  steerFeedbackConfigs.RotorToSensorRatio = kSteerGearReduction;
+  steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
   int retries = 4;
@@ -150,25 +157,39 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       break;
     }
   }
-
-  // Home the integrated rotor sensor to the cancoder position
-  m_steerMotor.SetPosition(m_absoluteEncoder.GetAbsolutePosition().GetValue());
-
-  SyncEncoders();
 }
 
 SwerveModule::~SwerveModule() {}
 
+void SwerveModule::RefreshSignals()
+{
+  /* Refreshes all this modules signals at once.
+   * This should improve performance
+  */
+  ctre::phoenix6::BaseStatusSignal::RefreshAll(
+    m_drivePosition,
+    m_driveVelocity,
+    m_steerPosition,
+    m_steerVelocity
+  );
+}
+
 units::meter_t SwerveModule::GetModuleDistance() {
-  return m_driveMotor.GetPosition().GetValue() * kDistanceToRotations;
+  const auto position = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(
+    m_drivePosition, m_driveVelocity
+  );
+  return position * kDistanceToRotations;
 }
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
-  return m_driveMotor.GetVelocity().GetValue() * kDistanceToRotations;
+  return m_driveVelocity.GetValue() * kDistanceToRotations;
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {
-  return m_absoluteEncoder.GetAbsolutePosition().GetValue().convert<units::degree>();
+  const auto position = ctre::phoenix6::BaseStatusSignal::GetLatencyCompensatedValue(
+    m_steerPosition, m_steerVelocity
+  );
+  return position.convert<units::degree>();
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
@@ -179,14 +200,15 @@ frc::SwerveModuleState SwerveModule::GetState() {
   return {GetModuleVelocity(), GetModuleHeading()};
 }
 
-void SwerveModule::SteerCoastMode(bool coast){
-  ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
-  coast
-    ? steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast)
-    : steerOutputConfigs.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
-
-  steerOutputConfigs.WithInverted(true);
-  m_steerMotor.GetConfigurator().Apply(steerOutputConfigs,50_ms);
+void SwerveModule::CoastMode(bool coast){
+  if (coast){
+    m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+    m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+  }
+  else{
+    m_steerMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+    m_driveMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+  }
 }
 
 
@@ -240,7 +262,7 @@ void SwerveModule::SetDesiredState(
   const auto state =
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
-  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, false};
+  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{0_tps, 0_tr_per_s_sq, true};
   m_driveMotor.SetControl(velocityControl.WithVelocity(state.speed / kDistanceToRotations));
   
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps, false};
@@ -256,33 +278,10 @@ void SwerveModule::SetDesiredState(
 // TODO Display things neater on the SmartDashboard.
 void SwerveModule::UpdateDashboard() {
   const auto state = GetState();
-
-  auto& steerRotorPosSignal = m_steerMotor.GetPosition();
-
-  auto steerRotorPos = steerRotorPosSignal.GetValue();
-
-  frc::SmartDashboard::PutString(fmt::format("{}/module state", m_name),
-                                 fmt::format("{:4f}@{:4f}°",
-                                             state.speed.value(),
-                                             state.angle.Degrees().value()));
-  frc::SmartDashboard::PutNumber(fmt::format("{}/absolute position", m_name),
-                                 units::degree_t{GetAbsoluteEncoderPosition()}.value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/steer talon angle", m_name),
-                                 steerRotorPos.convert<units::degree>().value());
-  // TODO: Fix Error Accumulation.
-  // frc::SmartDashboard::PutNumber(fmt::format("{}/steer err accum", m_name),
-  //                                m_steerMotor.GetIntegralAccumulator());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity state (mps)", m_name), state.speed.value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/drive voltage", m_name), m_driveMotor.GetSupplyVoltage().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/turn voltage", m_name), m_steerMotor.GetSupplyVoltage().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/drive current", m_name), m_driveMotor.GetSupplyCurrent().GetValueAsDouble());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/turn current", m_name), m_steerMotor.GetSupplyCurrent().GetValueAsDouble());
-
-  frc::SmartDashboard::PutNumber(fmt::format("{}/angle", m_name),
+  frc::SmartDashboard::PutNumber(fmt::format("{}/heading (degrees)", m_name),
                                  state.angle.Degrees().value());
-  frc::SmartDashboard::PutNumber(fmt::format("{}/velocity output (mps)", m_name), state.speed.value());
-
-  frc::SmartDashboard::PutNumber(fmt::format("{}/Abs Encoder", m_name), m_absoluteEncoder.GetAbsolutePosition().GetValue().value());
+  frc::SmartDashboard::PutNumber(fmt::format("{}/speed (mps)", m_name),
+                                 state.speed.convert<units::mps>().value());
 }
 
 units::radian_t SwerveModule::GetAbsoluteEncoderPosition() {

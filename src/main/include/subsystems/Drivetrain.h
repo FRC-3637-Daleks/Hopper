@@ -12,8 +12,8 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/PowerDistribution.h>
-#include <hal/SimDevice.h>
-#include <hal/simulation/SimDeviceData.h>
+
+#include <frc/controller/ProfiledPIDController.h>
 
 #include <memory>
 #include <numbers>
@@ -21,35 +21,18 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr bool kGyroReversed = true;
-
-constexpr auto kMaxSpeed = 18_fps;
+constexpr auto kMaxSpeed = 15_fps;
 constexpr auto kMaxTeleopSpeed = 15_fps;
-constexpr auto kArcadeMaxSpeed = 10_fps;
-constexpr auto kPreciseSpeed = 2_fps;
 
-// PID coefficients for closed-loop control of velocity.
-constexpr double kFDriveSpeed = 0.0656;
-constexpr double kPDriveSpeed = 0.1;
-constexpr double kIDriveSpeed = 0.000;
-constexpr double kDDriveSpeed = 0;
-constexpr double kIzDriveSpeed = 1000;
-
-constexpr double kIBrake = 0.0001;
+constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 // NOTE: Guess value!
-constexpr double kPTurn = 2.2;
-constexpr double kPDistance = 2;
-constexpr auto kDistanceTolerance = 7_cm;
 
-constexpr double kPLeftStraight = 0.2;
-constexpr double kPRightStraight = 0.2;
+constexpr double kPTurn = 0.061;// 0.0605 
+constexpr double kITurn = 0.00; // 0.001 
+constexpr double kDTurn = 0.0;  // 0.03  
 
-constexpr auto kTurnTolerance = 3_deg;
-constexpr auto kTurnRateTolerance = 1_deg_per_s;
-
-constexpr auto kMaxTurnRate = 1 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 1 * std::numbers::pi * 1_rad_per_s_sq;
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -72,18 +55,19 @@ constexpr int kRearLeftAbsoluteEncoderChannel = 10;
 constexpr int kFrontRightAbsoluteEncoderChannel = 11;
 constexpr int kRearRightAbsoluteEncoderChannel = 12;
 
+
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
-  0, 0, 0, 0, 0
+  0, 0.002, 0, 0, 0
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
@@ -99,6 +83,7 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
   10.009775171065494, 0.0, 0.05004887585532747, 0, 0
 };
 
+constexpr double kS = 0.0545;
 
 } // namespace DriveConstants
 
@@ -150,7 +135,7 @@ public:
 
   void SyncEncoders();
 
-  void SteerCoastMode(bool coast);
+  void CoastMode(bool coast);
 
   // Returns the rotational velocity of the robot in degrees per second.
   units::degrees_per_second_t GetTurnRate();
@@ -180,8 +165,8 @@ public:
   void UpdateDashboard();
 
   // Drive the robot with swerve controls.
-  frc2::CommandPtr
-  SwerveCommand(std::function<units::meters_per_second_t()> forward,
+  frc2::CommandPtr SwerveCommand(
+                std::function<units::meters_per_second_t()> forward,
                 std::function<units::meters_per_second_t()> strafe,
                 std::function<units::revolutions_per_minute_t()> rot);
 
@@ -191,6 +176,11 @@ public:
       std::function<units::meters_per_second_t()> strafe,
       std::function<units::revolutions_per_minute_t()> rot);
 
+
+frc2::CommandPtr
+  SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
+                std::function<units::meters_per_second_t()> strafe,
+                std::function<units::revolutions_per_minute_t()> rot);
   // Drive the robot to pose.
   // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
 
@@ -200,10 +190,11 @@ public:
   // Returns a command that zeroes the robot heading.
   frc2::CommandPtr ZeroHeadingCommand();
 
-
   frc2::CommandPtr ZeroAbsEncodersCommand();
 
   frc2::CommandPtr SetAbsEncoderOffsetCommand();
+
+  frc2::CommandPtr CoastModeCommand(bool coast);
 
   frc2::CommandPtr ConfigAbsEncoderCommand();
 
@@ -213,6 +204,12 @@ public:
   // Add Vision Pose to SwerveDrivePoseEstimator.
   void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
 
+  frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
+
+  frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
+    std::function<units::meters_per_second_t()> forward,
+    std::function<units::meters_per_second_t()> strafe);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
@@ -221,18 +218,16 @@ private:
 
   AHRS m_gyro;
 
-  // Odometer for tracking the robot's position on the field.
-  // frc::SwerveDriveOdometry<4> m_odometry;
-
   // Pose Estimator for estimating the robot's position on the field.
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
   // Field widget for Shuffleboard.
   frc::Field2d m_field;
 
-  frc::PowerDistribution m_pdh{15,
+  frc::PowerDistribution m_pdh{25,
                                frc::PowerDistribution::ModuleType::kRev};
 
+  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
 private:

@@ -25,7 +25,12 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  m_disabledCommand = m_container.GetDisabledCommand();
+  if(m_disabledCommand){
+    m_disabledCommand->Schedule();
+  }
+}
 
 void Robot::DisabledPeriodic() {}
 
@@ -51,6 +56,7 @@ void Robot::TeleopInit() {
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
+  m_disabledCommand->Cancel();
 }
 
 /**
@@ -71,7 +77,13 @@ void Robot::SimulationInit() {}
 /**
  * This function is called periodically whilst in simulation.
  */
-void Robot::SimulationPeriodic() {}
+void Robot::SimulationPeriodic() {
+  const auto pose = m_container.m_swerve.GetPose();
+  if (pose.Translation().Distance(FieldConstants::feeder_station.Translation()) < 0.5_m)
+  {
+    m_container.m_intake.SimulateNotePickup();
+  }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
