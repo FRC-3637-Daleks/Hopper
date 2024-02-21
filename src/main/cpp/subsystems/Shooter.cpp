@@ -65,6 +65,9 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
+  // Get Carolina to write this
+  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Position, 0.0);
+
   m_followMotor.Follow(m_leadMotor);
 }
 
