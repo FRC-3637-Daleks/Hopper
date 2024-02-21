@@ -84,9 +84,9 @@ void RobotContainer::ConfigureBindings() {
     frc2::cmd::Select<int>(
       position,
       std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand()}
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)}
     )
   );
 
@@ -119,5 +119,6 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 }
 
 frc2::CommandPtr RobotContainer::GetDisabledCommand(){
-  return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
+  // return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
+  return frc2::cmd::None();
 }

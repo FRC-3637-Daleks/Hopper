@@ -35,9 +35,9 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 10 *11.3777778; // -
-    constexpr int IntakeArmAMPPos = 59.4  *11.3777778; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
-    constexpr int IntakeArmSpeakerPos = 70*11.3777778;
+    constexpr int IntakeArmIntakePos = -955; // -
+    constexpr int IntakeArmAMPPos = -640; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
+    constexpr int IntakeArmSpeakerPos = -460;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
@@ -50,7 +50,7 @@ namespace IntakeConstants {
 
     //pid configurations
     constexpr int kF = 0.0;
-    constexpr int kP = 10.0;
+    constexpr int kP = 20.0;
     constexpr int kI = 0.0;
     constexpr int kD = 0.0;
 
@@ -58,7 +58,7 @@ namespace IntakeConstants {
     constexpr int totalEncoders = 4096;
 
     //margin of error for detecting if arm is in specific spot
-    constexpr int kAllowableMarginOfError = 1;
+    constexpr int kAllowableMarginOfError = 10;
 
     //voltage for funtions (i dide't even have to use auto)
     constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
@@ -83,8 +83,8 @@ namespace IntakeConstants {
     constexpr auto kMaxAngle = 145_deg;
 
     // TODO: MEASURE THESE
-    constexpr int kArmSensorFullExtend = 995;  // corresponds to kMinAngle //amp angle = 1.365 radians
-    constexpr int kArmSensorFullRetract = 463;  // corresponds to kMaxAngle
+    constexpr int kArmSensorFullExtend = -1020;  // corresponds to kMinAngle //amp angle = 1.365 radians
+    constexpr int kArmSensorFullRetract = -460;  // corresponds to kMaxAngle
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
       (kMaxAngle - kMinAngle);
@@ -176,9 +176,9 @@ class Intake : public frc2::SubsystemBase {
   void IntakeArmSpeaker();
   void IntakeArmIntake();
 
-  frc2::CommandPtr IntakeArmAMPCommand();
-  frc2::CommandPtr IntakeArmSpeakerCommand();
-  frc2::CommandPtr IntakeArmIntakeCommand();
+  frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
+  frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
+  frc2::CommandPtr IntakeArmIntakeCommand(bool wait = false);
 
   /** Gets the state of Limit switches and break beams for intake
   * Gets the state of the limit switch for the intake
