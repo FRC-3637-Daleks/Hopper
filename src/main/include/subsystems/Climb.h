@@ -35,8 +35,6 @@ namespace ClimbConstants {
     constexpr auto kClimbMaxHeight = 3_in;
 
     constexpr int kClimbMotorPort = 13;
-    constexpr int kClimbBottomLimitSwitch = 5;
-    constexpr int kClimbTopLimitSwitch = 6;
 
     constexpr double kDistancePerRevolution = kClimbDrumRadius * std::numbers::pi / 1_in; // Guess value to make sim work
     constexpr double kClimbMotorCPR = 1023 * kClimbGearReduction;
@@ -61,8 +59,6 @@ public:
     frc2::CommandPtr ClimbCommand(std::function<double()> input);
 
     WPI_TalonSRX m_climbMotor{ClimbConstants::kClimbMotorPort};
-    frc::DigitalInput m_climbBottom{ClimbConstants::kClimbBottomLimitSwitch};
-    frc::DigitalInput m_climbTop{ClimbConstants::kClimbTopLimitSwitch};
 private:
     friend class ClimbSimulation;
     std::unique_ptr<ClimbSimulation> m_sim_state;
