@@ -44,9 +44,10 @@ namespace VisionConstants{
 
   public:
     Vision(std::function<void(frc::Pose3d, units::second_t)> addVisionMeasurement,
-           std::function<frc::Pose3d()> getRobotPose);
+           std::function<frc::Pose3d()> getRobotPose,
+           const Eigen::Matrix<double, 3, 1>& initialStdDevs);
          
-    photon::PhotonPoseEstimator m_estimator;
+    // photon::PhotonPoseEstimator m_estimator;
            
 
     void Periodic() override;
@@ -66,10 +67,14 @@ namespace VisionConstants{
 
   private:
     photon::PhotonCamera m_camera{VisionConstants::kPhotonCameraName};
+    photon::PhotonPoseEstimator m_estimator;
 
     std::optional<photon::EstimatedRobotPose> m_apriltagEstimate{std::nullopt};
     // explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,
     //                          PoseStrategy strategy, PhotonCamera&& camera,
     //                          frc::Transform3d robotToCamera);
+    Eigen::Matrix<double, 3, 1> m_estimatedStdDevs; 
+
+
 };
   
