@@ -1,16 +1,4 @@
 {
-<<<<<<< HEAD
-=======
-  "HALProvider": {
-    "PowerDistributions": {
-      "14": {
-        "PowerDistribution[14]": {
-          "open": true
-        }
-      }
-    }
-  },
->>>>>>> origin/arnav-wip
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -30,11 +18,7 @@
           "visible": true
         }
       },
-<<<<<<< HEAD
       "/SmartDashboard/Mechanisms": {
-=======
-      "/SmartDashboard/zeroEncodersCommand": {
->>>>>>> origin/arnav-wip
         "window": {
           "visible": true
         }
@@ -42,31 +26,8 @@
     }
   },
   "NetworkTables": {
-    "transitory": {
-      "SmartDashboard": {
-<<<<<<< HEAD
-        "Field": {
-          "double[]##v_/SmartDashboard/Field/simulation": {
-            "open": true
-          }
-        },
-        "Intake": {
-          "open": true,
-          "sim": {
-            "open": true
-          }
-        },
-        "Shooter": {
-=======
-        "FL": {
-          "open": true
-        },
-        "Swerve": {
->>>>>>> origin/arnav-wip
-          "open": true
-        },
-        "open": true
-      }
+    "Persistent Values": {
+      "open": false
     }
   },
   "NetworkTables Info": {

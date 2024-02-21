@@ -119,5 +119,6 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 }
 
 frc2::CommandPtr RobotContainer::GetDisabledCommand(){
-  return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
+  // return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
+  return frc2::cmd::None();
 }

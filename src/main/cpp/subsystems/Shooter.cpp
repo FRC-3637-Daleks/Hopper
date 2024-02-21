@@ -52,7 +52,8 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
   m_pivot.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, ShooterConstants::kPIDLoopIdx, ShooterConstants::kTimeoutMs);
 
-  m_pivot.SetSensorPhase(true);
+  m_pivot.SetSensorPhase(false);
+  m_pivot.SetInverted(false);
 
   m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
@@ -65,7 +66,11 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
-  m_followMotor.Follow(m_leadMotor);
+  m_pivot.Set(ctre::phoenix::motorcontrol::ControlMode::Position, 0);
+  
+  m_leadMotor.SetInverted(true);
+
+  m_followMotor.Follow(m_leadMotor,true);
 }
 
 Shooter::~Shooter() {}
@@ -127,6 +132,18 @@ void Shooter::RunTalonMotor() {
 //Runs
 m_pivot.SetVoltage(1.0_V);
 
+}
+
+float pow(float d, int power) {
+  float temp = d;
+  for (int i = 0; i < power-1; i++) {
+    temp = temp * d;
+  }
+  return temp;
+}
+
+float Shooter::KevensCoolEquasion(float d) {
+  return (1.57 - (0.175*d) - (2.14*.001*(pow(d, 2)))+(3.58*.001*pow(d,3))-(5.3*.0001*pow(d,4))+(4.16*.00001*pow(d,5))-(1.92*.000001*pow(d,6))+(4.95*.00000001*pow(d,7))-(5.52*.0000000001*pow(d,8)));
 }
 
 //Stop pivoting motor
@@ -241,7 +258,7 @@ void Shooter::SimulationPeriodic()
     frc::RobotController::GetBatteryVoltage().value());
   
   m_sim_state->m_armModel.SetInputVoltage(
-    units::volt_t{m_sim_state->m_aimMotorSim.GetMotorOutputLeadVoltage()}
+    -units::volt_t{m_sim_state->m_aimMotorSim.GetMotorOutputLeadVoltage()}
   );
   m_sim_state->m_armModel.Update(20_ms);
 

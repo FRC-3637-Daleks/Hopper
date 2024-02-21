@@ -224,7 +224,7 @@ private:
   // Field widget for Shuffleboard.
   frc::Field2d m_field;
 
-  frc::PowerDistribution m_pdh{15,
+  frc::PowerDistribution m_pdh{25,
                                frc::PowerDistribution::ModuleType::kRev};
 
   frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
