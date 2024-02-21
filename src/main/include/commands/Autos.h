@@ -9,7 +9,7 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
-#include "subsystems/Shooter.h"
+class Shooter;
 
 namespace autos {
 /**

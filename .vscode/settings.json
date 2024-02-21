@@ -100,5 +100,9 @@
 =======
     "charconv": "cpp"
 >>>>>>> origin/carolina-wip
+=======
+    "charconv": "cpp",
+    "*.inc": "cpp"
+>>>>>>> origin/arnav-wip
   }
 }

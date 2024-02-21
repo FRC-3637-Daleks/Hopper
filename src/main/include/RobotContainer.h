@@ -16,6 +16,8 @@
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/smartdashboard/Mechanism2d.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>

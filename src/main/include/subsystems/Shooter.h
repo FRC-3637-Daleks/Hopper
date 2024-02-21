@@ -37,14 +37,10 @@ namespace ShooterConstants {
     constexpr auto kEncoderCPR = 0.0;
     constexpr auto kGearReduction = 0.0;
     constexpr bool kEncoderReversed = true;
-    
 
-    constexpr int kIntakeMotorPort = 13;
-    constexpr int kFlywheelMotorPort = 14;
-
-  constexpr int kPivotMotorPort = 13;
-  constexpr int kFlywheelLeadMotorPort = 14;
-  constexpr int kFlywheelFollowMotorPort = 15;
+  constexpr int kPivotMotorPort = 14;
+  constexpr int kFlywheelLeadMotorPort = 16;
+  constexpr int kFlywheelFollowMotorPort = 18;
 
  //PID Loop something
     constexpr int kPIDLoopIdx = 0;
@@ -61,7 +57,7 @@ constexpr auto kPivotEncoderDistancePerCount =
     2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
 
     //Guess values for Pivot PID. Need to calculate feed forward
-    constexpr double kPPivot = 1.0;
+    constexpr double kPPivot = 5.0;
     constexpr double kIPivot = 0.0;
     constexpr double kDPivot = 0.0;
     constexpr double kFPivot = 0.0;
@@ -77,10 +73,10 @@ constexpr auto kPivotEncoderDistancePerCount =
     constexpr auto kArmRadius = 10_in;
     constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
 
-    constexpr auto kMinAngle = 10_deg;
-    constexpr auto kMaxAngle = 60_deg;
-    constexpr auto kMinAimSensor = 10;
-    constexpr auto kMaxAimSensor = 1000;
+    constexpr auto kMinAngle = 0_deg;
+    constexpr auto kMaxAngle = 80_deg;
+    constexpr auto kMinAimSensor = 935;
+    constexpr auto kMaxAimSensor = 51;
     constexpr auto kAngleToSensor = (kMaxAimSensor - kMinAimSensor)/(kMaxAngle - kMinAngle);
 }
 
@@ -91,8 +87,8 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   ~Shooter();
-  
-  void Periodic() override;
+
+void Periodic() override;
 
   void InitVisualization(frc::Mechanism2d* mech);
   void UpdateVisualization();
@@ -112,6 +108,8 @@ class Shooter : public frc2::SubsystemBase {
 
   void SetPivotMotor(double encoderPosition);
 
+  float KevensCoolEquasion(float distanceInFeet);
+  
   units::radian_t GetAnglePivot(); 
 
   units::degree_t DistanceToAngle(units::meter_t distance);
@@ -135,15 +133,6 @@ class Shooter : public frc2::SubsystemBase {
  
 
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
-
-
-
- private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  frc::DigitalInput m_intakeBreakBeam{3};
-
-  frc::DigitalInput m_flywheelBreakBeam{4};
 
  private:
   frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;

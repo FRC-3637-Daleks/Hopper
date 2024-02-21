@@ -1,4 +1,16 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -8,66 +20,11 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "FL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "FR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RL": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "RR": {
-          "arrowSize": 33,
-          "arrowWeight": 2.0,
-          "style": "Hidden",
-          "width": 0.10000000149011612
-        },
-        "Robot": {
-          "arrowColor": [
-            255.0,
-            0.0,
-            0.0,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Track",
-          "weight": 3.0
-        },
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
-        "right": 1088,
-        "simulation": {
-          "arrowColor": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "arrowWeight": 3.0,
-          "color": [
-            0.0,
-            255.0,
-            247.49993896484375,
-            255.0
-          ],
-          "length": 0.6859999895095825,
-          "style": "Hidden",
-          "weight": 2.0
-        },
-        "top": 36,
-        "units": "inches",
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -81,6 +38,9 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "Field": {
