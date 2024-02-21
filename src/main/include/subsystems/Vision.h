@@ -45,6 +45,7 @@ namespace VisionConstants{
   public:
     Vision(std::function<void(frc::Pose3d, units::second_t)> addVisionMeasurement,
            std::function<frc::Pose3d()> getRobotPose);
+    
          
     photon::PhotonPoseEstimator m_estimator;
            

@@ -28,18 +28,18 @@ bool Vision::HasTargets() {
 // auto addMeasurementLambda = [](Vision& vision, frc::Pose3d pose, units::second_t timestamp) {
 //     vision.m_addVisionMeasurement(pose, timestamp);
 // };
-bool Vision::IsPoseWithinStdDevs(const frc::Pose2d& incomingPose) {
-    // Calculate the standard deviations of the estimated pose
-    Eigen::Matrix<double, 3, 1> stdDevs = GetEstimationStdDevs(frc::Pose2d estimatedPose);
+// bool Vision::IsPoseWithinStdDevs(const frc::Pose2d& incomingPose) {
+//     // Calculate the standard deviations of the estimated pose
+//     Eigen::Matrix<double, 3, 1> stdDevs = GetEstimationStdDevs(frc::Pose2d estimatedPose);
 
-    // Calculate the differences between the incoming pose and the estimated pose
-    double diffX = incomingPose.X().to<double>() - m_estimatedPose.X().to<double>();
-    double diffY = incomingPose.Y().to<double>() - m_estimatedPose.Y().to<double>();
-    double diffTheta = incomingPose.Rotation().Degrees().to<double>() - m_estimatedPose.Rotation().Degrees().to<double>();
+//     // Calculate the differences between the incoming pose and the estimated pose
+//     double diffX = incomingPose.X().to<double>() - m_estimatedPose.X().to<double>();
+//     double diffY = incomingPose.Y().to<double>() - m_estimatedPose.Y().to<double>();
+//     double diffTheta = incomingPose.Rotation().Degrees().to<double>() - m_estimatedPose.Rotation().Degrees().to<double>();
 
-    // Check if the incoming pose falls within the standard deviations
-    return std::abs(diffX) <= stdDevs(0, 0) && std::abs(diffY) <= stdDevs(1, 0) && std::abs(diffTheta) <= stdDevs(2, 0);
-}
+//     // Check if the incoming pose falls within the standard deviations
+//     return std::abs(diffX) <= stdDevs(0, 0) && std::abs(diffY) <= stdDevs(1, 0) && std::abs(diffTheta) <= stdDevs(2, 0);
+// }
 
 // This is to create standard deviations for the vision system, which is used to determine if a pose is acurate enough to be used
   Eigen::Matrix<double, 3, 1> Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
