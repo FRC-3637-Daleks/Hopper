@@ -35,7 +35,7 @@ Climb::Climb():
 
   m_climbMotor.ConfigFactoryDefault();
 
-  m_climbMotor.SetInverted(false);
+  m_climbMotor.SetInverted(true);
 //   m_climbMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
   m_climbMotor.SetSelectedSensorPosition(0, ClimbConstants::kPIDLoopIdx, ClimbConstants::kTimeoutMs);

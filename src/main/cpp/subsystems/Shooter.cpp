@@ -66,11 +66,23 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
-  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Position, 0);
+  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, 0);
   
+  
+  // set Motion Magic settings
+  m_pivot.ConfigMotionCruiseVelocity(320); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_pivot.ConfigMotionAcceleration(80); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_pivot.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
+
+  // periodic, run Motion Magic with slot 0 configs
+  m_pivot.SelectProfileSlot(0, 0);
+
   m_leadMotor.SetInverted(true);
 
   m_followMotor.Follow(m_leadMotor,true);
+
+  m_followMotor.SetInverted(false);
+  
 }
 
 Shooter::~Shooter() {}
@@ -154,7 +166,7 @@ void Shooter::StopTalonMotor() {
 }
 
 void Shooter::SetPivotMotor(double encoderPosition) {
-  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Position, encoderPosition);
+  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, encoderPosition);
 }
 
 void Shooter::Periodic(){
@@ -201,8 +213,8 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
     [this, controllerInput] { 
-      m_leadMotor.Set(controllerInput()); 
-
+      m_leadMotor.Set((controllerInput() * controllerInput()) / 2.0); 
+    
       // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
   );
