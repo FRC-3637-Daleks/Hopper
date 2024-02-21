@@ -52,12 +52,8 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
   m_pivot.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, ShooterConstants::kPIDLoopIdx, ShooterConstants::kTimeoutMs);
 
-<<<<<<< HEAD
-  m_pivot.SetSensorPhase(true);
-=======
   m_pivot.SetSensorPhase(false);
   m_pivot.SetInverted(false);
->>>>>>> main
 
   m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
@@ -70,9 +66,6 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
 //Motors following + leading
 
-<<<<<<< HEAD
-  m_followMotor.Follow(m_leadMotor);
-=======
   m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, 0);
   
   
@@ -90,7 +83,6 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
 
   m_followMotor.SetInverted(false);
   
->>>>>>> main
 }
 
 Shooter::~Shooter() {}
@@ -154,8 +146,6 @@ m_pivot.SetVoltage(1.0_V);
 
 }
 
-<<<<<<< HEAD
-=======
 float pow(float d, int power) {
   float temp = d;
   for (int i = 0; i < power-1; i++) {
@@ -168,7 +158,6 @@ float Shooter::KevensCoolEquasion(float d) {
   return (1.57 - (0.175*d) - (2.14*.001*(pow(d, 2)))+(3.58*.001*pow(d,3))-(5.3*.0001*pow(d,4))+(4.16*.00001*pow(d,5))-(1.92*.000001*pow(d,6))+(4.95*.00000001*pow(d,7))-(5.52*.0000000001*pow(d,8)));
 }
 
->>>>>>> main
 //Stop pivoting motor
 void Shooter::StopTalonMotor() {
 //Stops
@@ -177,11 +166,7 @@ void Shooter::StopTalonMotor() {
 }
 
 void Shooter::SetPivotMotor(double encoderPosition) {
-<<<<<<< HEAD
-  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::Position, encoderPosition);
-=======
   m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, encoderPosition);
->>>>>>> main
 }
 
 void Shooter::Periodic(){
@@ -228,13 +213,8 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
     [this, controllerInput] { 
-<<<<<<< HEAD
-      m_leadMotor.Set(controllerInput()); 
-
-=======
       m_leadMotor.Set((controllerInput() * controllerInput()) / 2.0); 
     
->>>>>>> main
       // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
   );
@@ -290,11 +270,7 @@ void Shooter::SimulationPeriodic()
     frc::RobotController::GetBatteryVoltage().value());
   
   m_sim_state->m_armModel.SetInputVoltage(
-<<<<<<< HEAD
-    units::volt_t{m_sim_state->m_aimMotorSim.GetMotorOutputLeadVoltage()}
-=======
     -units::volt_t{m_sim_state->m_aimMotorSim.GetMotorOutputLeadVoltage()}
->>>>>>> main
   );
   m_sim_state->m_armModel.Update(20_ms);
 
