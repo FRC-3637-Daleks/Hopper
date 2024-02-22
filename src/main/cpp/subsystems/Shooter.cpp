@@ -284,12 +284,14 @@ void Shooter::SimulationPeriodic()
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
   const auto sensor_speed_reading = arm_speed * kAngleToSensor * 100_ms;
   m_sim_state->m_aimMotorSim.SetAnalogVelocity(sensor_speed_reading);
-  m_sim_state->m_aimMotorSim.SetLimitFwd(
+  
+  // real robot has no hard limit switches so these are disabled
+  /*m_sim_state->m_aimMotorSim.SetLimitFwd(
     m_sim_state->m_armModel.HasHitUpperLimit()
   );
   m_sim_state->m_aimMotorSim.SetLimitRev(
     m_sim_state->m_armModel.HasHitLowerLimit()
-  );
+  );*/
   m_sim_state->m_aimMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );

@@ -348,8 +348,9 @@ void Intake::SimulationPeriodic()
   m_sim_state->m_armMotorSim.SetBusVoltage(
     frc::RobotController::GetBatteryVoltage().value());
   
+  // Voltage is reversed on real robot
   m_sim_state->m_armModel.SetInputVoltage(
-    units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
+    -units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
   );
   m_sim_state->m_armModel.Update(20_ms);
 
@@ -363,11 +364,9 @@ void Intake::SimulationPeriodic()
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
   const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
   m_sim_state->m_armMotorSim.SetAnalogVelocity(sensor_speed_reading);
-  m_sim_state->m_armMotorSim.SetLimitFwd(
-    m_sim_state->m_armModel.HasHitUpperLimit()
-  );
+  // Real robot has the reverse limit at the full retract position
   m_sim_state->m_armMotorSim.SetLimitRev(
-    m_sim_state->m_armModel.HasHitLowerLimit()
+    m_sim_state->m_armModel.HasHitUpperLimit()
   );
   m_sim_state->m_armMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
