@@ -60,8 +60,8 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.Y()
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
 
-  m_swerveController.LeftBumper()
-      .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+  // m_swerveController.LeftBumper()
+  //     .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
   
   m_swerveController.RightBumper()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));

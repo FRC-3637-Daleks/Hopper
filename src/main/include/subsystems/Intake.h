@@ -35,9 +35,9 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 955; // -
-    constexpr int IntakeArmAMPPos = 640; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
-    constexpr int IntakeArmSpeakerPos = 440;
+    constexpr int IntakeArmIntakePos = 990; // -
+    constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
+    constexpr int IntakeArmSpeakerPos = 460;
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
