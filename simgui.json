@@ -15,11 +15,38 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/Mechanisms": "Mechanism2d",
+      "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "FL": {
+          "arrowWeight": 2.0,
+          "length": 0.6000000238418579,
+          "style": "Hidden",
+          "weight": 0.0,
+          "width": 0.15000000596046448
+        },
+        "FR": {
+          "arrowWeight": 2.0,
+          "length": 0.6000000238418579,
+          "style": "Hidden",
+          "width": 0.15000000596046448
+        },
+        "RL": {
+          "arrowWeight": 2.0,
+          "length": 0.6000000238418579,
+          "style": "Hidden",
+          "width": 0.15000000596046448
+        },
+        "RR": {
+          "arrowWeight": 2.0,
+          "length": 0.6000000238418579,
+          "style": "Hidden",
+          "width": 0.15000000596046448
+        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
@@ -30,7 +57,17 @@
           "visible": true
         }
       },
+      "/SmartDashboard/Intake": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Mechanisms": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter": {
         "window": {
           "visible": true
         }

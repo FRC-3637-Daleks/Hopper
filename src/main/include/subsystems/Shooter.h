@@ -135,7 +135,7 @@ void Periodic() override;
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
 
  private:
-  frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;
+  frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal, *m_mech_mm_setpoint;
 
   // SIMULATION 
   std::unique_ptr<ShooterSimulation> m_sim_state;

@@ -99,6 +99,14 @@ void Shooter::InitVisualization(frc::Mechanism2d* mech)
     frc::Color8Bit{20, 200, 20}  // RGB, green
   );
 
+  m_mech_mm_setpoint = root->Append<frc::MechanismLigament2d>(
+    "aim motion magic",
+    1,
+    180_deg,
+    1,
+    frc::Color8Bit{80, 80, 200}  // blueish
+  );
+
   m_mech_pivot = root->Append<frc::MechanismLigament2d>(
     "aim",
     1,
@@ -113,6 +121,11 @@ void Shooter::UpdateVisualization()
   const auto sensor_goal = m_pivot.GetClosedLoopTarget();
   const auto angle_goal = (sensor_goal - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
   m_mech_pivot_goal->SetAngle(180_deg - angle_goal);
+
+  // shows current status of motion magic trajectory
+  const auto mm_sensor_setpoint = m_pivot.GetActiveTrajectoryPosition();
+  const auto mm_angle_setpoint = (mm_sensor_setpoint - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_mm_setpoint->SetAngle(180_deg - mm_angle_setpoint);
 
   const auto sensor_measured = m_pivot.GetSelectedSensorPosition();
   const auto angle_measured = (sensor_measured - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;

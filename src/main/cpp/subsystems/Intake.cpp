@@ -147,6 +147,14 @@ void Intake::InitVisualization(frc::Mechanism2d* mech)
     frc::Color8Bit{20, 200, 20} // RGB, green
   );
 
+  m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
+    "arm motion magic",
+    IntakeConstants::kArmRadius.convert<units::feet>().value(),
+    0_deg,
+    2,
+    frc::Color8Bit{80, 80, 200} // blueish
+  );
+
   m_mech_arm = m_mech_root->Append<frc::MechanismLigament2d>(
     "arm",
     IntakeConstants::kArmRadius.convert<units::feet>().value(),
@@ -179,10 +187,11 @@ void Intake::UpdateVisualization()
 
   m_mech_arm->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
   m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
+  m_mech_arm_mm_setpoint->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetActiveTrajectoryPosition()));
   m_mech_spinner->SetAngle(
     units::degree_t{m_mech_spinner->GetAngle()} + m_intake.GetAppliedOutput()*66.66_deg);
   m_mech_note->SetAngle(units::degree_t{m_mech_arm->GetAngle()});
-  if (m_breakbeam.Get())
+  if (GetStateBreakBeamIntake() == IntakeConstants::kBeamBroken)
   {
     m_mech_note->SetLineWeight(10);
     m_mech_note->SetColor({200, 200, 40});
