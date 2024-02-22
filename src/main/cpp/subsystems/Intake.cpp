@@ -48,7 +48,7 @@ Intake::Intake():
   m_arm.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, IntakeConstants::kPIDLoopIdx, IntakeConstants::kTimeoutMs);
   //I think this sets the direction of the sensor, not too sure
   m_arm.SetSensorPhase(false/*idk if correct*/);
-  m_arm.SetInverted(true);
+  m_arm.SetInverted(false);
 
   //something with power or something
   m_arm.ConfigNominalOutputForward(0.0, IntakeConstants::kTimeoutMs);
@@ -66,8 +66,8 @@ Intake::Intake():
   */
 
   // set Motion Magic settings
-  m_arm.ConfigMotionCruiseVelocity(320); // 80 rps = 16384 ticks/100ms cruise velocity
-  m_arm.ConfigMotionAcceleration(80); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_arm.ConfigMotionCruiseVelocity(480); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_arm.ConfigMotionAcceleration(1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs

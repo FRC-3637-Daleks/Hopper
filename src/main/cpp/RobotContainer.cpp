@@ -4,12 +4,18 @@
 
 #include "RobotContainer.h"
 
+#include <frc/DataLogManager.h>
+#include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
+  frc::DataLogManager::Start();
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  frc::DataLogManager::LogNetworkTables(true);
+
 
   // Configure the button bindings
   ConfigureBindings();
@@ -96,7 +102,7 @@ void RobotContainer::ConfigureBindings() {
   m_copilotController.B()
     .WhileTrue(m_intake.IntakeOut());
 
-  auto climb = [this] () -> double { return frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
+  auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 

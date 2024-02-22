@@ -57,7 +57,7 @@ constexpr auto kPivotEncoderDistancePerCount =
     2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
 
     //Guess values for Pivot PID. Need to calculate feed forward
-    constexpr double kPPivot = 1.0;
+    constexpr double kPPivot = 5.0;
     constexpr double kIPivot = 0.0;
     constexpr double kDPivot = 0.0;
     constexpr double kFPivot = 0.0;
@@ -73,10 +73,10 @@ constexpr auto kPivotEncoderDistancePerCount =
     constexpr auto kArmRadius = 10_in;
     constexpr auto kArmMoment = 0.5*kArmMass*kArmRadius*kArmRadius;
 
-    constexpr auto kMinAngle = 10_deg;
-    constexpr auto kMaxAngle = 60_deg;
-    constexpr auto kMinAimSensor = 10;
-    constexpr auto kMaxAimSensor = 1000;
+    constexpr auto kMinAngle = 0_deg;
+    constexpr auto kMaxAngle = 80_deg;
+    constexpr auto kMinAimSensor = 935;
+    constexpr auto kMaxAimSensor = 51;
     constexpr auto kAngleToSensor = (kMaxAimSensor - kMinAimSensor)/(kMaxAngle - kMinAngle);
 }
 
@@ -87,8 +87,8 @@ class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
   ~Shooter();
-  
-  void Periodic() override;
+
+void Periodic() override;
 
   void InitVisualization(frc::Mechanism2d* mech);
   void UpdateVisualization();
@@ -108,6 +108,8 @@ class Shooter : public frc2::SubsystemBase {
 
   void SetPivotMotor(double encoderPosition);
 
+  float KevensCoolEquasion(float distanceInFeet);
+  
   units::radian_t GetAnglePivot(); 
 
   units::degree_t DistanceToAngle(units::meter_t distance);
