@@ -92,14 +92,13 @@ void RobotContainer::ConfigureBindings() {
       std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)}
-    )
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)}    )
   );
 
-  m_copilotController.A()
+  m_copilotController.B()
     .WhileTrue(m_intake.IntakeIn());
     
-  m_copilotController.B()
+  m_copilotController.A()
     .WhileTrue(m_intake.IntakeOut());
 
   auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };

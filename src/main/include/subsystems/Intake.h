@@ -10,6 +10,7 @@
 #include <frc/simulation/DCMotorSim.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
+#include "frc2/command/ConditionalCommand.h"
 
 #include <rev/CANSparkFlex.h>
 
@@ -38,6 +39,9 @@ namespace IntakeConstants {
     constexpr int IntakeArmIntakePos = 990; // -
     constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
     constexpr int IntakeArmSpeakerPos = 460;
+    constexpr int IntakeArmPreAMPPos = 600;
+    constexpr int IntakeArmLetGoPos = 630;
+
 
     constexpr bool kBeamBroken = true;
     constexpr bool kBeamClear = false;
@@ -146,6 +150,8 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr IntakeOut();
 
+  frc2::CommandPtr TimedRelease();
+
   // Keep intake Idle if no buttons are pressed
   frc2::CommandPtr IdleIntakeCommand();
   void InitVisualization(frc::Mechanism2d* mech);
@@ -173,10 +179,12 @@ class Intake : public frc2::SubsystemBase {
   * Moves the intake arm to the Intake position
   */
   void IntakeArmAMP();
+  void IntakePreArmAMP();
   void IntakeArmSpeaker();
   void IntakeArmIntake();
 
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
+  frc2::CommandPtr IntakeArmPreAMPCommand(bool wait = false);
   frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
   frc2::CommandPtr IntakeArmIntakeCommand(bool wait = false);
 
@@ -185,7 +193,7 @@ class Intake : public frc2::SubsystemBase {
   * Gets the state of the break beam for the intake
   */
 
-  bool GetStateBreakBeamIntake();
+  bool IsIntakeBreakBeamBroken();
 
   /** 
   * Gets the difference between were the arm is going and were it is 

@@ -86,50 +86,43 @@ void Intake::Periodic() {
 }
 
 frc2::CommandPtr Intake::IntakeRing() {
-  return this->RunOnce([this] {
-    IntakeArmIntake();})
-    .AndThen(this->StartEnd(
-      [this] {frc2::cmd::Either(
-                                      frc2::cmd::Run([this] {IntakeBackward();}),
-                                      frc2::cmd::Run([this] {OffIntake();}),
-                                      [this] () -> bool {return GetStateBreakBeamIntake()/*when unbroken*/ /*|| !GetStateLimitSwitchIntake()when untouched*/;});
-      },
-      [this] {OffIntake();}
-    ));
+  return IntakeArmIntakeCommand(true)
+    .AndThen(AutoIntake())
+    .AndThen(IntakeArmSpeakerCommand(true));
 }
 
 frc2::CommandPtr Intake::ShootOnAMP() {
-  return this->RunOnce([this] {
-    IntakeArmAMP();})
-    .AndThen(StartEnd([this] {OutputAMPIntake();},
-                      [this] {OffIntake();}));
+  return IntakeArmAMPCommand(true)
+    .AndThen(IntakeArmPreAMPCommand(true))
+    .AndThen(IntakeArmAMPCommand(true)
+      .AlongWith(TimedRelease())
+      );
 }
 
 frc2::CommandPtr Intake::OutputToShooter() {
-  return this->RunOnce([this] {
-    IntakeArmSpeaker();})
-    .AndThen(this->RunEnd(
-      [this] {frc2::cmd::Either(
-                                      frc2::cmd::Run([this] {OutputShooterIntake();}),
-                                      frc2::cmd::Run([this] {OffIntake();}),
-                                      [this] () -> bool {return true/*replace with break beam from the shooter*/;});
-      },
-      [this] {OffIntake();}
-    ));
+  return IntakeArmSpeakerCommand(true)
+    .AndThen(IntakeOut())
+    .WithTimeout(1_s);
 }
 
 frc2::CommandPtr Intake::IntakeIn() {
   return frc2::cmd::RunEnd([this] {
-    IntakeBackward();
+    IntakeForward();
   },
   [this] { OffIntake(); });
 }
 
 frc2::CommandPtr Intake::IntakeOut() {
   return frc2::cmd::RunEnd([this] {
-    IntakeForward();
+    IntakeBackward();
   },
   [this] { OffIntake(); });
+}
+
+frc2::CommandPtr Intake::TimedRelease() {
+  return RunOnce([this] {OffIntake();})
+    .Until([this] () -> bool {return (m_arm.GetSelectedSensorPosition()) >= IntakeConstants::IntakeArmLetGoPos;})
+    .AndThen(IntakeOut());
 }
 
 Intake::~Intake() {}
@@ -212,17 +205,17 @@ _____
 */
 
 
-
+//it spin backwards :(
 frc2::CommandPtr Intake::AutoIntake() {
-  return Run([this] {IntakeBackward();}).Until([this] () -> bool {return (GetStateBreakBeamIntake()  /*|| GetStateLimitSwitchIntake()*/);});
+  return Run([this] {IntakeForward();}).Until([this] () -> bool {return (IsIntakeBreakBeamBroken()  /*|| GetStateLimitSwitchIntake()*/);});
 }
 
-void Intake::IntakeForward() {
+void Intake::IntakeForward() { //in
   m_intake.SetVoltage(3_V);
 }
 
-void Intake::IntakeBackward() {
-  m_intake.SetVoltage(-1*(12_V));
+void Intake::IntakeBackward() { //out, (i was adjusting the voltage for amp)
+  m_intake.SetVoltage(-1*(2_V));
 }
 
 void Intake::OffIntake() {
@@ -242,6 +235,11 @@ void Intake::IntakeArmAMP() {
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmAMPPos);
 }
 
+void Intake::IntakePreArmAMP() {
+  m_goal = IntakeConstants::IntakeArmPreAMPPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmPreAMPPos);
+}
+
 void Intake::IntakeArmSpeaker() {
   m_goal = IntakeConstants::IntakeArmSpeakerPos;
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmSpeakerPos);
@@ -257,36 +255,45 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
   //.Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
 
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmAMP();}, {this});
+    return frc2::cmd::RunOnce([this] {IntakeArmAMP();}, {this})
+    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
   }
-  return Run([this] {IntakeArmAMP();})
-  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+  return RunOnce([this] {IntakeArmAMP();});
 }
 
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
  
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmSpeaker();}, {this});
+    return frc2::cmd::RunOnce([this] {IntakeArmSpeaker();}, {this})
+    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
   }
-  return Run([this] {IntakeArmSpeaker();})
-  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+  return RunOnce([this] {IntakeArmSpeaker();});
+}
+
+frc2::CommandPtr Intake::IntakeArmPreAMPCommand(bool wait) {
+  if (wait) {
+    return frc2::cmd::RunOnce([this] {IntakeArmSpeaker();}, {this})
+    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+  }
+  return RunOnce([this] {IntakeArmSpeaker();});
 }
 
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
   
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmIntake();});
+    return frc2::cmd::RunOnce([this] {IntakeArmIntake();})
+    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
   }
-  return Run([this] {IntakeArmIntake();})
-  .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+  return RunOnce([this] {IntakeArmIntake();});
+  
 }
 
 frc2::CommandPtr Intake::IdleIntakeCommand() {
   return frc2::cmd::None();
 }
 
-bool Intake::GetStateBreakBeamIntake() {
-  return m_breakbeam.Get();
+bool Intake::IsIntakeBreakBeamBroken() {
+  return !(m_breakbeam.Get());
 }
 
 int Intake::GetArmDiffrence() {
