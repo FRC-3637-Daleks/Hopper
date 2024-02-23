@@ -26,10 +26,6 @@ void Robot::RobotPeriodic() {
  * robot is disabled.
  */
 void Robot::DisabledInit() {
-  m_disabledCommand = m_container.GetDisabledCommand();
-  if(m_disabledCommand){
-    m_disabledCommand->Schedule();
-  }
 }
 
 void Robot::DisabledPeriodic() {}

@@ -47,44 +47,44 @@ bool Vision::HasTargets() {
 //     return std::abs(diffX) <= stdDevs(0, 0) && std::abs(diffY) <= stdDevs(1, 0) && std::abs(diffTheta) <= stdDevs(2, 0);
 // }
 
-// This is to create standard deviations for the vision system, which is used to determine if a pose is acurate enough to be used
-  Eigen::Matrix<double, 3, 1> Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
+// // This is to create standard deviations for the vision system, which is used to determine if a pose is acurate enough to be used
+//   Eigen::Matrix<double, 3, 1> Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
     
 
-    Eigen::Matrix<double, 3, 1> estStdDevs =
-      VisionConstants::kSingleTagStdDevs;
-    photon::PhotonPipelineResult latestResult; // Add declaration for GetLatestResult function
+//     Eigen::Matrix<double, 3, 1> estStdDevs =
+//       VisionConstants::kSingleTagStdDevs;
+//     photon::PhotonPipelineResult latestResult; // Add declaration for GetLatestResult function
 
-    int numTags = 0; // Declare the variable "numTags" and initialize it to 0
+//     int numTags = 0; // Declare the variable "numTags" and initialize it to 0
 
-    auto targets = latestResult.GetTargets();
-    auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
+//     auto targets = latestResult.GetTargets();
+//     auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
 
-    for (const auto& tgt : targets) {
-      auto tagPose =
-      m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
-      if (tagPose.has_value()) {
-        numTags++;
-        avgDist += tagPose.value().ToPose2d().Translation().Distance(
-            estimatedPose.Translation());
-      }
-    }
-    if (numTags == 0) {
-      return estStdDevs;
-    }
-    avgDist /= numTags;
-    if (numTags > 1) {
-      estStdDevs = VisionConstants::kMultiTagStdDevs;
-    }
-    if (numTags == 1 && avgDist > 4_m) {
-      estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
-                    std::numeric_limits<double>::max(),
-                    std::numeric_limits<double>::max())
-                       .finished();
-    } else {
-      estStdDevs = estStdDevs * (1 + (avgDist * avgDist / 30));
-    }
-    return estStdDevs;
-  }
+//     for (const auto& tgt : targets) {
+//       auto tagPose =
+//       m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
+//       if (tagPose.has_value()) {
+//         numTags++;
+//         avgDist += tagPose.value().ToPose2d().Translation().Distance(
+//             estimatedPose.Translation());
+//       }
+//     }
+//     if (numTags == 0) {
+//       return estStdDevs;
+//     }
+//     avgDist /= numTags;
+//     if (numTags > 1) {
+//       estStdDevs = VisionConstants::kMultiTagStdDevs;
+//     }
+//     if (numTags == 1 && avgDist > 4_m) {
+//       estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
+//                     std::numeric_limits<double>::max(),
+//                     std::numeric_limits<double>::max())
+//                        .finished();
+//     } else {
+//       estStdDevs = estStdDevs * (1 + (avgDist * avgDist / 30));
+//     }
+//     return estStdDevs;
+//   }
 
   

@@ -150,8 +150,3 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   //return autos::ExampleAuto(&m_subsystem);
   return pathplanner::PathPlannerAuto("Hopper").ToPtr();
 }
-
-frc2::CommandPtr RobotContainer::GetDisabledCommand(){
-  // return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
-  return frc2::cmd::None();
-}
