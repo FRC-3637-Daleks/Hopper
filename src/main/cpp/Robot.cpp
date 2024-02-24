@@ -20,6 +20,8 @@ void Robot::RobotInit() {}
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
 }
 
 /**
@@ -41,7 +43,6 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
@@ -49,18 +50,13 @@ void Robot::AutonomousInit() {
   }
 }
 
-void Robot::AutonomousPeriodic() {
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
-  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
-  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
@@ -70,10 +66,7 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
-  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
-}
+void Robot::TeleopPeriodic() {}
 
 /**
  * This function is called periodically during test mode.
