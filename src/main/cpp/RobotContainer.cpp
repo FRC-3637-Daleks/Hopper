@@ -43,33 +43,33 @@ void RobotContainer::ConfigureBindings() {
     return AutoConstants::kMaxAngularSpeed * squaredInput;
   };
 
-  auto targetSpeaker = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
-  auto targetAMP = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
-  auto targetStage = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
-  auto targetSource = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
+  auto targetSpeaker = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSpeakerPose : OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
+  auto targetAMP = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedAMPPose : OperatorConstants::kBlueAMPPose; }; //implement live apriltag targeting
+  auto targetStage = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedStagePose : OperatorConstants::kBlueStagePose; }; //implement live apriltag targeting
+  auto targetSource = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSourcePose : OperatorConstants::kBlueSourcePose; }; //implement live apriltag targeting
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
-  m_swerveController.A()
+  m_swerveController.Start()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.B()
-      .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
+  m_swerveController.A()
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
 
-  m_swerveController.X()
+  m_swerveController.B()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
 
-  m_swerveController.Y()
-      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
+  m_swerveController.X()
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
 
-  // m_swerveController.LeftBumper()
-  //     .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
+  m_swerveController.Y()
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+
+  m_swerveController.LeftBumper()
+      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
   
   m_swerveController.RightBumper()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
-  
-  //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
-  // m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
       
   //Configure Shooter Bindings.
   auto flywheel = [this] () -> double {

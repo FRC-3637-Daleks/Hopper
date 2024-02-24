@@ -5,6 +5,8 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
+#include <frc/DriverStation.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {}
 
@@ -39,6 +41,7 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
@@ -46,13 +49,18 @@ void Robot::AutonomousInit() {
   }
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
+}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
@@ -62,7 +70,10 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
+}
 
 /**
  * This function is called periodically during test mode.
