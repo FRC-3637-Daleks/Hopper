@@ -36,10 +36,11 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 990; // -
+    constexpr int IntakeArmIntakePos = 985; // -
     constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
-    constexpr int IntakeArmSpeakerPos = 460;
-    constexpr int IntakeArmLetGoPos = 560;
+    constexpr int IntakeArmSpeakerPos = 430;
+    constexpr int IntakeArmPreAMPPos = 600;
+    constexpr int IntakeArmLetGoPos = 630;
 
 
     constexpr bool kBeamBroken = false;
@@ -87,7 +88,7 @@ namespace IntakeConstants {
 
     // TODO: MEASURE THESE
     constexpr int kArmSensorFullExtend = 1020;  // corresponds to kMinAngle //amp angle = 1.365 radians
-    constexpr int kArmSensorFullRetract = 430;  // corresponds to kMaxAngle
+    constexpr int kArmSensorFullRetract = 400;  // corresponds to kMaxAngle
     constexpr auto kAngleToSensor = 
       (kArmSensorFullRetract - kArmSensorFullExtend) /
       (kMaxAngle - kMinAngle);
