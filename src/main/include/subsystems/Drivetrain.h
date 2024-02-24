@@ -85,6 +85,11 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
 
 constexpr double kS = 0.0545;
 
+constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kStagePose{4.869_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
+
 } // namespace DriveConstants
 
 // Forward Declaration
@@ -230,6 +235,8 @@ private:
   frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
+  frc::Pose2d m_zTarget;
+
 private:
   friend class DrivetrainSimulation;
   std::unique_ptr<DrivetrainSimulation> m_sim_state;

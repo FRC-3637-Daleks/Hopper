@@ -68,6 +68,15 @@ constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 
+constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kBlueSourcePose{15.733_m, 0.410_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
+
 }  // namespace OperatorConstants
 
 namespace FieldConstants
@@ -107,6 +116,8 @@ class RobotContainer {
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
+
+  bool m_isRed;
 
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet

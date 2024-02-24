@@ -16,7 +16,6 @@ RobotContainer::RobotContainer() {
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   frc::DataLogManager::LogNetworkTables(true);
 
-
   // Configure the button bindings
   ConfigureBindings();
 
@@ -44,7 +43,10 @@ void RobotContainer::ConfigureBindings() {
     return AutoConstants::kMaxAngularSpeed * squaredInput;
   };
 
-  constexpr auto target = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; }; //implement live apriltag targeting
+  auto targetSpeaker = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
+  auto targetAMP = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
+  auto targetStage = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
+  auto targetSource = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? [] () -> frc::Pose2d { return OperatorConstants::kRedSpeakerPose; } : [] () -> frc::Pose2d { return OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
@@ -55,7 +57,7 @@ void RobotContainer::ConfigureBindings() {
       .WhileTrue(m_swerve.TurnToAngleCommand(45_deg));
 
   m_swerveController.X()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(target, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
 
   m_swerveController.Y()
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
