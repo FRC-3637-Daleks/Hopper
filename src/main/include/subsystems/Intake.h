@@ -149,6 +149,8 @@ class Intake : public frc2::SubsystemBase {
   */
   frc2::CommandPtr IntakeOut();
 
+  frc2::CommandPtr IntakeOutSpeaker();
+
   frc2::CommandPtr TimedRelease();
 
   // Keep intake Idle if no buttons are pressed
@@ -163,6 +165,7 @@ class Intake : public frc2::SubsystemBase {
   */
   void IntakeForward();
   void IntakeBackward();
+  void IntakeBackwardSpeaker();
   void OffIntake();
 
   /**

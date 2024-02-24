@@ -111,7 +111,7 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true) //when ring
-    .AndThen(IntakeOut())
+    .AndThen(IntakeOutSpeaker())
     .WithTimeout(1_s), 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
@@ -128,6 +128,13 @@ frc2::CommandPtr Intake::IntakeIn() {
 frc2::CommandPtr Intake::IntakeOut() {
   return frc2::cmd::RunEnd([this] {
     IntakeBackward();
+  },
+  [this] { OffIntake(); });
+}
+
+frc2::CommandPtr Intake::IntakeOutSpeaker() {
+  return frc2::cmd::RunEnd([this] {
+    IntakeBackwardSpeaker();
   },
   [this] { OffIntake(); });
 }
@@ -230,6 +237,10 @@ void Intake::IntakeForward() { //in
 
 void Intake::IntakeBackward() { //out, (i was adjusting the voltage for amp)
   m_intake.SetVoltage(-1*(2_V));
+}
+
+void Intake::IntakeBackwardSpeaker() {
+  m_intake.SetVoltage(-1*(12_V));
 }
 
 void Intake::OffIntake() {
