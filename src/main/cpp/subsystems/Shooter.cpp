@@ -235,7 +235,7 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
     [this, controllerInput] { 
-      m_leadMotor.Set((controllerInput() * controllerInput()) / 2.0); 
+      m_leadMotor.SetVoltage(12_V * (controllerInput() * controllerInput()) / 2.0); 
     
       // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
