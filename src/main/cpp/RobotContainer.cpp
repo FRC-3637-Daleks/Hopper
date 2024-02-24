@@ -59,9 +59,6 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.Y()
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
-
-  // m_swerveController.LeftBumper()
-  //     .WhileTrue(m_swerve.ConfigAbsEncoderCommand());
   
   m_swerveController.RightBumper()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
@@ -74,9 +71,8 @@ void RobotContainer::ConfigureBindings() {
     return m_copilotController.GetRightTriggerAxis();
   };
 
-  auto pivot = [this] () -> units::degree_t {
-    return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
-            frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
+  auto pivot = [this] () -> units::degrees_per_second_t {
+    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
 
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
