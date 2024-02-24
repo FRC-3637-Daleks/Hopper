@@ -67,6 +67,7 @@ constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
+consexpr int kAutoIntake = 180;
 
 }  // namespace OperatorConstants
 

@@ -39,11 +39,10 @@ namespace IntakeConstants {
     constexpr int IntakeArmIntakePos = 990; // -
     constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
     constexpr int IntakeArmSpeakerPos = 460;
-    constexpr int IntakeArmPreAMPPos = 600;
-    constexpr int IntakeArmLetGoPos = 630;
+    constexpr int IntakeArmLetGoPos = 560;
 
 
-    constexpr bool kBeamBroken = true;
+    constexpr bool kBeamBroken = false;
     constexpr bool kBeamClear = false;
 
     //something to do with the type of PID loop
