@@ -25,13 +25,13 @@
 
 
 
-
-RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
-                                  wpi::array<double, 3U> stdDevs){
-                                    m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
-                                  }, [this](){
-                                    return m_swerve.GetPose();
-                                  }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
+RobotContainer::RobotContainer() {
+// RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
+//                                   wpi::array<double, 3U> stdDevs){
+//                                     m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
+//                                   }, [this](){
+//                                     return m_swerve.GetPose();
+//                                   }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
                                    
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
@@ -44,6 +44,8 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
 
   // Configure Dashboard
   ConfigureDashboard();
+
+  ConfigureAuto();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -181,6 +183,7 @@ void RobotContainer::ConfigureAuto()
 
       pathplanner::NamedCommands::registerCommand("ShootCommand", frc2::cmd::Sequence(
         frc2::cmd::Print("wait a second bro"),
+        m_shooter.PivotAngleCommand([] () -> units::degree_t { return 30_deg; }),
         frc2::cmd::Wait(3_s),
         frc2::cmd::Print("SHOOTING"),
         frc2::cmd::Wait(3_s),

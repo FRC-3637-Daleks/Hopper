@@ -118,7 +118,7 @@ class RobotContainer {
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
-  Vision m_vision;
+  // Vision m_vision;
 
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet

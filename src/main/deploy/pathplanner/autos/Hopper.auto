@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.75,
+      "y": 6.6
+    },
+    "rotation": -121.04324386032752
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -33,6 +39,12 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCloseL to LeftSub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
           }
         },
         {
