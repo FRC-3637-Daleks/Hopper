@@ -155,27 +155,18 @@ void RobotContainer::ConfigureAuto()
     pathplanner::ReplanningConfig());
 
 
-        pathplanner::AutoBuilder::configureHolonomic(
-        [this](){return this->m_swerve.GetPose();},
-        [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
-        [this](){return this->m_swerve.GetSpeed();},
-        [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
-        speed.vx, speed.vy, speed.omega, false);},
-        pathFollowerConfig,
-        [](){  
-
-          auto alliance = frc::DriverStation::GetAlliance();
-          if(alliance) {
-            return alliance.value() == frc::DriverStation::Alliance::kRed;
-          }
-
-          return false;
-
-
-          
-        }, //replace later, just a placeholder
-        (&m_swerve)
-      );
+    pathplanner::AutoBuilder::configureHolonomic(
+          [this](){return this->m_swerve.GetPose();},
+          [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
+          [this](){return this->m_swerve.GetSpeed();},
+          [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
+          speed.vx, speed.vy, speed.omega, false);},
+          pathFollowerConfig,
+          [this](){  
+            return m_isRed;            
+          }, //replace later, just a placeholder
+          (&m_swerve)
+    );
   // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));

@@ -120,6 +120,8 @@ class RobotContainer {
   Climb m_climb;
   // Vision m_vision;
 
+  bool m_isRed;
+
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
 

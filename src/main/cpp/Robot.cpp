@@ -5,6 +5,8 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
+#include <frc/DriverStation.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {}
 
@@ -17,6 +19,8 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
   frc2::CommandScheduler::GetInstance().Run();
 }
 
@@ -42,7 +46,7 @@ void Robot::AutonomousInit() {
   }
 }
 
-void Robot::AutonomousPeriodic() {  
+void Robot::AutonomousPeriodic() { 
 }
 
 void Robot::TeleopInit() {
@@ -59,7 +63,8 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+}
 
 /**
  * This function is called periodically during test mode.
