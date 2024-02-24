@@ -19,20 +19,20 @@
   //
 
 
- const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
-    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
-    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants 
-    AutoConstants::kMaxSpeed,
-    DriveConstants::kRadius, // Drive base radius (distance from center to furthest module) 
-    pathplanner::ReplanningConfig()
-);
+ 
 
 
 
 
 
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
+                                  wpi::array<double, 3U> stdDevs){
+                                    m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
+                                  }, [this](){
+                                    return m_swerve.GetPose();
+                                  }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
+                                   
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
@@ -141,6 +141,54 @@ void RobotContainer::ConfigureDashboard()
   m_shooter.InitVisualization(&m_mech_sideview);
 
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+}
+
+void RobotContainer::ConfigureAuto()
+{
+  const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
+    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
+    pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants 
+    AutoConstants::kMaxSpeed,
+    DriveConstants::kRadius, // Drive base radius (distance from center to furthest module) 
+    pathplanner::ReplanningConfig());
+
+
+        pathplanner::AutoBuilder::configureHolonomic(
+        [this](){return this->m_swerve.GetPose();},
+        [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
+        [this](){return this->m_swerve.GetSpeed();},
+        [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
+        speed.vx, speed.vy, speed.omega, false);},
+        pathFollowerConfig,
+        [](){  
+
+          auto alliance = frc::DriverStation::GetAlliance();
+          if(alliance) {
+            return alliance.value() == frc::DriverStation::Alliance::kRed;
+          }
+
+          return false;
+
+
+          
+        }, //replace later, just a placeholder
+        (&m_swerve)
+      );
+  // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
+  //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
+  //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+      
+
+      pathplanner::NamedCommands::registerCommand("ShootCommand", frc2::cmd::Sequence(
+        frc2::cmd::Print("wait a second bro"),
+        frc2::cmd::Wait(3_s),
+        frc2::cmd::Print("SHOOTING"),
+        frc2::cmd::Wait(3_s),
+        frc2::cmd::Print("all done")));
+      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
+      pathplanner::NamedCommands::registerCommand("IntakeNote", m_intake.AutoIntake());
+      // pathplanner::NamedCommands::registerCommand("ShootyCommand2", m_shooter.ShooterCommand());
+      pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
 }
 
 

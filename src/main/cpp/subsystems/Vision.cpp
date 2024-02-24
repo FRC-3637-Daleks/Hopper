@@ -10,8 +10,8 @@
 // Fix the code so it understand difference between old pose and new pose dependent on the timestamp 
 
 Vision::Vision(
-    std::function<void(frc::Pose3d, units::second_t)> addVisionMeasurement,
-    std::function<frc::Pose3d()> getRobotPose,
+    std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> addVisionMeasurement,
+    std::function<frc::Pose2d()> getRobotPose,
     const Eigen::Matrix<double, 3, 1>& initialStdDevs) 
     : m_estimator(
         frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
@@ -20,10 +20,7 @@ Vision::Vision(
         VisionConstants::kCameraToRobot)
 {
     // Inside the constructor body, you can perform additional operations if needed
-    addVisionMeasurement(frc::Pose3d(), units::second_t(0));  // Call the addVisionMeasurement function
-    frc::Pose3d robotPose = getRobotPose();  // Call the getRobotPose function
-    frc::Pose2d robotPose2d = robotPose.ToPose2d();  // Convert the robotPose to Pose2d
-    m_estimatedStdDevs = GetEstimationStdDevs(robotPose2d);  
+    m_addVisionMeasurement = addVisionMeasurement; // Call the addVisionMeasurement function
 }
 
 bool Vision::HasTargets() {
@@ -46,45 +43,69 @@ bool Vision::HasTargets() {
 //     // Check if the incoming pose falls within the standard deviations
 //     return std::abs(diffX) <= stdDevs(0, 0) && std::abs(diffY) <= stdDevs(1, 0) && std::abs(diffTheta) <= stdDevs(2, 0);
 // }
+  std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
+    auto visionEst = m_estimator.Update();
+    units::second_t latestTimestamp = m_camera.GetLatestResult().GetTimestamp();
+    bool newResult =
+        units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
+         if (newResult) {
+      lastEstTimestamp = latestTimestamp;
+    }
+    return visionEst;
+  }
 
-// // This is to create standard deviations for the vision system, which is used to determine if a pose is acurate enough to be used
-//   Eigen::Matrix<double, 3, 1> Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
+
+// This is to create standard deviations for the vision system, which is used to determine if a pose is acurate enough to be used
+  Eigen::Matrix<double, 3, 1> Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
     
 
-//     Eigen::Matrix<double, 3, 1> estStdDevs =
-//       VisionConstants::kSingleTagStdDevs;
-//     photon::PhotonPipelineResult latestResult; // Add declaration for GetLatestResult function
+    Eigen::Matrix<double, 3, 1> estStdDevs =
+      VisionConstants::kSingleTagStdDevs;
+    photon::PhotonPipelineResult latestResult; // Add declaration for GetLatestResult function
 
-//     int numTags = 0; // Declare the variable "numTags" and initialize it to 0
+    int numTags = 0; // Declare the variable "numTags" and initialize it to 0
 
-//     auto targets = latestResult.GetTargets();
-//     auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
+    auto targets = latestResult.GetTargets();
+    auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
 
-//     for (const auto& tgt : targets) {
-//       auto tagPose =
-//       m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
-//       if (tagPose.has_value()) {
-//         numTags++;
-//         avgDist += tagPose.value().ToPose2d().Translation().Distance(
-//             estimatedPose.Translation());
-//       }
-//     }
-//     if (numTags == 0) {
-//       return estStdDevs;
-//     }
-//     avgDist /= numTags;
-//     if (numTags > 1) {
-//       estStdDevs = VisionConstants::kMultiTagStdDevs;
-//     }
-//     if (numTags == 1 && avgDist > 4_m) {
-//       estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
-//                     std::numeric_limits<double>::max(),
-//                     std::numeric_limits<double>::max())
-//                        .finished();
-//     } else {
-//       estStdDevs = estStdDevs * (1 + (avgDist * avgDist / 30));
-//     }
-//     return estStdDevs;
-//   }
+    for (const auto& tgt : targets) {
+      auto tagPose =
+      m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
+      if (tagPose.has_value()) {
+        numTags++;
+        avgDist += tagPose.value().ToPose2d().Translation().Distance(
+            estimatedPose.Translation());
+      }
+    }
+    if (numTags == 0) {
+      return estStdDevs;
+    }
+    avgDist /= numTags;
+    if (numTags > 1) {
+      estStdDevs = VisionConstants::kMultiTagStdDevs;
+    }
+    if (numTags == 1 && avgDist > 4_m) {
+      estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
+                    std::numeric_limits<double>::max(),
+                    std::numeric_limits<double>::max())
+                       .finished();
+    } else {
+      estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 30));
+    }
+    return estStdDevs;
+  }
+
+  void Vision::Periodic()
+  {
+    auto PoseEst = CalculateRobotPoseEstimate();
+    if(PoseEst)
+    {
+      auto EstPose2d = PoseEst.value().estimatedPose.ToPose2d();
+      auto StdDev = GetEstimationStdDevs(EstPose2d);
+      wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
+      m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+    
+    }
+  }
 
   

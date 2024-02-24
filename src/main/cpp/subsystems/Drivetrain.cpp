@@ -341,8 +341,8 @@ frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
 
 
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
-                                       units::second_t timestamp) {
-  m_poseEstimator.AddVisionMeasurement(pose, timestamp);
+                                       units::second_t timestamp, wpi::array<double, 3U> visionMeasurementStdDevs) {
+  m_poseEstimator.AddVisionMeasurement(pose, timestamp, visionMeasurementStdDevs);
 }
 
 frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {

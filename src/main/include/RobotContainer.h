@@ -33,6 +33,7 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Climb.h"
+#include "subsystems/Vision.h"
 
 
 namespace AutoConstants {
@@ -117,6 +118,7 @@ class RobotContainer {
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
+  Vision m_vision;
 
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
@@ -124,4 +126,5 @@ class RobotContainer {
 public:
   void ConfigureBindings();
   void ConfigureDashboard();
+  void ConfigureAuto();
 };

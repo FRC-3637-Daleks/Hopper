@@ -20,6 +20,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <Eigen/Core> 
+#include <wpi/array.h>
 #include <math.h>
 
 
@@ -43,8 +44,8 @@ namespace VisionConstants{
   class Vision : public frc2::SubsystemBase{
 
   public:
-    Vision(std::function<void(frc::Pose3d, units::second_t)> addVisionMeasurement,
-           std::function<frc::Pose3d()> getRobotPose,
+    Vision(std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> addVisionMeasurement,
+           std::function<frc::Pose2d()> getRobotPose,
            const Eigen::Matrix<double, 3, 1>& initialStdDevs);
          
     // photon::PhotonPoseEstimator m_estimator;
@@ -56,7 +57,7 @@ namespace VisionConstants{
 
     bool HasTargets();
 
-    void CalculateRobotPoseEstimate();
+    std::optional<photon::EstimatedRobotPose> CalculateRobotPoseEstimate();
 
     Eigen::Matrix<double, 3, 1> GetEstimationStdDevs(frc::Pose2d estimatedPose);
     // ...
@@ -74,6 +75,8 @@ namespace VisionConstants{
     //                          PoseStrategy strategy, PhotonCamera&& camera,
     //                          frc::Transform3d robotToCamera);
     Eigen::Matrix<double, 3, 1> m_estimatedStdDevs; 
+    units::time::second_t lastEstTimestamp;
+    std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> m_addVisionMeasurement;
 
 
 };

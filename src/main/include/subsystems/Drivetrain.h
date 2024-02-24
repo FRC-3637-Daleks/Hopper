@@ -206,7 +206,9 @@ frc2::CommandPtr
   frc2::CommandPtr BrakeCommand();
 
   // Add Vision Pose to SwerveDrivePoseEstimator.
-  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
+ void AddVisionPoseEstimate(frc::Pose2d pose,
+                            units::second_t timestamp,
+                            wpi::array<double, 3U> visionMeasurementStdDevs);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
 
