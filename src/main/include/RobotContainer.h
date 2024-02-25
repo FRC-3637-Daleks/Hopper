@@ -67,6 +67,7 @@ constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
+constexpr int kAutoIntake = 180;
 
 constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};

@@ -116,7 +116,7 @@ void Periodic() override;
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
-  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
+  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
 
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 
@@ -133,6 +133,8 @@ void Periodic() override;
  
 
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
+  
+  units::degree_t m_goal;
 
  private:
   frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal;

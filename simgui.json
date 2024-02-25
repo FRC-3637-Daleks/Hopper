@@ -1,10 +1,5 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "window": {
-        "visible": false
-      }
-    },
     "Timing": {
       "window": {
         "visible": false

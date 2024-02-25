@@ -65,20 +65,29 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.Y()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
 
-  m_swerveController.LeftBumper()
+  m_swerveController.LeftStick()
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
   
-  m_swerveController.RightBumper()
+  m_swerveController.Back()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  
+  m_swerveController.RightBumper()
+      //.WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+      .OnTrue(m_intake.ShootOnAMP());
+
+  m_swerveController.LeftBumper()
+      .OnTrue(m_intake.OutputToShooter());
+  
+  //m_swerveController.X().WhileTrue(m_swerve.ZeroAbsEncodersCommand());
+  // m_swerveController.LeftBumper().WhileTrue(m_swerve.ConfigAbsEncoderCommand());
       
   //Configure Shooter Bindings.
   auto flywheel = [this] () -> double {
     return m_copilotController.GetRightTriggerAxis();
   };
 
-  auto pivot = [this] () -> units::degree_t {
-    return (ShooterConstants::kMaxAngle - ShooterConstants::kMinAngle) * 
-            frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
+  auto pivot = [this] () -> units::degrees_per_second_t {
+    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
 
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
@@ -94,8 +103,9 @@ void RobotContainer::ConfigureBindings() {
       std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
       std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)}
-    )
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)},
+      std::pair<int, frc2::CommandPtr>{OperatorConstants::kAutoIntake, m_intake.IntakeRing()}
+      )
   );
 
   m_copilotController.A()
