@@ -14,6 +14,8 @@
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/simulation/SimDeviceSim.h>
 #include <frc/simulation/DIOSim.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/DriverStation.h>
 
 class ShooterSimulation
 {
@@ -203,12 +205,19 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
-frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
-  return frc2::cmd::Parallel(
-    FlywheelCommand(flywheelInput),
-    PivotAngleCommand(pivotAngle)
-  );
+// frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
+//   return frc2::cmd::Parallel(
+//     FlywheelCommand(flywheelInput),
+//     PivotAngleCommand(pivotAngle)
+//   );
+// }
+frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance) {
+    return frc2::cmd::Parallel(
+        FlywheelCommand(flywheelInput),
+        AimSubwoofer(calculateDistance())
+    );
 }
+
 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
@@ -239,6 +248,19 @@ frc2::CommandPtr Shooter::PivotAngleDistanceCommand(units::meter_t distance) {
     }, {this}
   );
 }
+
+frc2::CommandPtr Shooter::AimSubwoofer(units::meter_t distance) {
+  return frc2::cmd::RunOnce(
+    [this, distance] () {
+      float angle = KevensCoolEquasion(distance.to<double>()); 
+      units::radian_t angle_radians(angle); 
+      frc::Rotation2d rotation(angle_radians); 
+      SetPivotMotor(ToTalonUnits(rotation)); 
+    }, {this}
+  );
+}
+
+
 
 // ************************ SIMULATION *****************************
 void Shooter::SimulationPeriodic()
