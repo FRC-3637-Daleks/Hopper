@@ -16,6 +16,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <subsystems/Intake.h>
 
+#include <pathplanner/lib/util/PathPlannerLogging.h>
   //
 
 
@@ -183,6 +184,10 @@ void RobotContainer::ConfigureAuto()
       pathplanner::NamedCommands::registerCommand("IntakeNote", m_intake.AutoIntake());
       // pathplanner::NamedCommands::registerCommand("ShootyCommand2", m_shooter.ShooterCommand());
       pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
+
+      pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
+        m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
+      });
 }
 
 
