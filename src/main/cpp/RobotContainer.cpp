@@ -29,12 +29,16 @@ void RobotContainer::ConfigureBindings() {
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(-m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis), OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input); // square the input while preserving the sign
+    if (m_isRed) 
+      squaredInput *= -1;
     return DriveConstants::kMaxTeleopSpeed * squaredInput;
   };
 
   auto strafe = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(-m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis), OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input); 
+    if (m_isRed) 
+      squaredInput *= -1;
     return DriveConstants::kMaxTeleopSpeed * squaredInput;
   };
 
@@ -101,7 +105,7 @@ void RobotContainer::ConfigureBindings() {
 
       // Get the pose of the speaker AprilTag based on its ID
       frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
-      SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
+      frc::Pose2d SpeakerPose2d = frc::Pose2d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Rotation().Angle()};
       // auto it1 = m_aprilTagFieldLayout.GetTagPose(id);
       // if (it1.has_value()) {
       //     SpeakerPose = it1.value();
@@ -110,13 +114,11 @@ void RobotContainer::ConfigureBindings() {
       //     SpeakerPose = frc::Pose3d();
       // }
       
-      units::meter_t z = 1.5_ft; // estimation of shooter height
-      
-      // Construct Pose3d using the constructor that takes a Pose2d
-      frc::Pose3d RobotPose3d{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), z, frc::Rotation3d{0_deg, RobotPose2d.Rotation().Degrees(), 0_deg}};
+      units::meter_t z = 1.5_ft; // estimation of shooter height 
+    
       // frc::SmartDashboard::PutData(RobotPose3d);
       // Calculate the horizontal distance between RobotPose and SpeakerPose
-      units::meter_t offset = RobotPose3d.Translation().Distance(SpeakerPose.Translation());
+      units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
 
