@@ -167,6 +167,7 @@ public:
 
   // Display useful information on Shuffleboard.
   void UpdateDashboard();
+  frc::Field2d& GetField() {return m_field;}
 
   // Drive the robot with swerve controls.
   frc2::CommandPtr SwerveCommand(

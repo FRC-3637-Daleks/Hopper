@@ -374,7 +374,7 @@ void Intake::SimulationPeriodic()
   );
 }
 
-void Intake::SimulateNotePickup()
+bool Intake::SimulateNotePickup()
 {
   /* Piece grabs off floor if arm is down,
    * intake is spinning inward, and there isn't already a note inside
@@ -384,5 +384,8 @@ void Intake::SimulateNotePickup()
     && m_sim_state->m_armModel.GetAngle() < IntakeConstants::kMinAngle + 5_deg)
   {
     m_sim_state->m_notePosition = 13_in;
+    return true;
   }
+
+  return false;
 }
