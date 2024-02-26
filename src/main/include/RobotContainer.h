@@ -10,7 +10,10 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
 #include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include "frc/apriltag/AprilTagFields.h"
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -119,6 +122,8 @@ class RobotContainer {
   Climb m_climb;
 
   bool m_isRed;
+  //AprilTag
+  frc::AprilTagFieldLayout m_aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet

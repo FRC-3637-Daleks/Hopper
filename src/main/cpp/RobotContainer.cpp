@@ -9,6 +9,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
+#include <frc/geometry/Pose3d.h>
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -47,6 +48,8 @@ void RobotContainer::ConfigureBindings() {
   auto targetAMP = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedAMPPose : OperatorConstants::kBlueAMPPose; }; //implement live apriltag targeting
   auto targetStage = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedStagePose : OperatorConstants::kBlueStagePose; }; //implement live apriltag targeting
   auto targetSource = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSourcePose : OperatorConstants::kBlueSourcePose; }; //implement live apriltag targeting
+
+  constexpr auto SubWoofer = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; };
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
@@ -90,7 +93,34 @@ void RobotContainer::ConfigureBindings() {
     return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
 
-  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
+  auto calculateDistance = [this]() -> units::meter_t {
+      frc::Pose2d RobotPose2d = m_swerve.GetPose();
+      
+      // Determine the IDs of the speaker AprilTags based on the alliance color
+      int id = m_isRed ? 4 : 7;
+
+      // Get the pose of the speaker AprilTag based on its ID
+      frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
+      SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
+      // auto it1 = m_aprilTagFieldLayout.GetTagPose(id);
+      // if (it1.has_value()) {
+      //     SpeakerPose = it1.value();
+      // } else {
+      //     // Handle case where neither tag is found
+      //     SpeakerPose = frc::Pose3d();
+      // }
+      
+      units::meter_t z = 1.5_ft; // estimation of shooter height
+      
+      // Construct Pose3d using the constructor that takes a Pose2d
+      frc::Pose3d RobotPose3d{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), z, frc::Rotation3d{0_deg, RobotPose2d.Rotation().Degrees(), 0_deg}};
+      // frc::SmartDashboard::PutData(RobotPose3d);
+      // Calculate the horizontal distance between RobotPose and SpeakerPose
+      units::meter_t offset = RobotPose3d.Translation().Distance(SpeakerPose.Translation());
+      return offset; //Return the horizontal distance as units::meter_t
+  };
+
+  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
   // Configure Intake Bindings.
   auto position = [this]() -> int {
@@ -116,8 +146,7 @@ void RobotContainer::ConfigureBindings() {
 
   auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
 
-  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
-
+  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb)); 
 }
 
 void RobotContainer::ConfigureDashboard()
@@ -140,3 +169,4 @@ frc2::CommandPtr RobotContainer::GetDisabledCommand(){
   // return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
   return frc2::cmd::None();
 }
+
