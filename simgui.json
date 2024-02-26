@@ -38,7 +38,12 @@
     },
     "transitory": {
       "SmartDashboard": {
-        "Intake": {
+        "Field": {
+          "double[]##v_/SmartDashboard/Field/simulation": {
+            "open": true
+          }
+        },
+        "Shooter": {
           "open": true
         },
         "open": true

@@ -164,10 +164,6 @@ float pow(float d, int power) {
   return temp;
 }
 
-float Shooter::KevensCoolEquasion(float d) {
-  return (1.57 - (0.175*d) - (2.14*.001*(pow(d, 2)))+(3.58*.001*pow(d,3))-(5.3*.0001*pow(d,4))+(4.16*.00001*pow(d,5))-(1.92*.000001*pow(d,6))+(4.95*.00000001*pow(d,7))-(5.52*.0000000001*pow(d,8)));
-}
-
 //Stop pivoting motor
 void Shooter::StopTalonMotor() {
 //Stops
@@ -188,8 +184,17 @@ void Shooter::Periodic(){
   UpdateVisualization();
 }
 
-units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
-  return 30_deg; // temporary value until math is worked out.
+units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
+  // return (1.57 - 
+  // (0.175 * distance.value()) - 
+  // (2.14*.001 * (std::pow(distance.value(), 2))) + 
+  // (3.58*.001 * std::pow(distance.value(), 3)) - 
+  // (5.3*.0001 * std::pow(distance.value(), 4)) + 
+  // (4.16*.00001 * std::pow(distance.value(), 5)) -
+  // (1.92*.000001 * std::pow(distance.value(), 6)) +
+  // (4.95*.00000001 * std::pow(distance.value(), 7)) -
+  // (5.52*.0000000001 * std::pow(distance.value(), 8))) * 1_deg;
+  return (std::atan(5.55 / distance.value()) - .191) * 1_rad;
 }
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
@@ -213,6 +218,7 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
+<<<<<<< HEAD
 
 // frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
 //   return frc2::cmd::Parallel(
@@ -220,11 +226,35 @@ units::radian_t Shooter::GetAnglePivot() {
 //     PivotAngleCommand(pivotAngle)
 //   );
 // }
+=======
+frc2::CommandPtr Shooter::ShooterVelocityCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
+  
+  auto pivotAngle = [this, pivotVelocity] {
+    m_goal+= pivotVelocity() * 20_ms; 
+
+    if (m_goal < ShooterConstants::kMinAngle) {
+      m_goal = ShooterConstants::kMinAngle;
+    } else if(m_goal > ShooterConstants::kMaxAngle) {
+      m_goal = ShooterConstants::kMaxAngle;
+    };
+
+    return m_goal;
+  };
+
+  
+  return frc2::cmd::Parallel(
+    FlywheelCommand(flywheelInput),
+    PivotAngleCommand(pivotAngle)
+  );
+}
+
+>>>>>>> origin/visvam-wip
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance) {
     return frc2::cmd::Parallel(
         FlywheelCommand(flywheelInput),
-        AimSubwoofer(calculateDistance())
+        PivotAngleDistanceCommand(calculateDistance)
     );
+<<<<<<< HEAD
 }
 
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
@@ -245,6 +275,8 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
     FlywheelCommand(flywheelInput),
     PivotAngleCommand(pivotAngle)
   );
+=======
+>>>>>>> origin/visvam-wip
 }
 
 
@@ -270,25 +302,16 @@ frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> ang
 }
 
 
-frc2::CommandPtr Shooter::PivotAngleDistanceCommand(units::meter_t distance) {
-  return frc2::cmd::RunOnce(
+frc2::CommandPtr Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
+  return frc2::cmd::Run(
     [this, distance] () {
-      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance)));
+      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance())));
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.", distance().value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal", DistanceToAngle(distance()).value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal", ToTalonUnits(DistanceToAngle(distance())));
     }, {this}
   );
 }
-
-frc2::CommandPtr Shooter::AimSubwoofer(units::meter_t distance) {
-  return frc2::cmd::RunOnce(
-    [this, distance] () {
-      float angle = KevensCoolEquasion(distance.to<double>()); 
-      units::radian_t angle_radians(angle); 
-      frc::Rotation2d rotation(angle_radians); 
-      SetPivotMotor(ToTalonUnits(rotation)); 
-    }, {this}
-  );
-}
-
 
 
 // ************************ SIMULATION *****************************
