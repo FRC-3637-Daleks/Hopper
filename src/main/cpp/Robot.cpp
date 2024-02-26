@@ -5,6 +5,8 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
+#include <frc/DriverStation.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {}
 
@@ -18,6 +20,8 @@ void Robot::RobotInit() {}
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
 }
 
 /**

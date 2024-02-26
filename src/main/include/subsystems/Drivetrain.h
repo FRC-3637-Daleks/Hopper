@@ -60,16 +60,16 @@ constexpr int kRearRightAbsoluteEncoderChannel = 12;
 
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
-  0, 0.002, 0, 0, 0
+  0, 0.00, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearLeftDriveMotorPIDCoefficients {
-  0, 0.002, 0, 0, 0
+  0, 0.00, 0, 0, 0
 };
 constexpr struct PIDCoefficients kFrontRightDriveMotorPIDCoefficients {
-  0, 0.002, 0, 0, 0
+  0, 0.00, 0, 0, 0
 };
 constexpr struct PIDCoefficients kRearRightDriveMotorPIDCoefficients {
-  0, 0.002, 0, 0, 0
+  0, 0.00, 0, 0, 0
 };
 
 constexpr struct PIDCoefficients kFrontLeftSteerMotorPIDCoefficients {
@@ -86,6 +86,11 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
 };
 
 constexpr double kS = 0.0545;
+
+constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kStagePose{4.869_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
 
 } // namespace DriveConstants
 
@@ -236,6 +241,8 @@ private:
   frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
+  frc::Pose2d m_zTarget;
+
 private:
   friend class DrivetrainSimulation;
   std::unique_ptr<DrivetrainSimulation> m_sim_state;

@@ -1,9 +1,4 @@
 {
-  "FMS": {
-    "window": {
-      "visible": false
-    }
-  },
   "Keyboard 0 Settings": {
     "window": {
       "visible": true
@@ -36,19 +31,22 @@
         }
       ],
       "axisCount": 5,
-      "buttonCount": 4,
+      "buttonCount": 8,
       "buttonKeys": [
         90,
         88,
         67,
-        86
+        86,
+        66,
+        -1,
+        -1,
+        82
       ],
       "povConfig": [
         {
           "key135": 323,
-          "key180": 322,
-          "key225": 321,
-          "key315": 327,
+          "key180": 50,
+          "key225": 49,
           "key45": 329
         }
       ],
@@ -56,14 +54,8 @@
     },
     {
       "axisConfig": [
-        {
-          "decKey": 74,
-          "incKey": 76
-        },
-        {
-          "decKey": 73,
-          "incKey": 75
-        },
+        {},
+        {},
         {
           "decKey": 71,
           "incKey": 84
@@ -91,9 +83,14 @@
       ],
       "povConfig": [
         {
-          "key0": 328,
-          "key270": 324,
-          "key90": 326
+          "key0": 57,
+          "key135": 59,
+          "key180": 76,
+          "key225": 75,
+          "key270": 73,
+          "key315": 56,
+          "key45": 48,
+          "key90": 80
         }
       ],
       "povCount": 1
