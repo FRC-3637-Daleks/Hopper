@@ -238,6 +238,7 @@ private:
   frc::MechanismRoot2d* m_mech_root;
   frc::MechanismLigament2d *m_mech_arm;
   frc::MechanismLigament2d *m_mech_arm_goal;
+  frc::MechanismLigament2d *m_mech_arm_mm_setpoint;
   frc::MechanismLigament2d *m_mech_spinner;
   frc::MechanismLigament2d *m_mech_note;
 

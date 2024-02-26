@@ -155,6 +155,8 @@ void RobotContainer::ConfigureDashboard()
   m_shooter.InitVisualization(&m_mech_sideview);
 
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  frc::SmartDashboard::PutData("Intake", &m_intake);
+  frc::SmartDashboard::PutData("Shooter", &m_shooter);
 }
 
 

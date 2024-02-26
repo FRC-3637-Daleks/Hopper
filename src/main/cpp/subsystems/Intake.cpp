@@ -160,6 +160,14 @@ void Intake::InitVisualization(frc::Mechanism2d* mech)
     frc::Color8Bit{20, 200, 20} // RGB, green
   );
 
+  m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
+    "arm motion magic",
+    IntakeConstants::kArmRadius.convert<units::feet>().value(),
+    0_deg,
+    2,
+    frc::Color8Bit{80, 80, 200} // blueish
+  );
+
   m_mech_arm = m_mech_root->Append<frc::MechanismLigament2d>(
     "arm",
     IntakeConstants::kArmRadius.convert<units::feet>().value(),
@@ -192,6 +200,7 @@ void Intake::UpdateVisualization()
 
   m_mech_arm->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
   m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
+  m_mech_arm_mm_setpoint->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetActiveTrajectoryPosition()));
   m_mech_spinner->SetAngle(
     units::degree_t{m_mech_spinner->GetAngle()} + m_intake.GetAppliedOutput()*66.66_deg);
   m_mech_note->SetAngle(units::degree_t{m_mech_arm->GetAngle()});
@@ -367,8 +376,9 @@ void Intake::SimulationPeriodic()
   m_sim_state->m_armMotorSim.SetBusVoltage(
     frc::RobotController::GetBatteryVoltage().value());
   
+  // Voltage is reversed on real robot
   m_sim_state->m_armModel.SetInputVoltage(
-    units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
+    -units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
   );
   m_sim_state->m_armModel.Update(20_ms);
 
@@ -382,11 +392,9 @@ void Intake::SimulationPeriodic()
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
   const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
   m_sim_state->m_armMotorSim.SetAnalogVelocity(sensor_speed_reading);
-  m_sim_state->m_armMotorSim.SetLimitFwd(
-    m_sim_state->m_armModel.HasHitUpperLimit()
-  );
+  // Real robot has the reverse limit at the full retract position
   m_sim_state->m_armMotorSim.SetLimitRev(
-    m_sim_state->m_armModel.HasHitLowerLimit()
+    m_sim_state->m_armModel.HasHitUpperLimit()
   );
   m_sim_state->m_armMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
