@@ -130,7 +130,7 @@ void Periodic() override;
 
   frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
 
-  frc2::CommandPtr Shooter::AimSubwoofer(units::meter_t distance);
+  frc2::CommandPtr AimSubwoofer(units::meter_t distance);
 
  //initializes Lead + Follow motors (makes motors run in parallel) 
   const int leadDeviceID = 1, followDeviceID = 2;
