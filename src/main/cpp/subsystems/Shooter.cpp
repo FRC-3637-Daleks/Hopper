@@ -61,7 +61,13 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
-  
+
+  m_pivot.ConfigForwardSoftLimitEnable(true);
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor);
+  m_pivot.ConfigReverseSoftLimitEnable(true);
+  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor);
+
+
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
   m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, ShooterConstants::kIPivot, ShooterConstants::kTimeoutMs);
@@ -72,8 +78,8 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   
   
   // set Motion Magic settings
-  m_pivot.ConfigMotionCruiseVelocity(320); // 80 rps = 16384 ticks/100ms cruise velocity
-  m_pivot.ConfigMotionAcceleration(80); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_pivot.ConfigMotionCruiseVelocity(480); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_pivot.ConfigMotionAcceleration(1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_pivot.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -84,6 +90,8 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_followMotor.Follow(m_leadMotor,true);
 
   m_followMotor.SetInverted(false);
+
+  m_goal = 0_deg; 
   
 }
 
@@ -188,9 +196,9 @@ double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
       m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
   // Puts the rotation in the correct scope for the incremental encoder.
-  return (frc::AngleModulus(rotation.Radians() - currentHeading) +
+  return ((frc::AngleModulus(rotation.Radians() - currentHeading) +
           currentHeading) *
-         ShooterConstants::kAngleToSensor;
+         ShooterConstants::kAngleToSensor).value() + ShooterConstants::kMinAimSensor;
 }
 
 units::radian_t Shooter::GetAnglePivot() {
@@ -205,6 +213,7 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
+<<<<<<< HEAD
 // frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
 //   return frc2::cmd::Parallel(
 //     FlywheelCommand(flywheelInput),
@@ -216,13 +225,34 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
         FlywheelCommand(flywheelInput),
         AimSubwoofer(calculateDistance())
     );
+=======
+frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
+  
+  auto pivotAngle = [this, pivotVelocity] {
+  m_goal+= pivotVelocity() * 20_ms; 
+
+  if (m_goal < ShooterConstants::kMinAngle) {
+    m_goal = ShooterConstants::kMinAngle;
+  } else if(m_goal > ShooterConstants::kMaxAngle) {
+    m_goal = ShooterConstants::kMaxAngle;
+  };
+
+  return m_goal;
+  };
+
+  
+  return frc2::cmd::Parallel(
+    FlywheelCommand(flywheelInput),
+    PivotAngleCommand(pivotAngle)
+  );
+>>>>>>> origin/main
 }
 
 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
     [this, controllerInput] { 
-      m_leadMotor.Set((controllerInput() * controllerInput()) / 2.0); 
+      m_leadMotor.SetVoltage(12_V * (controllerInput() * controllerInput()) / 2.0); 
     
       // frc::SmartDashboard::PutNumber("Shooter/Flywheel output", controllerInput());
     }, {}
