@@ -197,12 +197,12 @@ void RobotContainer::ConfigureBindings() {
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheel, calculateDistance));
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheel, calculateDistance)); //this aint right but ill change it at some point
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
       pathplanner::NamedCommands::registerCommand("AutoIntakeNote", m_intake.AutoIntake());
-
+      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));

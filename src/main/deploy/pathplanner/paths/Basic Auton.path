@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
+        "x": 1.75,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9,
+        "x": 1.65,
         "y": 7.0
       },
       "isLocked": false,
@@ -32,15 +32,15 @@
     },
     {
       "anchor": {
-        "x": 2.0,
+        "x": 1.75,
         "y": 4.1
       },
       "prevControl": {
-        "x": 1.477971343959805,
+        "x": 1.227971343959805,
         "y": 4.170265019274688
       },
       "nextControl": {
-        "x": 2.0495531343484465,
+        "x": 1.7995531343484465,
         "y": 4.09333015170752
       },
       "isLocked": false,
@@ -48,15 +48,15 @@
     },
     {
       "anchor": {
-        "x": 2.55,
+        "x": 2.2,
         "y": 4.1
       },
       "prevControl": {
-        "x": 2.5,
+        "x": 2.1500000000000004,
         "y": 4.1
       },
       "nextControl": {
-        "x": 2.5999999999999996,
+        "x": 2.25,
         "y": 4.1
       },
       "isLocked": false,
@@ -80,15 +80,15 @@
     },
     {
       "anchor": {
-        "x": 7.4,
+        "x": 7.1,
         "y": 0.77
       },
       "prevControl": {
-        "x": 2.312844415816218,
+        "x": 2.0128444158162173,
         "y": 0.77
       },
       "nextControl": {
-        "x": 7.611120108221965,
+        "x": 7.311120108221965,
         "y": 0.77
       },
       "isLocked": false,
@@ -168,7 +168,7 @@
             {
               "type": "named",
               "data": {
-                "name": "RevShooter"
+                "name": null
               }
             }
           ]
@@ -191,7 +191,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": null
               }
             },
             {
@@ -203,7 +203,7 @@
             {
               "type": "named",
               "data": {
-                "name": "RevIntake"
+                "name": null
               }
             }
           ]
@@ -220,13 +220,13 @@
             {
               "type": "named",
               "data": {
-                "name": "RevShooter"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "StopIntake"
+                "name": null
               }
             }
           ]
@@ -243,7 +243,7 @@
             {
               "type": "named",
               "data": {
-                "name": "RevIntake"
+                "name": null
               }
             }
           ]
@@ -260,13 +260,13 @@
             {
               "type": "named",
               "data": {
-                "name": "StopIntake"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "RevShooter"
+                "name": null
               }
             }
           ]
@@ -289,7 +289,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": null
               }
             },
             {
@@ -304,8 +304,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
