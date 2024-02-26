@@ -41,7 +41,7 @@
 namespace AutoConstants {
 
 constexpr auto kMaxSpeed = 3_mps;
-constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
+constexpr auto kMaxAcceleration = 4.5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;

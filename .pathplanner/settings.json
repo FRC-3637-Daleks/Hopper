@@ -14,15 +14,16 @@
     "IntakeClose to RightSub",
     "LeftSub to PrepIntakeCenter",
     "LeftSub to PrepIntakeClose",
-    "RightSub to PrepIntakeCenter",
+    "New Folder",
     "PrepIntakeCenter to IntakeCenter",
     "PrepIntakeClose to IntakeClose",
+    "RightSub to PrepIntakeCenter",
     "RightSub to PrepIntakeClose",
     "Start to Sub"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,
   "maxModuleSpeed": 5.03

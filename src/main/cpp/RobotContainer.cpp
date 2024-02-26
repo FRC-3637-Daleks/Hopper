@@ -130,7 +130,10 @@ void RobotContainer::ConfigureBindings() {
       units::meter_t offset = RobotPose3d.Translation().Distance(SpeakerPose.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
-
+  constexpr auto flywheelAutoSpeed = [] -> double
+  {
+   return .5;
+  };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
   // Configure Intake Bindings.
@@ -197,7 +200,7 @@ void RobotContainer::ConfigureBindings() {
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheel, calculateDistance)); //this aint right but ill change it at some point
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance)); //this aint right but ill change it at some point
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
