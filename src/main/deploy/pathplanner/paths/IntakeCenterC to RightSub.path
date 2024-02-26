@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8202653328383596,
-        "y": 3.9369101815126717
+        "x": 3.9723795282112664,
+        "y": 4.2978770123018135
       },
       "isLocked": false,
       "linkedName": "IntakeCenterNoteC"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 0.75,
-        "y": 4.5
+        "y": 4.35
       },
       "prevControl": {
-        "x": 3.0999785076493245,
-        "y": 1.8549852484320355
+        "x": 2.496814123442796,
+        "y": 1.276481183490184
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.0,
+    "rotation": -60.0,
     "rotateFast": true
   },
   "reversed": false,

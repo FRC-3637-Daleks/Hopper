@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.35,
+        "x": 1.45,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.105777623823435,
-        "y": -0.33961425982766413
+        "x": 1.719349240552975,
+        "y": 0.7602678527753644
       },
       "isLocked": false,
       "linkedName": "CenterSub"
@@ -20,8 +20,8 @@
         "y": 2.44
       },
       "prevControl": {
-        "x": 6.4,
-        "y": 2.44
+        "x": 7.251413761030089,
+        "y": 1.5692520971347208
       },
       "nextControl": null,
       "isLocked": false,

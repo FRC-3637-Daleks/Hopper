@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8666106562982372,
-        "y": 5.130810261620524
+        "x": 1.5833688728718385,
+        "y": 5.340141464876368
       },
       "isLocked": false,
       "linkedName": "IntakeCloseNoteL"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 0.75,
-        "y": 4.5
+        "y": 4.35
       },
       "prevControl": {
         "x": 1.8962114847306628,
-        "y": 4.755866434809793
+        "y": 4.605866434809792
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.0,
+    "rotation": -60.0,
     "rotateFast": true
   },
   "reversed": false,

@@ -14,6 +14,7 @@
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/simulation/SimDeviceSim.h>
 #include <frc/simulation/DIOSim.h>
+#include <frc/DriverStation.h>
 
 class ShooterSimulation
 {
@@ -206,7 +207,7 @@ units::radian_t Shooter::GetAnglePivot() {
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
   return frc2::cmd::Parallel(
     FlywheelCommand(flywheelInput),
-    PivotAngleCommand(pivotAngle)
+    PivotAngleCommand(pivotAngle) 
   );
 }
 

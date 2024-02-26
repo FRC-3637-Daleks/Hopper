@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.202086711865733,
-        "y": 5.782028487133897
+        "x": 1.852718113424813,
+        "y": 5.890550782528099
       },
       "isLocked": false,
       "linkedName": "IntakeCloseNoteRight"
     },
     {
       "anchor": {
-        "x": 0.75,
-        "y": 6.6
+        "x": 0.7518994781213513,
+        "y": 6.75
       },
       "prevControl": {
-        "x": 1.76794122819015,
-        "y": 6.137238428323012
+        "x": 1.5013930170513679,
+        "y": 6.862550215827963
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.0,
+    "rotation": 60.0,
     "rotateFast": true
   },
   "reversed": false,

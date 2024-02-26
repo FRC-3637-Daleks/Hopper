@@ -8,19 +8,19 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.280572868838047,
-        "y": 0.8880248529727832
+        "x": 3.246307662372813,
+        "y": 0.8197585582047061
       },
       "isLocked": false,
       "linkedName": "IntakeCenterNoteFarR"
     },
     {
       "anchor": {
-        "x": 1.35,
+        "x": 1.45,
         "y": 5.55
       },
       "prevControl": {
-        "x": 1.4620660010550806,
+        "x": 1.5620660010550804,
         "y": 3.5619663547019407
       },
       "nextControl": null,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,

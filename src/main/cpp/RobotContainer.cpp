@@ -106,6 +106,7 @@ void RobotContainer::ConfigureBindings() {
             frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband) + ShooterConstants::kMinAngle;
   };
 
+
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
 
   // Configure Intake Bindings.
