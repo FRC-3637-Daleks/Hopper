@@ -33,4 +33,5 @@ class Robot : public frc::TimedRobot {
 
 
   RobotContainer m_container;
+  bool m_note_staged[sizeof(FieldConstants::note_positions)] = {false};
 };

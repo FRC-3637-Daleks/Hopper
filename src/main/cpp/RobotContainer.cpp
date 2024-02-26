@@ -9,7 +9,21 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
+#include <frc/DriverStation.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <subsystems/Intake.h>
 #include <frc/geometry/Pose3d.h>
+#include <pathplanner/lib/util/PathPlannerLogging.h>
+
+  //
+
+
+ 
+
+
+
+
+
 
 RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
                                   wpi::array<double, 3U> stdDevs){
@@ -28,6 +42,8 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
 
   // Configure Dashboard
   ConfigureDashboard();
+
+  ConfigureAuto();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -174,27 +190,18 @@ void RobotContainer::ConfigureBindings() {
     pathplanner::ReplanningConfig());
 
 
-        pathplanner::AutoBuilder::configureHolonomic(
-        [this](){return this->m_swerve.GetPose();},
-        [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
-        [this](){return this->m_swerve.GetSpeed();},
-        [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
-        speed.vx, speed.vy, speed.omega, false);},
-        pathFollowerConfig,
-        [](){  
-
-          auto alliance = frc::DriverStation::GetAlliance();
-          if(alliance) {
-            return alliance.value() == frc::DriverStation::Alliance::kRed;
-          }
-
-          return false;
-
-
-          
-        }, //replace later, just a placeholder
-        (&m_swerve)
-      );
+    pathplanner::AutoBuilder::configureHolonomic(
+          [this](){return this->m_swerve.GetPose();},
+          [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
+          [this](){return this->m_swerve.GetSpeed();},
+          [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
+          speed.vx, speed.vy, speed.omega, false);},
+          pathFollowerConfig,
+          [this](){  
+            return m_isRed;            
+          }, //replace later, just a placeholder
+          (&m_swerve)
+    );
   // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
@@ -223,6 +230,10 @@ void RobotContainer::ConfigureDashboard()
 
 void RobotContainer::ConfigureAuto()
 {
+
+      pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
+        m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
+      });
 }
 
 

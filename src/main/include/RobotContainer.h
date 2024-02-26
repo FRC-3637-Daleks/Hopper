@@ -97,7 +97,28 @@ constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
 namespace FieldConstants
 {
 
+constexpr auto field_length = 54_ft + 3.25_in;
+constexpr auto field_width = 26_ft + 11.75_in;
+constexpr auto mid_line = field_length/2;
+
 constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
+
+constexpr auto near_note_separation = 57_in;
+constexpr auto mid_note_separation = 66_in;
+constexpr auto near_note_wall_dist = 114_in;
+constexpr frc::Translation2d note_positions[] = {
+  {near_note_wall_dist, field_width/2},
+  {near_note_wall_dist, field_width/2 + near_note_separation},
+  {near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2},
+  {field_length - near_note_wall_dist, field_width/2 + near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {mid_line, field_width/2 + 2*mid_note_separation},
+  {mid_line, field_width/2 + mid_note_separation},
+  {mid_line, field_width/2},
+  {mid_line, field_width/2 - mid_note_separation},
+  {mid_line, field_width/2 - 2*mid_note_separation},
+};
 
 }
 
@@ -131,6 +152,8 @@ class RobotContainer {
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
+
+  bool m_isRed;
 
   bool m_isRed;
   //AprilTag
