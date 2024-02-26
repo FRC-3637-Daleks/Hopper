@@ -111,9 +111,9 @@ constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
 class RobotContainer {
  public:
   RobotContainer();
-
+  frc2::CommandPtr GetDisabledCommand();
   frc2::CommandPtr GetAutonomousCommand();
-    std::unique_ptr<frc2::Command> HopperAuto;
+  std::unique_ptr<frc2::Command> HopperAuto;
 
 
  public:
