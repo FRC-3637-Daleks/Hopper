@@ -15,16 +15,6 @@
 #include <frc/geometry/Pose3d.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
-  //
-
-
- 
-
-
-
-
-
-
 RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
                                   wpi::array<double, 3U> stdDevs){
                                     m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
@@ -211,7 +201,7 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
-      pathplanner::NamedCommands::registerCommand("AutoIntakeNote", m_intake.AutoIntake());
+      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
       pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
