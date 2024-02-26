@@ -158,18 +158,11 @@ void RobotContainer::ConfigureBindings() {
   auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb)); 
-}
 
-void RobotContainer::ConfigureDashboard()
-{
-  m_intake.InitVisualization(&m_mech_sideview);
-  m_shooter.InitVisualization(&m_mech_sideview);
 
-  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
-}
 
-void RobotContainer::ConfigureAuto()
-{
+
+
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
     pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants 
@@ -204,16 +197,29 @@ void RobotContainer::ConfigureAuto()
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", frc2::cmd::Sequence(
-        frc2::cmd::Print("wait a second bro"),
-        frc2::cmd::Wait(3_s),
-        frc2::cmd::Print("SHOOTING"),
-        frc2::cmd::Wait(3_s),
-        frc2::cmd::Print("all done")));
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheel, calculateDistance));
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
-      pathplanner::NamedCommands::registerCommand("IntakeNote", m_intake.AutoIntake());
-      // pathplanner::NamedCommands::registerCommand("ShootyCommand2", m_shooter.ShooterCommand());
-      pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
+      //need to find out what the output command is, how all that stuff works and implement here
+      //also need to see if the Shoot Command will work as it is currently configured
+      pathplanner::NamedCommands::registerCommand("AutoIntakeNote", m_intake.AutoIntake());
+
+      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
+      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
+      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
+      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+}
+
+
+void RobotContainer::ConfigureDashboard()
+{
+  m_intake.InitVisualization(&m_mech_sideview);
+  m_shooter.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+}
+
+void RobotContainer::ConfigureAuto()
+{
 }
 
 
