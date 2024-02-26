@@ -82,8 +82,13 @@ void RobotContainer::ConfigureBindings() {
     return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
 
-  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, pivot));
-
+  m_shooter.SetDefaultCommand(
+      m_shooter.ShooterCommand(
+          static_cast<std::function<double()>>(flywheel),
+          static_cast<std::function<units::angular_velocity::degrees_per_second_t()>>(pivot)
+      )
+  );
+  
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();

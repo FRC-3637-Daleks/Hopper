@@ -116,13 +116,11 @@ void Periodic() override;
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
-<<<<<<< HEAD
   // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
-=======
-  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
->>>>>>> origin/main
 
-  frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance);
+  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
+
+  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance);
   
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 

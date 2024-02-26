@@ -213,7 +213,7 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
-<<<<<<< HEAD
+
 // frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
 //   return frc2::cmd::Parallel(
 //     FlywheelCommand(flywheelInput),
@@ -225,27 +225,26 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
         FlywheelCommand(flywheelInput),
         AimSubwoofer(calculateDistance())
     );
-=======
+}
+
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
   
-  auto pivotAngle = [this, pivotVelocity] {
-  m_goal+= pivotVelocity() * 20_ms; 
+  auto pivotAngle = [this, pivotVelocity]() { 
+    m_goal += pivotVelocity() * 20_ms; 
 
-  if (m_goal < ShooterConstants::kMinAngle) {
-    m_goal = ShooterConstants::kMinAngle;
-  } else if(m_goal > ShooterConstants::kMaxAngle) {
-    m_goal = ShooterConstants::kMaxAngle;
-  };
+    if (m_goal < ShooterConstants::kMinAngle) {
+      m_goal = ShooterConstants::kMinAngle;
+    } else if(m_goal > ShooterConstants::kMaxAngle) {
+      m_goal = ShooterConstants::kMaxAngle;
+    };
 
-  return m_goal;
-  };
-
+    return m_goal;
+  }; 
   
   return frc2::cmd::Parallel(
     FlywheelCommand(flywheelInput),
     PivotAngleCommand(pivotAngle)
   );
->>>>>>> origin/main
 }
 
 
