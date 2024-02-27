@@ -24,6 +24,8 @@
 #include <memory>
 #include <numbers>
 
+#include <frc2/command/ParallelCommandGroup.h>
+
 namespace IntakeConstants {
     //Moter IDs
     constexpr int kIntakeMotorPort = 17;
@@ -39,8 +41,8 @@ namespace IntakeConstants {
     constexpr int IntakeArmIntakePos = 985; // -
     constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
     constexpr int IntakeArmSpeakerPos = 430;
-    constexpr int IntakeArmPreAMPPos = 600;
-    constexpr int IntakeArmLetGoPos = 630;
+    //constexpr int IntakeArmPreAMPPos = 600;
+    constexpr int IntakeArmLetGoPos = 560;
 
 
     constexpr bool kBeamBroken = false;
@@ -145,6 +147,8 @@ class Intake : public frc2::SubsystemBase {
 
   frc2::CommandPtr AutoIntake();
 
+  frc2::CommandPtr IntakeOff();
+
   /**
    * Set intake to spin backwards to spit out a game piece
   */
@@ -153,6 +157,8 @@ class Intake : public frc2::SubsystemBase {
   frc2::CommandPtr IntakeOutSpeaker();
 
   frc2::CommandPtr TimedRelease();
+
+  void ShootOnAMPVoid();
 
   // Keep intake Idle if no buttons are pressed
   frc2::CommandPtr IdleIntakeCommand();
@@ -185,6 +191,8 @@ class Intake : public frc2::SubsystemBase {
   void IntakePreArmAMP();
   void IntakeArmSpeaker();
   void IntakeArmIntake();
+
+  bool IsAtWantedPosition(int goal);
 
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
   frc2::CommandPtr IntakeArmPreAMPCommand(bool wait = false);
