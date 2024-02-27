@@ -11,7 +11,13 @@
 #include <frc2/command/Commands.h>
 #include <frc/geometry/Pose3d.h>
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
+                                  wpi::array<double, 3U> stdDevs){
+                                    m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
+                                  }, [this](){
+                                    return m_swerve.GetPose();
+                                  }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
+  fmt::println("made it to robot container");
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
@@ -29,16 +35,12 @@ void RobotContainer::ConfigureBindings() {
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(-m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis), OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input); // square the input while preserving the sign
-    if (m_isRed) 
-      squaredInput *= -1;
     return DriveConstants::kMaxTeleopSpeed * squaredInput;
   };
 
   auto strafe = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(-m_swerveController.GetRawAxis(OperatorConstants::kStrafeAxis), OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input); 
-    if (m_isRed) 
-      squaredInput *= -1;
     return DriveConstants::kMaxTeleopSpeed * squaredInput;
   };
 
@@ -48,6 +50,8 @@ void RobotContainer::ConfigureBindings() {
     return AutoConstants::kMaxAngularSpeed * squaredInput;
   };
 
+  auto checkRed = [this] () -> bool { return m_isRed; };
+
   auto targetSpeaker = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSpeakerPose : OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
   auto targetAMP = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedAMPPose : OperatorConstants::kBlueAMPPose; }; //implement live apriltag targeting
   auto targetStage = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedStagePose : OperatorConstants::kBlueStagePose; }; //implement live apriltag targeting
@@ -55,25 +59,25 @@ void RobotContainer::ConfigureBindings() {
 
   constexpr auto SubWoofer = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; };
 
-  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot, checkRed));
 
   m_swerveController.Start()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
   m_swerveController.A()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
 
   m_swerveController.B()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true));
 
   m_swerveController.X()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false));
 
   m_swerveController.Y()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
 
   m_swerveController.LeftStick()
-      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
+      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot, checkRed));
   
   m_swerveController.Back()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));

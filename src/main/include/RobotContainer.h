@@ -29,6 +29,7 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Climb.h"
+#include "subsystems/Vision.h"
 
 
 namespace AutoConstants {
@@ -120,6 +121,7 @@ class RobotContainer {
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
+  Vision m_vision;
 
   bool m_isRed;
   //AprilTag
