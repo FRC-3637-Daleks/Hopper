@@ -218,7 +218,6 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
-<<<<<<< HEAD
 
 // frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
 //   return frc2::cmd::Parallel(
@@ -226,7 +225,7 @@ units::radian_t Shooter::GetAnglePivot() {
 //     PivotAngleCommand(pivotAngle)
 //   );
 // }
-=======
+
 frc2::CommandPtr Shooter::ShooterVelocityCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
   
   auto pivotAngle = [this, pivotVelocity] {
@@ -248,13 +247,13 @@ frc2::CommandPtr Shooter::ShooterVelocityCommand(std::function<double()> flywhee
   );
 }
 
->>>>>>> origin/visvam-wip
+
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance) {
     return frc2::cmd::Parallel(
         FlywheelCommand(flywheelInput),
         PivotAngleDistanceCommand(calculateDistance)
     );
-<<<<<<< HEAD
+
 }
 
 frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
@@ -275,8 +274,7 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
     FlywheelCommand(flywheelInput),
     PivotAngleCommand(pivotAngle)
   );
-=======
->>>>>>> origin/visvam-wip
+
 }
 
 

@@ -114,29 +114,29 @@ void Periodic() override;
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
-<<<<<<< HEAD
+
   // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
 
   frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
 
-=======
+
   frc2::CommandPtr ShooterVelocityCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
   // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
 
->>>>>>> origin/visvam-wip
+
   frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance);
   
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 
   frc2::CommandPtr PivotAngleCommand(std::function<units::degree_t()> pivotAngle);
 
-<<<<<<< HEAD
+
   frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
 
   frc2::CommandPtr AimSubwoofer(units::meter_t distance);
-=======
+
   frc2::CommandPtr PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
->>>>>>> origin/visvam-wip
+
 
  //initializes Lead + Follow motors (makes motors run in parallel) 
   const int leadDeviceID = 1, followDeviceID = 2;

@@ -93,7 +93,7 @@ void RobotContainer::ConfigureBindings() {
     return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
 
-<<<<<<< HEAD
+
   m_shooter.SetDefaultCommand(
       m_shooter.ShooterCommand(
           static_cast<std::function<double()>>(flywheel),
@@ -101,7 +101,7 @@ void RobotContainer::ConfigureBindings() {
       )
   );
   
-=======
+
   auto calculateDistance = [this]() -> units::meter_t {
       frc::Pose2d RobotPose2d = m_swerve.GetPose();
       
@@ -109,8 +109,9 @@ void RobotContainer::ConfigureBindings() {
       int id = m_isRed ? 4 : 7;
 
       // Get the pose of the speaker AprilTag based on its ID
-      frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
-      SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
+      frc::Pose3d TagPose3d = m_aprilTagFieldLayout.GetTagPose(id).value();
+      // SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
+      frc::Pose2d SpeakerPose2d = TagPose3d.ToPose2d();
       // auto it1 = m_aprilTagFieldLayout.GetTagPose(id);
       // if (it1.has_value()) {
       //     SpeakerPose = it1.value();
@@ -123,15 +124,20 @@ void RobotContainer::ConfigureBindings() {
       
       // Construct Pose3d using the constructor that takes a Pose2d
       frc::Pose3d RobotPose3d{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), z, frc::Rotation3d{0_deg, RobotPose2d.Rotation().Degrees(), 0_deg}};
+      frc::Pose2d RobotPose2dConverted{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), RobotPose2d.Rotation()};
       // frc::SmartDashboard::PutData(RobotPose3d);
       // Calculate the horizontal distance between RobotPose and SpeakerPose
-      units::meter_t offset = RobotPose3d.Translation().Distance(SpeakerPose.Translation());
+      units::meter_t offset = RobotPose2dConverted.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
 
-  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
+  // m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
+   m_shooter.ShooterCommand(
+        static_cast<std::function<double()>>(flywheel),
+        static_cast<std::function<units::meter_t()>>(calculateDistance)
+    );
 
->>>>>>> origin/visvam-wip
+
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();
