@@ -89,11 +89,10 @@ void Intake::Periodic() {
 frc2::CommandPtr Intake::IntakeRing() {
   return frc2::cmd::Either(
     IntakeArmIntakeCommand(true) //true
-    .AndThen(AutoIntake())
-    .AndThen(IntakeArmSpeakerCommand(true)), 
+    .AndThen(AutoIntake()), 
     frc2::cmd::None(), //false
     [this] () {return !IsIntakeBreakBeamBroken();} //When broken = false
-  );
+  ).AndThen(IntakeArmSpeakerCommand()); //if true does not allow for inturupts
 }
 
 frc2::CommandPtr Intake::ShootOnAMP() {
@@ -109,7 +108,7 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true) //when ring
-    .AndThen(IntakeOutSpeaker()) //Executing early in sim
+    .AndThen(IntakeOutSpeaker()) 
     .WithTimeout(1_s), 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
@@ -263,14 +262,6 @@ void Intake::IntakeBackwardSpeaker() {
 
 void Intake::OffIntake() {
   m_intake.SetVoltage(IntakeConstants::kOffVoltage);
-}
-
-void Intake::OutputShooterIntake() {
-  m_intake.SetVoltage(IntakeConstants::kShooterVoltage);
-}
-
-void Intake::OutputAMPIntake() {
-  m_intake.SetVoltage(IntakeConstants::kAMPVoltage);
 }
 
 void Intake::IntakeArmAMP() {
