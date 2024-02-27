@@ -10,6 +10,9 @@
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
 #include <frc/geometry/Pose3d.h>
+#include <pathplanner/lib/util/PathPlannerLogging.h>
+#include <pathplanner/lib/auto/AutoBuilder.h>
+
 
 RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
                                   wpi::array<double, 3U> stdDevs){
@@ -170,6 +173,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   // You can ignore this for now.
   //return autos::ExampleAuto(&m_subsystem);
+  return pathplanner::PathPlannerAuto("Hopper").ToPtr();
   return frc2::cmd::Idle();
 }
 
