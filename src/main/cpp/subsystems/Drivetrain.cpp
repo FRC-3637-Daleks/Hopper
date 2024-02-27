@@ -91,14 +91,21 @@ Drivetrain::~Drivetrain() {}
 void Drivetrain::Drive(units::meters_per_second_t forwardSpeed,
                        units::meters_per_second_t strafeSpeed,
                        units::radians_per_second_t angularSpeed,
-                       bool fieldRelative) {
+                       bool fieldRelative, bool isRed) {
   //  Use the kinematics model to get from the set of commanded speeds to a set
   //  of states that can be commanded to each module.
-  auto states = kDriveKinematics.ToSwerveModuleStates(
-      fieldRelative
-          ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                forwardSpeed, strafeSpeed, angularSpeed, GetHeading())
-          : frc::ChassisSpeeds{forwardSpeed, strafeSpeed, angularSpeed});
+  auto states = kDriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s});
+  
+  if (fieldRelative){
+    if(isRed)
+      states = kDriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+                -1*forwardSpeed, -1*strafeSpeed, angularSpeed, GetHeading()));
+    else
+      states = kDriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+                forwardSpeed, strafeSpeed, angularSpeed, GetHeading()));
+  }else {
+    states = kDriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds{forwardSpeed, strafeSpeed, angularSpeed});
+  }
 
   // Occasionally a drive motor is commanded to go faster than its maximum
   // output can sustain. Desaturation lowers the module speeds so that no motor
@@ -273,7 +280,7 @@ frc2::CommandPtr Drivetrain::SwerveCommand(
   // fmt::print("making command\n");
   return this->Run([=] {
     // fmt::print("starting drive command\n");
-    Drive(forward(), strafe(), rot(), false);
+    Drive(forward(), strafe(), rot(), false, false);
     // fmt::print("sent drive command\n");
   });
 }
@@ -281,8 +288,9 @@ frc2::CommandPtr Drivetrain::SwerveCommand(
 frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe,
-    std::function<units::revolutions_per_minute_t()> rot) {
-  return this->Run([=] { Drive(forward(), strafe(), rot(), true); });
+    std::function<units::revolutions_per_minute_t()> rot,
+    std::function<bool()> isRed) {
+  return this->Run([=] { Drive(forward(), strafe(), rot(), true, isRed()); });
 }
 
 
@@ -290,11 +298,12 @@ frc2::CommandPtr Drivetrain::SwerveCommandFieldRelative(
 frc2::CommandPtr Drivetrain::SwerveSlowCommand(
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe,
-    std::function<units::revolutions_per_minute_t()> rot) {
+    std::function<units::revolutions_per_minute_t()> rot,
+    std::function<bool()> isRed) {
   // fmt::print("making command\n");
   return this->Run([=] {
     // fmt::print("starting drive command\n");
-    Drive(forward()/4, strafe()/4, rot()/5, true);
+    Drive(forward()/4, strafe()/4, rot()/5, true, isRed());
     // fmt::print("sent drive command\n");
   });
 }
@@ -343,6 +352,8 @@ frc2::CommandPtr Drivetrain::ConfigAbsEncoderCommand(){
 void Drivetrain::AddVisionPoseEstimate(frc::Pose2d pose,
                                        units::second_t timestamp, wpi::array<double, 3U> visionMeasurementStdDevs) {
   m_poseEstimator.AddVisionMeasurement(pose, timestamp, visionMeasurementStdDevs);
+
+  m_field.GetObject("vision estimate")->SetPose(pose);
 }
 
 frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
@@ -366,7 +377,7 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
     },
     {angle, 0_rad_per_s},
     [this] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
-      Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false);
+      Drive(0_mps, 0_mps, setpoint.velocity + units::angular_velocity::radians_per_second_t(output), false, false);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
       frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print
@@ -380,10 +391,12 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
 
 frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
-    std::function<units::meters_per_second_t()> strafe) {
+    std::function<units::meters_per_second_t()> strafe,
+    bool shooterSide) {
 
-  auto angle = [this, pose] () -> units::radian_t {
-    return units::math::atan2<units::meter_t, units::meter_t>( pose().Y() - GetPose().Y(), pose().X() - GetPose().X() );
+  auto angle = [this, pose, shooterSide] () -> units::radian_t {
+    auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>( pose().Y() - GetPose().Y(), pose().X() - GetPose().X() );
+    return shooterSide ? rawAngle + std::numbers::pi * 1_rad : rawAngle;
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(
@@ -396,7 +409,7 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pos
     },
     {0_rad, 0_rad_per_s},
     [this, forward, strafe] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
-      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true);
+      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true, false);
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
       frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print

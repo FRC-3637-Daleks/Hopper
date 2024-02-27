@@ -19,6 +19,7 @@ Vision::Vision(
         std::move(m_camera),  // change to the multitag detection algorithm
         VisionConstants::kCameraToRobot)
 {
+    fmt::println("made it to vision");
     // Inside the constructor body, you can perform additional operations if needed
     m_addVisionMeasurement = addVisionMeasurement; // Call the addVisionMeasurement function
 }
@@ -45,7 +46,8 @@ bool Vision::HasTargets() {
 // }
   std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
     auto visionEst = m_estimator.Update();
-    units::second_t latestTimestamp = m_camera.GetLatestResult().GetTimestamp();
+    auto camera = m_estimator.GetCamera();
+    units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
     bool newResult =
         units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
          if (newResult) {
@@ -61,7 +63,7 @@ bool Vision::HasTargets() {
 
     Eigen::Matrix<double, 3, 1> estStdDevs =
       VisionConstants::kSingleTagStdDevs;
-    photon::PhotonPipelineResult latestResult; // Add declaration for GetLatestResult function
+    photon::PhotonPipelineResult latestResult = m_estimator.GetCamera()->GetLatestResult(); // Add declaration for GetLatestResult function
 
     int numTags = 0; // Declare the variable "numTags" and initialize it to 0
 
@@ -78,13 +80,14 @@ bool Vision::HasTargets() {
       }
     }
     if (numTags == 0) {
-      return estStdDevs;
+      fmt::println("0 tags!?! avg dist {}", avgDist);
+      return VisionConstants::kFailedTagStdDevs;
     }
     avgDist /= numTags;
     if (numTags > 1) {
       estStdDevs = VisionConstants::kMultiTagStdDevs;
     }
-    if (numTags == 1 && avgDist > 4_m) {
+    if (numTags == 1 && avgDist > 1_m) {
       estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
                     std::numeric_limits<double>::max(),
                     std::numeric_limits<double>::max())

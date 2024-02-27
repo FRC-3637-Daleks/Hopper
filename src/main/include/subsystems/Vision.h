@@ -27,17 +27,18 @@
 namespace VisionConstants{
 
   constexpr std::string_view kPhotonCameraName =
-      "ov23113637"; // Note, we need an in-built pipeline changer, probably between auton and teleop
+      "Arducam_OV2311_USB_Camera"; // Note, we need an in-built pipeline changer, probably between auton and teleop
 
   const frc::Transform3d kCameraToRobot{
       {14_in, 16_in, 30_in},
       frc::Rotation3d{ // transform3d can be constructed with a variety of variables, so this should be fine 
-          90_deg, 0_deg,
-          0_deg} }; // The camera location relative to the robot's center. Need to change for actual robot
+          0_deg, 0_deg,
+          180_deg} }; // The camera location relative to the robot's center. Need to change for actual robot
   inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
   inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{4, 4, 8};
-  inline const Eigen::Matrix<double, 3, 1> kMultiTagStdDevs{0.5, 0.5, 1};
+  inline const Eigen::Matrix<double, 3, 1> kMultiTagStdDevs{0.1, 0.1, 0.5};
+  inline const Eigen::Matrix<double, 3, 1> kFailedTagStdDevs{std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()};
 } // namespace VisionConstants
 
   

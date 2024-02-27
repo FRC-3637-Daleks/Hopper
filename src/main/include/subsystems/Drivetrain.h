@@ -125,7 +125,8 @@ public:
   // set, the translation is relative to the field instead of the robot heading.
   void Drive(units::meters_per_second_t forwardSpeed,
              units::meters_per_second_t strafeSpeed,
-             units::radians_per_second_t angularSpeed, bool fieldRelative);
+             units::radians_per_second_t angularSpeed, bool fieldRelative,
+             bool isRed);
 
   // Sets the state of each swerve module.
   void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
@@ -184,13 +185,15 @@ public:
   frc2::CommandPtr SwerveCommandFieldRelative(
       std::function<units::meters_per_second_t()> forward,
       std::function<units::meters_per_second_t()> strafe,
-      std::function<units::revolutions_per_minute_t()> rot);
+      std::function<units::revolutions_per_minute_t()> rot,
+      std::function<bool()> isRed);
 
 
 frc2::CommandPtr
   SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
                 std::function<units::meters_per_second_t()> strafe,
-                std::function<units::revolutions_per_minute_t()> rot);
+                std::function<units::revolutions_per_minute_t()> rot,
+                std::function<bool()> isRed);
   // Drive the robot to pose.
   // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
 
@@ -212,15 +215,13 @@ frc2::CommandPtr
   frc2::CommandPtr BrakeCommand();
 
   // Add Vision Pose to SwerveDrivePoseEstimator.
- void AddVisionPoseEstimate(frc::Pose2d pose,
-                            units::second_t timestamp,
-                            wpi::array<double, 3U> visionMeasurementStdDevs);
+  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp, wpi::array<double, 3U> visionMeasurementStdDevs);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
 
   frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
-    std::function<units::meters_per_second_t()> strafe);
+    std::function<units::meters_per_second_t()> strafe, bool shooterSide);
 
 private:
   SwerveModule m_frontLeft;

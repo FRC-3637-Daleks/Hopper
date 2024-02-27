@@ -22,6 +22,7 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
                                     return m_swerve.GetPose();
                                   }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
                                    
+  fmt::println("made it to robot container");
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
@@ -61,6 +62,8 @@ void RobotContainer::ConfigureBindings() {
     return AutoConstants::kMaxAngularSpeed * squaredInput;
   };
 
+  auto checkRed = [this] () -> bool { return m_isRed; };
+
   auto targetSpeaker = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSpeakerPose : OperatorConstants::kBlueSpeakerPose; }; //implement live apriltag targeting
   auto targetAMP = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedAMPPose : OperatorConstants::kBlueAMPPose; }; //implement live apriltag targeting
   auto targetStage = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedStagePose : OperatorConstants::kBlueStagePose; }; //implement live apriltag targeting
@@ -68,25 +71,25 @@ void RobotContainer::ConfigureBindings() {
 
   constexpr auto SubWoofer = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; };
 
-  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
+  m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot, checkRed));
 
   m_swerveController.Start()
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
   m_swerveController.A()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
 
   m_swerveController.B()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true));
 
   m_swerveController.X()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false));
 
   m_swerveController.Y()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
 
   m_swerveController.LeftStick()
-      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
+      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot, checkRed));
   
   m_swerveController.Back()
       .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
@@ -118,7 +121,7 @@ void RobotContainer::ConfigureBindings() {
 
       // Get the pose of the speaker AprilTag based on its ID
       frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
-      SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
+      frc::Pose2d SpeakerPose2d = frc::Pose2d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Rotation().Angle()};
       // auto it1 = m_aprilTagFieldLayout.GetTagPose(id);
       // if (it1.has_value()) {
       //     SpeakerPose = it1.value();
@@ -127,13 +130,11 @@ void RobotContainer::ConfigureBindings() {
       //     SpeakerPose = frc::Pose3d();
       // }
       
-      units::meter_t z = 1.5_ft; // estimation of shooter height
-      
-      // Construct Pose3d using the constructor that takes a Pose2d
-      frc::Pose3d RobotPose3d{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), z, frc::Rotation3d{0_deg, RobotPose2d.Rotation().Degrees(), 0_deg}};
+      units::meter_t z = 1.5_ft; // estimation of shooter height 
+    
       // frc::SmartDashboard::PutData(RobotPose3d);
       // Calculate the horizontal distance between RobotPose and SpeakerPose
-      units::meter_t offset = RobotPose3d.Translation().Distance(SpeakerPose.Translation());
+      units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
   constexpr auto flywheelAutoSpeed = [] -> double
@@ -185,7 +186,7 @@ void RobotContainer::ConfigureBindings() {
           [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
           [this](){return this->m_swerve.GetSpeed();},
           [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
-          speed.vx, speed.vy, speed.omega, false);},
+          speed.vx, speed.vy, speed.omega, false, false);},
           pathFollowerConfig,
           [this](){  
             return m_isRed;            
@@ -203,10 +204,10 @@ void RobotContainer::ConfigureBindings() {
       //also need to see if the Shoot Command will work as it is currently configured
       pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
       pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
-      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
-      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
-      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
-      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
 }
 
 
@@ -216,6 +217,16 @@ void RobotContainer::ConfigureDashboard()
   m_shooter.InitVisualization(&m_mech_sideview);
 
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  frc::SmartDashboard::PutData("Intake", &m_intake);
+  frc::SmartDashboard::PutData("Shooter", &m_shooter);
+}
+
+void RobotContainer::ConfigureAuto()
+{
+
+      pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
+        m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
+      });
 }
 
 void RobotContainer::ConfigureAuto()
