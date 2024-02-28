@@ -1,0 +1,31 @@
+{
+  "robotWidth": 0.635,
+  "robotLength": 0.635,
+  "holonomicMode": true,
+  "pathFolders": [
+    "BasicAuton",
+    "CenterSub to PrepIntakeCenter",
+    "CenterSub to PrepIntakeClose",
+    "IntakeCenter to CenterSub",
+    "IntakeCenter to LeftSub",
+    "IntakeCenter to RightSub",
+    "IntakeClose to CenterSub",
+    "IntakeClose to LeftSub",
+    "IntakeClose to RightSub",
+    "LeftSub to PrepIntakeCenter",
+    "LeftSub to PrepIntakeClose",
+    "RightSub to PrepIntakeCenter",
+    "PrepIntakeCenter to IntakeCenter",
+    "PrepIntakeClose to IntakeClose",
+    "RightSub to PrepIntakeClose",
+    "Start to Sub"
+  ],
+  "autoFolders": [
+    "New Folder"
+  ],
+  "defaultMaxVel": 1.5,
+  "defaultMaxAccel": 1.5,
+  "defaultMaxAngVel": 120.0,
+  "defaultMaxAngAccel": 180.0,
+  "maxModuleSpeed": 5.03
+}

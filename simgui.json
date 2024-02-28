@@ -17,6 +17,7 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+<<<<<<< HEAD
         "FL": {
           "arrowWeight": 2.0,
           "length": 0.6000000238418579,
@@ -41,6 +42,38 @@
           "length": 0.6000000238418579,
           "style": "Hidden",
           "width": 0.15000000596046448
+=======
+        "Auto Goal": {
+          "arrowColor": [
+            0.27119380235671997,
+            0.9500179290771484,
+            0.970588207244873,
+            255.0
+          ],
+          "style": "Box/Image"
+        },
+        "Auto Path": {
+          "arrows": false,
+          "color": [
+            0.08679352700710297,
+            0.5984377861022949,
+            0.843137264251709,
+            255.0
+          ],
+          "style": "Line"
+        },
+        "Notes": {
+          "arrows": false,
+          "color": [
+            0.12307768315076828,
+            0.9656862616539001,
+            0.2469906061887741,
+            255.0
+          ],
+          "length": 0.33000001311302185,
+          "style": "Box/Image",
+          "width": 0.33000001311302185
+>>>>>>> origin/auton-sim
         },
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -78,7 +111,8 @@
         "Field": {
           "double[]##v_/SmartDashboard/Field/simulation": {
             "open": true
-          }
+          },
+          "open": true
         },
         "Shooter": {
           "open": true

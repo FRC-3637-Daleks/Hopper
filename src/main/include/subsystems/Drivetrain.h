@@ -39,6 +39,8 @@ constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
     25_in; // Distance between centers of front and back wheels.
+const auto kRadius = 19.5_in; // 19.5 inches
+
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -149,6 +151,8 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
+  //Returns Current Chassis Speed
+  frc::ChassisSpeeds GetSpeed();
   // Resets the odometry using the given a field-relative pose using current
   // gyro angle.
   void ResetOdometry(const frc::Pose2d &pose);
@@ -169,6 +173,7 @@ public:
 
   // Display useful information on Shuffleboard.
   void UpdateDashboard();
+  frc::Field2d& GetField() {return m_field;}
 
   // Drive the robot with swerve controls.
   frc2::CommandPtr SwerveCommand(

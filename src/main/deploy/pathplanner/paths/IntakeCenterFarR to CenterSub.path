@@ -8,19 +8,19 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.246307662372813,
-        "y": 0.8197585582047061
+        "x": 5.280572868838047,
+        "y": 0.8880248529727832
       },
       "isLocked": false,
       "linkedName": "IntakeCenterNoteFarR"
     },
     {
       "anchor": {
-        "x": 1.45,
+        "x": 1.35,
         "y": 5.55
       },
       "prevControl": {
-        "x": 1.5620660010550804,
+        "x": 1.4620660010550806,
         "y": 3.5619663547019407
       },
       "nextControl": null,
@@ -32,14 +32,14 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 180.0,
     "rotateFast": true
   },
   "reversed": false,

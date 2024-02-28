@@ -11,6 +11,12 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Pose3d.h>
+
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include "frc/apriltag/AprilTagFields.h"
@@ -34,14 +40,12 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 1_mps;
+constexpr auto kMaxSpeed = 1.5_mps;
 constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
-
-
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 180_rpm;
+constexpr auto kMaxAngularSpeed = 120_rpm;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -52,6 +56,12 @@ constexpr double kPThetaController = 0.5;
 // Trapezoidal motion profile for the robot heading.
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
+
+constexpr pathplanner::PathConstraints DefaultConstraints(AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration, AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
+
+
+
+
 
 } // namespace AutoConstants
 
@@ -87,7 +97,28 @@ constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
 namespace FieldConstants
 {
 
+constexpr auto field_length = 54_ft + 3.25_in;
+constexpr auto field_width = 26_ft + 11.75_in;
+constexpr auto mid_line = field_length/2;
+
 constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
+
+constexpr auto near_note_separation = 57_in;
+constexpr auto mid_note_separation = 66_in;
+constexpr auto near_note_wall_dist = 114_in;
+constexpr frc::Translation2d note_positions[] = {
+  {near_note_wall_dist, field_width/2},
+  {near_note_wall_dist, field_width/2 + near_note_separation},
+  {near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2},
+  {field_length - near_note_wall_dist, field_width/2 + near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {mid_line, field_width/2 + 2*mid_note_separation},
+  {mid_line, field_width/2 + mid_note_separation},
+  {mid_line, field_width/2},
+  {mid_line, field_width/2 - mid_note_separation},
+  {mid_line, field_width/2 - 2*mid_note_separation},
+};
 
 }
 
@@ -103,8 +134,8 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
-  
   frc2::CommandPtr GetDisabledCommand();
+    std::unique_ptr<frc2::Command> HopperAuto;
 
 
  public:
@@ -133,4 +164,5 @@ class RobotContainer {
 public:
   void ConfigureBindings();
   void ConfigureDashboard();
+  void ConfigureAuto();
 };

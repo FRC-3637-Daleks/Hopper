@@ -251,5 +251,5 @@ public:
    * to tell the intake simulation when a Note is at the spot where intake
    * will pick it up. (for example when robot is facing feeder station)
   */
-  void SimulateNotePickup();
+  bool SimulateNotePickup();
 };
