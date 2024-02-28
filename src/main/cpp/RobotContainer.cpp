@@ -108,7 +108,7 @@ void RobotContainer::ConfigureBindings() {
       
   //Configure Shooter Bindings.
   auto flywheel = [this] () -> double {
-    return m_copilotController.GetRightTriggerAxis();
+    return (1.0 - m_copilotController.GetRightTriggerAxis());
   };
 
   auto pivot = [this] () -> units::degrees_per_second_t {

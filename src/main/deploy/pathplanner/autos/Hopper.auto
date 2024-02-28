@@ -18,6 +18,25 @@
           }
         },
         {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutputToShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftSub to PrepIntakeCloseL"
@@ -51,25 +70,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootCommand"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "name": "OutputToShooter"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "LeftSub to PrepIntakeCenterFarL"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -100,7 +107,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootCommand"
+            "name": "OutputToShooter"
           }
         }
       ]
