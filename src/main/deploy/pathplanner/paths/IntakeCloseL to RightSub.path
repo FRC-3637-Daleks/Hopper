@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.55,
+        "x": 2.4,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8666106562982372,
-        "y": 5.130810261620524
+        "x": 1.4333688728718386,
+        "y": 5.340141464876368
       },
       "isLocked": false,
       "linkedName": "IntakeCloseNoteL"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 0.75,
-        "y": 4.5
+        "y": 4.35
       },
       "prevControl": {
         "x": 1.8962114847306628,
-        "y": 4.755866434809793
+        "y": 4.605866434809792
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,14 +32,14 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.0,
+    "rotation": -60.0,
     "rotateFast": true
   },
   "reversed": false,

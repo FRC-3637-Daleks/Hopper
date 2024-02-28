@@ -21,6 +21,7 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
                                   }, [this](){
                                     return m_swerve.GetPose();
                                   }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
+                                   
   fmt::println("made it to robot container");
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
@@ -131,7 +132,10 @@ void RobotContainer::ConfigureBindings() {
       units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
-
+  constexpr auto flywheelAutoSpeed = []()
+  {
+   return .5;
+  };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
   // Configure Intake Bindings.
@@ -159,20 +163,11 @@ void RobotContainer::ConfigureBindings() {
   auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb)); 
-}
 
-void RobotContainer::ConfigureDashboard()
-{
-  m_intake.InitVisualization(&m_mech_sideview);
-  m_shooter.InitVisualization(&m_mech_sideview);
 
-  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
-  frc::SmartDashboard::PutData("Intake", &m_intake);
-  frc::SmartDashboard::PutData("Shooter", &m_shooter);
-}
 
-void RobotContainer::ConfigureAuto()
-{
+
+
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
     pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants 
@@ -186,7 +181,7 @@ void RobotContainer::ConfigureAuto()
           [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
           [this](){return this->m_swerve.GetSpeed();},
           [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
-          speed.vx, speed.vy, speed.omega, false,false);},
+          speed.vx, speed.vy, speed.omega, false, false);},
           pathFollowerConfig,
           [this](){  
             return m_isRed;            
@@ -198,23 +193,35 @@ void RobotContainer::ConfigureAuto()
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", frc2::cmd::Sequence(
-        frc2::cmd::Print("wait a second bro"),
-        m_shooter.PivotAngleCommand([] () -> units::degree_t { return 30_deg; }),
-        frc2::cmd::Wait(3_s),
-        frc2::cmd::Print("SHOOTING"),
-        frc2::cmd::Wait(3_s),
-        frc2::cmd::Print("all done")));
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance)); //this aint right but ill change it at some point
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
-      pathplanner::NamedCommands::registerCommand("IntakeNote", m_intake.AutoIntake());
-      // pathplanner::NamedCommands::registerCommand("ShootyCommand2", m_shooter.ShooterCommand());
-      pathplanner::NamedCommands::registerCommand("StopIntake", frc2::cmd::Print("Stopping Intake"));
+      //need to find out what the output command is, how all that stuff works and implement here
+      //also need to see if the Shoot Command will work as it is currently configured
+      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
+      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
+//       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
+//       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+}
 
+
+void RobotContainer::ConfigureDashboard()
+{
+  m_intake.InitVisualization(&m_mech_sideview);
+  m_shooter.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  frc::SmartDashboard::PutData("Intake", &m_intake);
+  frc::SmartDashboard::PutData("Shooter", &m_shooter);
+}
+
+void RobotContainer::ConfigureAuto()
+{
       pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
         m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
       });
 }
-
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
@@ -228,4 +235,3 @@ frc2::CommandPtr RobotContainer::GetDisabledCommand(){
   // return m_swerve.CoastModeCommand(true).IgnoringDisable(true);
   return frc2::cmd::None();
 }
-

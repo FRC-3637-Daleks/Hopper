@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.912057208729804,
-        "y": 5.821496258377133
+        "x": 7.825244751773384,
+        "y": 6.569779302183426
       },
       "isLocked": false,
       "linkedName": "IntakeCenterNoteL"
     },
     {
       "anchor": {
-        "x": 1.35,
+        "x": 1.45,
         "y": 5.55
       },
       "prevControl": {
-        "x": 4.185342216838282,
-        "y": 7.429807936538951
+        "x": 2.0121201541975124,
+        "y": 7.0255654047684715
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,14 +32,14 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,

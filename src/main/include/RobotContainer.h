@@ -17,7 +17,6 @@
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
-#include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include "frc/apriltag/AprilTagFields.h"
 
@@ -40,8 +39,8 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 1.5_mps;
-constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 4.5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -132,9 +131,8 @@ constexpr frc::Translation2d note_positions[] = {
 class RobotContainer {
  public:
   RobotContainer();
-
-  frc2::CommandPtr GetAutonomousCommand();
   frc2::CommandPtr GetDisabledCommand();
+  frc2::CommandPtr GetAutonomousCommand();
     std::unique_ptr<frc2::Command> HopperAuto;
 
 

@@ -8,38 +8,60 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.540102772513238,
-        "y": 7.676481506809169
+        "x": 7.134305395572354,
+        "y": 8.291272274412425
       },
       "isLocked": false,
       "linkedName": "IntakeCenterNoteC"
     },
     {
       "anchor": {
-        "x": 0.75,
-        "y": 6.6
+        "x": 2.883271729453666,
+        "y": 6.288719225083788
       },
       "prevControl": {
-        "x": 2.2119536546765417,
-        "y": 5.732693773079855
+        "x": 4.347126297676354,
+        "y": 6.0310808210765945
+      },
+      "nextControl": {
+        "x": 1.3401970805238104,
+        "y": 6.560300363295442
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7518994781213513,
+        "y": 6.75
+      },
+      "prevControl": {
+        "x": 1.5833688728719182,
+        "y": 6.710309340731921
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "LeftSub"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.0,
+    "rotation": 60.0,
     "rotateFast": true
   },
   "reversed": false,

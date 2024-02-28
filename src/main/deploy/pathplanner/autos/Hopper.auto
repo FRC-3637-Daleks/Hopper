@@ -14,13 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftSub to PrepIntakeCloseL"
+            "pathName": "Start to LeftSub"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSub to PrepIntakeCloseL"
           }
         },
         {
@@ -32,7 +38,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -50,13 +56,37 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 1.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LeftSub to PrepIntakeCloseR"
+            "pathName": "LeftSub to PrepIntakeCenterFarL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeNoteCenterFarL to Left Sub"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         }
       ]

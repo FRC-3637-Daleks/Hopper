@@ -248,7 +248,7 @@ frc2::CommandPtr Shooter::ShooterVelocityCommand(std::function<double()> flywhee
   
   return frc2::cmd::Parallel(
     FlywheelCommand(flywheelInput),
-    PivotAngleCommand(pivotAngle)
+    PivotAngleCommand(pivotAngle) 
   );
 }
 

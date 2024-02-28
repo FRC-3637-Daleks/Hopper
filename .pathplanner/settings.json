@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.635,
-  "robotLength": 0.635,
+  "robotWidth": 0.91,
+  "robotLength": 0.91,
   "holonomicMode": true,
   "pathFolders": [
     "BasicAuton",
@@ -14,17 +14,24 @@
     "IntakeClose to RightSub",
     "LeftSub to PrepIntakeCenter",
     "LeftSub to PrepIntakeClose",
-    "RightSub to PrepIntakeCenter",
+    "New Folder",
     "PrepIntakeCenter to IntakeCenter",
     "PrepIntakeClose to IntakeClose",
+    "RightSub to PrepIntakeCenter",
     "RightSub to PrepIntakeClose",
     "Start to Sub"
   ],
+<<<<<<< HEAD
   "autoFolders": [
     "New Folder"
   ],
   "defaultMaxVel": 1.5,
   "defaultMaxAccel": 1.5,
+=======
+  "autoFolders": [],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 4.5,
+>>>>>>> pathplanner-building
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,
   "maxModuleSpeed": 5.03
