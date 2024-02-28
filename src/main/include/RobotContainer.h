@@ -152,11 +152,6 @@ class RobotContainer {
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
-<<<<<<< HEAD
-
-  bool m_isRed;
-=======
->>>>>>> origin/visvam-wip
 
   bool m_isRed;
   //AprilTag

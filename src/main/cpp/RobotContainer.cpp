@@ -137,7 +137,7 @@ void RobotContainer::ConfigureBindings() {
       units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
-  constexpr auto flywheelAutoSpeed = [] -> double
+  constexpr auto flywheelAutoSpeed = []()
   {
    return .5;
   };
@@ -223,20 +223,10 @@ void RobotContainer::ConfigureDashboard()
 
 void RobotContainer::ConfigureAuto()
 {
-
       pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
         m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
       });
 }
-
-void RobotContainer::ConfigureAuto()
-{
-
-      pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
-        m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
-      });
-}
-
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
