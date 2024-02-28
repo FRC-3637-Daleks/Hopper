@@ -112,7 +112,7 @@ void RobotContainer::ConfigureBindings() {
   auto pivot = [this] () -> units::degrees_per_second_t {
     return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
-
+  
   auto calculateDistance = [this]() -> units::meter_t {
       frc::Pose2d RobotPose2d = m_swerve.GetPose();
       
@@ -137,9 +137,11 @@ void RobotContainer::ConfigureBindings() {
       units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
+
+
   constexpr auto flywheelAutoSpeed = []()
   {
-   return .5;
+   return 0.5;
   };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
@@ -204,10 +206,10 @@ void RobotContainer::ConfigureBindings() {
       //also need to see if the Shoot Command will work as it is currently configured
       pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
       pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
-//       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true));
+      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false));
+      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
+      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
 }
 
 
