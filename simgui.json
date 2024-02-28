@@ -102,8 +102,11 @@
           },
           "open": true
         },
-        "Shooter": {
-          "open": true
+        "Intake": {
+          "open": true,
+          "sim": {
+            "open": true
+          }
         },
         "open": true
       }

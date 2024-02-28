@@ -152,16 +152,35 @@ void RobotContainer::ConfigureBindings() {
     return m_copilotController.GetPOV();
   };
 
-  m_intake.SetDefaultCommand(
-    frc2::cmd::Select<int>(
-      position,
-      std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kAutoIntake, m_intake.IntakeRing()}
-      )
-  );
+  // m_intake.SetDefaultCommand(
+  //   frc2::cmd::Select<int>(
+  //     position,
+  //     std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kAutoIntake, m_intake.IntakeRing()}
+  //     )
+  // );
+
+  frc2::Trigger IdleIntakeTrigger([this] { return m_copilotController.GetPOV() == -1; });
+  frc2::Trigger GroundIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV; });
+  frc2::Trigger AMPIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV; });
+  frc2::Trigger SpeakerIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV; });
+  frc2::Trigger AutoIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake; });
+  
+  GroundIntakeTrigger
+    .OnTrue(m_intake.IntakeArmIntakeCommand(true));
+
+  AMPIntakeTrigger
+    .OnTrue(m_intake.IntakeArmAMPCommand(true));
+  
+  SpeakerIntakeTrigger
+    .OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+
+  AutoIntakeTrigger
+    .OnTrue(m_intake.IntakeRing());
+
 
   m_copilotController.A()
     .WhileTrue(m_intake.IntakeIn());
