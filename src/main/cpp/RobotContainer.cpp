@@ -138,6 +138,9 @@ void RobotContainer::ConfigureBindings() {
   };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
+  m_copilotController.Back()
+    .WhileTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
+
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();

@@ -152,6 +152,7 @@ class RobotContainer {
   Climb m_climb;
   Vision m_vision;
 
+
   bool m_isRed;
   //AprilTag
   frc::AprilTagFieldLayout m_aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
