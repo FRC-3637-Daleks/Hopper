@@ -99,7 +99,8 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true) //when ring
-    .AndThen(Run([this] {ShootOnAMPVoid();}).WithTimeout(1.2_s)).AndThen(IntakeOff()).AndThen(IntakeArmSpeakerCommand(true)), 
+    .AndThen(Run([this] {ShootOnAMPVoid();}).WithTimeout(1.2_s)).AndThen(IntakeOff())
+    .AndThen(AutoIntake()).WithTimeout(2_s).AndThen(IntakeOff())/*.AndThen(IntakeArmSpeakerCommand(true))*/, 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
   );

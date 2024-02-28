@@ -143,9 +143,6 @@ void RobotContainer::ConfigureBindings() {
   frc2::Trigger AMPIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV; });
   frc2::Trigger SpeakerIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV; });
   frc2::Trigger AutoIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake; });
-
-  IdleIntakeTrigger
-    .OnTrue(m_intake.IdleIntakeCommand());
   
   GroundIntakeTrigger
     .OnTrue(m_intake.IntakeArmIntakeCommand(true));
