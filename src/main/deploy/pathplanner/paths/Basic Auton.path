@@ -12,7 +12,7 @@
         "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "PrepIntakeCloseNoteL"
+      "linkedName": "PrepIntakeCloseL"
     },
     {
       "anchor": {
@@ -44,7 +44,7 @@
         "y": 4.09333015170752
       },
       "isLocked": false,
-      "linkedName": "PrepIntakeCloseNoteR"
+      "linkedName": "PrepIntakeCloseR"
     },
     {
       "anchor": {
@@ -60,7 +60,7 @@
         "y": 4.1
       },
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteRight"
+      "linkedName": "IntakeCloseR"
     },
     {
       "anchor": {
@@ -92,7 +92,7 @@
         "y": 0.77
       },
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterNoteFarR"
+      "linkedName": "PrepIntakeCenterFarR"
     },
     {
       "anchor": {
@@ -108,7 +108,7 @@
         "y": 0.77
       },
       "isLocked": false,
-      "linkedName": "IntakeCenterNoteFarR"
+      "linkedName": "IntakeCenterFarR"
     },
     {
       "anchor": {

@@ -3,48 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7518994781213513,
-        "y": 6.75
+        "x": 7.95,
+        "y": 7.43
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8552711627534517,
-        "y": 6.0193699845316955
+        "x": 5.202017365518325,
+        "y": 6.124767513443729
       },
       "isLocked": false,
-      "linkedName": "LeftSub"
+      "linkedName": "IntakeCenterFarL"
     },
     {
       "anchor": {
-        "x": 4.429102153496745,
-        "y": 4.731177964495728
+        "x": 2.9301150756367123,
+        "y": 6.2887192250846695
       },
       "prevControl": {
-        "x": 4.46423466313409,
-        "y": 6.440960100179829
+        "x": 3.7990124207016875,
+        "y": 6.410778092724304
       },
       "nextControl": {
-        "x": 4.392669934764927,
-        "y": 2.9581433195472426
+        "x": 1.9520735083964378,
+        "y": 6.151328258384323
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.1,
-        "y": 0.77
+        "x": 0.7518994781213513,
+        "y": 6.75
       },
       "prevControl": {
-        "x": 4.1525238265883075,
-        "y": 0.6880241441795285
+        "x": 0.9978270455827631,
+        "y": 7.623754591303762
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterFarR"
+      "linkedName": "LeftSub"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -55,11 +61,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 60.0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "LeftSub to PrepIntakeCenter",
+  "folder": "IntakeCenter to LeftSub",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

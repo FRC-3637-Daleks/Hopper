@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1,
-        "y": 4.098792791023527
+        "x": 2.1,
+        "y": 4.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.199999999999999,
-        "y": 4.098792791023527
+        "x": 2.3402239112170546,
+        "y": 2.0819249330806366
       },
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterC"
+      "linkedName": "IntakeCloseR"
     },
     {
       "anchor": {
-        "x": 7.95,
-        "y": 4.1
+        "x": 7.1,
+        "y": 2.44
       },
       "prevControl": {
-        "x": 7.8500000000000005,
-        "y": 4.1
+        "x": 6.040327465270316,
+        "y": 1.262968679783513
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCenterC"
+      "linkedName": "PrepIntakeCenterR"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "PrepIntakeCenter to IntakeCenter",
-  "previewStartingState": null,
+  "folder": "ShootCloseR to PrepIntakeCenter",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

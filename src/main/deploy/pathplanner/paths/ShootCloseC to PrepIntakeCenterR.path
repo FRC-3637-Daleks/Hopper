@@ -3,54 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.95,
-        "y": 7.43
+        "x": 2.4,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.202017365518325,
-        "y": 6.124767513443729
+        "x": 4.155741388405855,
+        "y": 5.949766514917646
       },
       "isLocked": false,
-      "linkedName": "IntakeCenterNoteFarL"
+      "linkedName": "IntakeCloseC"
     },
     {
       "anchor": {
-        "x": 2.9301150756367123,
-        "y": 6.2887192250846695
+        "x": 4.866161270784081,
+        "y": 4.351321779566637
       },
       "prevControl": {
-        "x": 3.7990124207016875,
-        "y": 6.410778092724304
+        "x": 4.362947187432837,
+        "y": 4.834801977296262
       },
       "nextControl": {
-        "x": 1.9520735083964378,
-        "y": 6.151328258384323
+        "x": 5.301016696400064,
+        "y": 3.93351950789638
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7518994781213513,
-        "y": 6.75
+        "x": 7.1,
+        "y": 2.44
       },
       "prevControl": {
-        "x": 0.9978270455827631,
-        "y": 7.623754591303762
+        "x": 7.4710341728375775,
+        "y": 4.114515152107228
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftSub"
+      "linkedName": "PrepIntakeCenterR"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -61,11 +55,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.0,
-    "rotateFast": true
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "IntakeCenter to LeftSub",
-  "previewStartingState": null,
+  "folder": "ShootCloseC to PrepIntakeCenter",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

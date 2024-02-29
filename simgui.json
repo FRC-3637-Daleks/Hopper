@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Drivebase": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/Mechanisms": "Mechanism2d",

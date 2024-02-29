@@ -97,7 +97,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftSub to PrepIntakeCenterFarL"
+                        "pathName": "ShootCloseL to PrepIntakeCenterFarL"
                       }
                     },
                     {
@@ -121,7 +121,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeNoteCenterFarL to Left Sub"
+            "pathName": "IntakeCenterFarL to Left Sub"
           }
         },
         {

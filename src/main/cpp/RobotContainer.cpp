@@ -245,7 +245,7 @@ void RobotContainer::ConfigureDashboard()
 void RobotContainer::ConfigureAuto()
 {
       pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto&& activePath) {
-        m_swerve.GetField().GetObject("Auto Path")->SetPoses(activePath);
+        m_swerve.GetField().GetObject("Hopper")->SetPoses(activePath);
       });
 }
 
