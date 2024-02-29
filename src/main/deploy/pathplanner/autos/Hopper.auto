@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.75,
-      "y": 6.745441850370149
+      "y": 6.75
     },
     "rotation": 60.0
   },
@@ -11,12 +11,6 @@
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Start to LeftSub"
-          }
-        },
         {
           "type": "sequential",
           "data": {
@@ -37,34 +31,47 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LeftSub to PrepIntakeCloseL"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "PrepIntakeCloseL to IntakeCloseL"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "IntakeRing"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "LeftSub to PrepIntakeCloseL"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCloseL to IntakeCloseL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "IntakeCloseL to LeftSub"
+            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -74,12 +81,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LeftSub to PrepIntakeCenterFarL"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -90,9 +91,28 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "LeftSub to PrepIntakeCenterFarL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                      }
+                    }
+                  ]
                 }
               }
             ]

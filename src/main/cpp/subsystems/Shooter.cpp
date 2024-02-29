@@ -63,9 +63,9 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
   m_pivot.ConfigForwardSoftLimitEnable(true);
-  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor);
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor - 100);
   m_pivot.ConfigReverseSoftLimitEnable(true);
-  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor);
+  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor + 300);
 
 
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
@@ -207,7 +207,8 @@ units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
   // (1.92*.000001 * std::pow(distance.value(), 6)) +
   // (4.95*.00000001 * std::pow(distance.value(), 7)) -
   // (5.52*.0000000001 * std::pow(distance.value(), 8))) * 1_deg;
-  return (std::atan(5.55 / distance.value()) - .191) * 1_rad;
+  //(std::atan(5.55 / (distance.value() - 0.4))) * 1_rad;
+  return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {

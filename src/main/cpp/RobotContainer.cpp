@@ -4,15 +4,14 @@
 
 #include "RobotContainer.h"
 
+#include <units/math.h>
+
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DataLogManager.h>
 #include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
-#include <frc/DriverStation.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <subsystems/Intake.h>
-#include <frc/geometry/Pose3d.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 
@@ -40,12 +39,7 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
 }
 
 void RobotContainer::ConfigureBindings() {
-
-    // HopperAuto = pathplanner::PathPlannerAuto("Hopper").ToPtr().Unwrap();
-    // frc::SmartDashboard::PutData("Hopper", HopperAuto.get());
-  //m_subsystem.SetDefaultCommand(m_subsystem.FlywheelCommand(m_driverController.GetLeftY()));
-
-// Configure Swerve Bindings.
+  // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(-m_swerveController.GetRawAxis(OperatorConstants::kForwardAxis), OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input); // square the input while preserving the sign
@@ -147,6 +141,9 @@ void RobotContainer::ConfigureBindings() {
   };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
+  m_copilotController.Back()
+    .WhileTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
+
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();
@@ -221,14 +218,14 @@ void RobotContainer::ConfigureBindings() {
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance)); //this aint right but ill change it at some point
-      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance).WithName("ShootCommand")); //this aint right but ill change it at some point
+      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP().WithName("ShootAMP"));
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
-      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
-      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
-      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true));
-      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false));
+      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
+      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter().WithName("OutputToShooter"));
+      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true).WithTimeout(2_s).WithName("zTargetSpeaker"));
+      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false).WithName("zTargetAmp"));
       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
 }
@@ -242,6 +239,7 @@ void RobotContainer::ConfigureDashboard()
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
   frc::SmartDashboard::PutData("Intake", &m_intake);
   frc::SmartDashboard::PutData("Shooter", &m_shooter);
+  frc::SmartDashboard::PutData("Drivebase", &m_swerve);
 }
 
 void RobotContainer::ConfigureAuto()

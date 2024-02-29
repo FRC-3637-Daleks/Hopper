@@ -1,11 +1,4 @@
 {
-  "HALProvider": {
-    "Timing": {
-      "window": {
-        "visible": false
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -17,63 +10,12 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "Auto Path": {
-          "arrows": false,
-          "color": [
-            0.13725489377975464,
-            0.36562883853912354,
-            1.0,
-            255.0
-          ],
-          "style": "Line"
-        },
-        "FL": {
-          "arrowWeight": 2.0,
-          "length": 0.6000000238418579,
-          "style": "Hidden",
-          "weight": 0.0,
-          "width": 0.15000000596046448
-        },
-        "FR": {
-          "arrowWeight": 2.0,
-          "length": 0.6000000238418579,
-          "style": "Hidden",
-          "width": 0.15000000596046448
-        },
-        "Notes": {
-          "arrows": false,
-          "color": [
-            255.0,
-            179.99998474121094,
-            0.0,
-            255.0
-          ],
-          "length": 0.33000001311302185,
-          "width": 0.33000001311302185
-        },
-        "RL": {
-          "arrowWeight": 2.0,
-          "length": 0.6000000238418579,
-          "style": "Hidden",
-          "width": 0.15000000596046448
-        },
-        "RR": {
-          "arrowWeight": 2.0,
-          "length": 0.6000000238418579,
-          "style": "Hidden",
-          "width": 0.15000000596046448
-        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Intake": {
         "window": {
           "visible": true
         }
@@ -87,28 +29,6 @@
         "window": {
           "visible": true
         }
-      }
-    }
-  },
-  "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "Field": {
-          "double[]##v_/SmartDashboard/Field/simulation": {
-            "open": true
-          },
-          "open": true
-        },
-        "Intake": {
-          "open": true,
-          "sim": {
-            "open": true
-          }
-        },
-        "open": true
       }
     }
   },

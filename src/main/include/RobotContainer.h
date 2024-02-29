@@ -10,13 +10,12 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/path/PathPlannerPath.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
-#include <frc/smartdashboard/Mechanism2d.h>
-#include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include "frc/apriltag/AprilTagFields.h"
@@ -134,7 +133,7 @@ class RobotContainer {
   RobotContainer();
   frc2::CommandPtr GetDisabledCommand();
   frc2::CommandPtr GetAutonomousCommand();
-  std::unique_ptr<frc2::Command> HopperAuto;
+    std::unique_ptr<frc2::Command> HopperAuto;
 
 
  public:
@@ -152,6 +151,7 @@ class RobotContainer {
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
+
 
   bool m_isRed;
 

@@ -402,7 +402,7 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pos
   return frc2::ProfiledPIDCommand<units::degree>(
     m_turnPID,
     [this, angle] () -> units::degree_t {
-      auto currentAngle = GetHeading().Degrees() - angle();
+      auto currentAngle = frc::AngleModulus( GetPose().Rotation().Degrees() - angle() );
       frc::SmartDashboard::PutNumber("TurnPID/Current Angle", currentAngle.value()); // Debugging print
       //return GetHeading().Degrees();
       return currentAngle;

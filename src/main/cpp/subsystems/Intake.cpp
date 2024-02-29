@@ -108,7 +108,7 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 
 frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
-    IntakeArmSpeakerCommand(true) //when ring
+    IntakeArmSpeakerCommand(true)//when ring
     .AndThen(IntakeOutSpeaker()) 
     .WithTimeout(1_s), 
     frc2::cmd::None(), //no ring
@@ -135,7 +135,7 @@ frc2::CommandPtr Intake::IntakeOut() {
 }
 
 frc2::CommandPtr Intake::IntakeOutSpeaker() {
-  return frc2::cmd::RunEnd([this] {
+  return this->RunEnd([this] {
     IntakeBackwardSpeaker();
   },
   [this] { OffIntake(); });
@@ -244,9 +244,9 @@ _____
 
 
 frc2::CommandPtr Intake::AutoIntake() {
-  return Run([this] {IntakeForward();})
+  return this->Run([this] {IntakeForward();})
   .Until([this] () -> bool {return (IsIntakeBreakBeamBroken());})
-  .AndThen([this] {OffIntake();});
+  .AndThen([this] {OffIntake();}).HandleInterrupt([this] { OffIntake(); });
 }
 
 void Intake::IntakeForward() { //in
@@ -289,7 +289,7 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
   //.Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
 
   if (wait) {
-    return frc2::cmd::Run([this] {IntakeArmAMP();})
+    return this->Run([this] {IntakeArmAMP();})
     .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmAMPPos);});
   }
   return RunOnce([this] {IntakeArmAMP();});
@@ -298,7 +298,7 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
  
   if (wait) {
-    return frc2::cmd::Run([this] {IntakeArmSpeaker();}, {this})
+    return this->Run([this] {IntakeArmSpeaker();})
     .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);});
   }
   return RunOnce([this] {IntakeArmSpeaker();});
@@ -307,7 +307,7 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
   
   if (wait) {
-    return frc2::cmd::Run([this] {IntakeArmIntake();})
+    return this->Run([this] {IntakeArmIntake();})
     .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);});
   }
   return RunOnce([this] {IntakeArmIntake();});

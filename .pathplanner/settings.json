@@ -22,8 +22,8 @@
     "Start to Sub"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 2.5,
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,
   "maxModuleSpeed": 5.03
