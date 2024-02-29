@@ -147,6 +147,10 @@ class RobotContainer {
       OperatorConstants::kSwerveControllerPort};
 
   // The robot's subsystems are defined here...
+
+  frc2::Trigger m_slowModeTrigger{
+    [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
+  };
   
   Shooter m_shooter;
   Drivetrain m_swerve;

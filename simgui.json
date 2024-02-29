@@ -6,6 +6,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/Mechanisms": "Mechanism2d",
+      "/SmartDashboard/Select Auton": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/zeroEncodersCommand": "Command"
@@ -50,6 +51,7 @@
       },
       "/SmartDashboard/SendableChooser[0]": {
         "window": {
+          "name": "Select Auton",
           "visible": true
         }
       },

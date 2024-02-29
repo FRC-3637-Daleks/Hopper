@@ -30,7 +30,7 @@ namespace VisionConstants{
       "Arducam_OV2311_USB_Camera"; // Note, we need an in-built pipeline changer, probably between auton and teleop
 
   const frc::Transform3d kCameraToRobot{
-      {-2.5_in, -6_in, 25_in},
+      {-5.125_in, -6_in, 25_in},
       frc::Rotation3d{ // transform3d can be constructed with a variety of variables, so this should be fine 
           0_deg, 0_deg,
           180_deg} }; // The camera location relative to the robot's center. Need to change for actual robot
