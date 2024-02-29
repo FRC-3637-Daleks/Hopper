@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "prevControl": {
         "x": 2.252751997811689,
-        "y": 5.515621031242063
+        "y": 5.4580662200652865
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Start to Sub",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

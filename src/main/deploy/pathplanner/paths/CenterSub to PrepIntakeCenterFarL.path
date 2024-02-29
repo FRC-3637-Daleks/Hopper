@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8364576060107902,
-        "y": 7.002143731676908
+        "x": 1.8364576060107898,
+        "y": 6.9445889205001325
       },
       "isLocked": false,
       "linkedName": "CenterSub"
@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "CenterSub to PrepIntakeCenter",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

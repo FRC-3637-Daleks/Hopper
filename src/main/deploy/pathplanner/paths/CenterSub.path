@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.4000000000000001,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "isLocked": false,
       "linkedName": "CenterSub"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "prevControl": {
-        "x": 1.4,
-        "y": 5.55
+        "x": 1.4000000000000001,
+        "y": 5.492445188823224
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "BasicAuton",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

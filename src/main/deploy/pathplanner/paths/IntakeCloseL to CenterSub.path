@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.492445188823224
       },
       "prevControl": {
         "x": 2.421151575256073,
-        "y": 5.597779868883561
+        "y": 5.540225057706785
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeClose to CenterSub",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

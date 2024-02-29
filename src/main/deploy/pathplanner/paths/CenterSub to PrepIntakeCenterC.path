@@ -4,15 +4,31 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.55
+        "y": 5.49
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.567108365457815,
-        "y": -0.2117315805245033
+        "x": 2.11085570453789,
+        "y": 5.548742729292257
       },
       "isLocked": false,
       "linkedName": "CenterSub"
+    },
+    {
+      "anchor": {
+        "x": 4.040780031470618,
+        "y": 4.831589484288092
+      },
+      "prevControl": {
+        "x": 3.6825553566281246,
+        "y": 5.066097389983952
+      },
+      "nextControl": {
+        "x": 6.8898024021450555,
+        "y": 2.9665078292589504
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -43,7 +59,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "CenterSub to PrepIntakeCenter",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }
