@@ -87,13 +87,13 @@ bool Vision::HasTargets() {
     if (numTags > 1) {
       estStdDevs = VisionConstants::kMultiTagStdDevs;
     }
-    if (numTags == 1 && avgDist > 1_m) {
+    if (numTags == 1 && avgDist > 1_m || avgDist > 4_m) {
       estStdDevs = (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
                     std::numeric_limits<double>::max(),
                     std::numeric_limits<double>::max())
                        .finished();
     } else {
-      estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 30));
+      estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 5));
     }
     return estStdDevs;
   }

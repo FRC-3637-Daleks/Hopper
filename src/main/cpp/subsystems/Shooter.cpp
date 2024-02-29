@@ -208,7 +208,7 @@ units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
   // (4.95*.00000001 * std::pow(distance.value(), 7)) -
   // (5.52*.0000000001 * std::pow(distance.value(), 8))) * 1_deg;
   //(std::atan(5.55 / (distance.value() - 0.4))) * 1_rad;
-  return (std::atan(5.55 / distance.value()) - .191) * 1_rad;
+  return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {

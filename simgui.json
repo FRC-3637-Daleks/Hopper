@@ -1,11 +1,4 @@
 {
-  "HALProvider": {
-    "Timing": {
-      "window": {
-        "visible": false
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -17,6 +10,7 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+<<<<<<< HEAD
         "FL": {
           "arrowWeight": 2.0,
           "length": 0.6000000238418579,
@@ -109,17 +103,14 @@
           "style": "Hidden",
           "width": 0.15000000596046448
         },
+=======
+>>>>>>> origin/pathplanner-building
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Intake": {
         "window": {
           "visible": true
         }
@@ -133,25 +124,6 @@
         "window": {
           "visible": true
         }
-      }
-    }
-  },
-  "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "Field": {
-          "double[]##v_/SmartDashboard/Field/simulation": {
-            "open": true
-          },
-          "open": true
-        },
-        "Shooter": {
-          "open": true
-        },
-        "open": true
       }
     }
   },

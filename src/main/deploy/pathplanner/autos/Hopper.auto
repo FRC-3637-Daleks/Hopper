@@ -3,78 +3,119 @@
   "startingPose": {
     "position": {
       "x": 0.75,
-      "y": 6.6
+      "y": 6.75
     },
-    "rotation": -121.04324386032752
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Start to LeftSub"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutputToShooter"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftSub to PrepIntakeCloseL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "PrepIntakeCloseL to IntakeCloseL"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeCloseL to LeftSub"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeRing"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "LeftSub to PrepIntakeCloseL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCloseL to IntakeCloseL"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootCommand"
+            "name": "zTargetingSpeaker"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.5
+            "name": "OutputToShooter"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "LeftSub to PrepIntakeCenterFarL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeRing"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "LeftSub to PrepIntakeCenterFarL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -84,9 +125,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.5
+            "name": "OutputToShooter"
           }
         }
       ]

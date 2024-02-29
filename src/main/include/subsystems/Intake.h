@@ -24,6 +24,8 @@
 #include <memory>
 #include <numbers>
 
+#include <frc2/command/ParallelCommandGroup.h>
+
 namespace IntakeConstants {
     //Moter IDs
     constexpr int kIntakeMotorPort = 17;
@@ -36,11 +38,11 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 987; // -
+    constexpr int IntakeArmIntakePos = 997; // -
     constexpr int IntakeArmAMPPos = 660; // Needs to be 59.4 deg. After we get information on encoder offsets, actual value can be determined.
-    constexpr int IntakeArmSpeakerPos = 430;
-    constexpr int IntakeArmPreAMPPos = 600;
-    constexpr int IntakeArmLetGoPos = 630;
+    constexpr int IntakeArmSpeakerPos = 450;
+    //constexpr int IntakeArmPreAMPPos = 600;
+    constexpr int IntakeArmLetGoPos = 560;
 
 
     constexpr bool kBeamBroken = false;
@@ -66,9 +68,9 @@ namespace IntakeConstants {
 
     //voltage for funtions (i dide't even have to use auto)
     constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
-    constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
-    constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
-    constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
+    //constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
+    //constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
+    //constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
     
     //physical characteristics
     constexpr auto kWheelMoment = 0.001_kg_sq_m;
@@ -115,44 +117,70 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  /**
-   * Sets the arm position to the intake position
-   * runs intake until break beam or limit switch is hit
-   * also stops when button is released
+  /** Automaticaly intakes ring and goes to speaker pos
+   * If doesent have ring
+   * -Goes to ground position
+   * -Spins intake until breakbeam is tripped
+   * Goes to speaker position
   */
   frc2::CommandPtr IntakeRing(); 
 
-  /**
-   * Sets the arm to the AMP position, 
-   * when the button is down it shoots the ring
-   * stops when the button is let go
+  /** Shoots on the AMP when lined up
+   * If has ring
+   * -Goes to speaker position
+   * -Goes to AMP position
+   * -When passes specfic encoder point on the way to AMP, outputs  
   */
   frc2::CommandPtr ShootOnAMP();
 
-  /**
-   * Sets he arm to the Shooter position
-   * Passes the ring to the shooter
-   * Stops when:
-   * a. Break beam on the shooter is tripped (will need get command from shooter class)
-   * b. the button is released
+  /** Shoot to speaker
+   * If has ring
+   * -Goes to speaker position
+   * -Outputs 
   */
   frc2::CommandPtr OutputToShooter();
 
-  /**
-   * Set intake to spin forwards and take in a game piece
+  /** ONLY FOR DRIVER CONTROL
+   * Sets voltage (may cause exepected behavior) until button is let go, then off
   */
   frc2::CommandPtr IntakeIn();
 
-  frc2::CommandPtr AutoIntake();
+  /** Sets voltage to 0
+   * uses a RunOnce
+  */
+  frc2::CommandPtr IntakeOff();
 
-  /**
-   * Set intake to spin backwards to spit out a game piece
+  /** Spits the ring out (for AMP speed) by setting voltage
+   * Warning: may never stop
   */
   frc2::CommandPtr IntakeOut();
 
+  /** Spins intake in until breakbeam is tripped
+   * Spins intake 
+   * Until breakbeam is tripped
+   * Then stops intake
+  */
+  frc2::CommandPtr AutoIntake();
+
+  /** Outputs to speaker
+   * Uses speaker voltage
+  */
   frc2::CommandPtr IntakeOutSpeaker();
 
+  /** Timed release for AMP
+   * Turns the intake off
+   * until the encoder position is greater than IntakeArmLetGoPos
+   * Then outputs to the AMP
+   * DEPRICATED: Use ShootOnAMPVoid (its a bit diffrent)
+  */
   frc2::CommandPtr TimedRelease();
+
+  /** Moves arm to AMP and outputs
+   * Always moves arm to AMP position
+   * if greater than goal position
+   * shoots out at amp speed
+  */
+  void ShootOnAMPVoid();
 
   // Keep intake Idle if no buttons are pressed
   frc2::CommandPtr IdleIntakeCommand();
@@ -160,78 +188,64 @@ class Intake : public frc2::SubsystemBase {
   void UpdateVisualization();
 
 
-  /** Simeple on off for intake
-   * Turns on intake spinning forward for intaking game peice
-   * Turns off intake for stopping intake
-  */
+  // (voltage) Intake ring in
   void IntakeForward();
+
+  // (voltage) Intake ring out (AMP Speed)
   void IntakeBackward();
+
+  // (voltage) Intake ring out (Speaker Speed)
   void IntakeBackwardSpeaker();
+
+  // (voltage) Stops intake
   void OffIntake();
 
-  /**
-  * Outputs the intake to the shooter
-  * Outputs (and shoots) the intake to the AMP
-  */
-  void OutputShooterIntake();
-  void OutputAMPIntake();
-
-  /** Moves arm to specified position, position specified in constants
-  * Moves the intake arm to the AMP position
-  * Moves the intake arm to the Speaker position
-  * Moves the intake arm to the Intake position
-  */
+  // Moves arm to AMP using motion magic (also sets goal (for visualization))
   void IntakeArmAMP();
-  void IntakePreArmAMP();
+
+  // Moves arm to speaker using motion magic (also sets goal (for visualization))
   void IntakeArmSpeaker();
+
+  // Moves arm to intake using motion magic (also sets goal (for visualization))
   void IntakeArmIntake();
 
+  // Checks if arm is at passed in position (goal != m_goal)
+  bool IsAtWantedPosition(int goal);
+
+  //Uses corresponding void function to move to AMP position, if wait is true, 
+  //waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
-  frc2::CommandPtr IntakeArmPreAMPCommand(bool wait = false);
+  //waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
+  //Uses corresponding void function to move to  ground, if wait is true, 
+  //waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmIntakeCommand(bool wait = false);
 
-  /** Gets the state of Limit switches and break beams for intake
-  * Gets the state of the limit switch for the intake
-  * Gets the state of the break beam for the intake
-  */
-
+  // If the break beam is broken then it return true
   bool IsIntakeBreakBeamBroken();
 
-  /** 
-  * Gets the difference between were the arm is going and were it is 
+  /** Gets diffrence between goal and current position
+   * DEPRICATED: Use IsAtWantedPosition
   */
   int GetArmDiffrence();
 
-  /** sees if the arm is at a specific position, 
-  has a margin of error defined in constants
-  * Sees if the arm is at the amp position
-  * Sees if the arm is at the speaker position
-  * Sees if the arm is at the intake position
+  /** Sees if were at the named position
+   * DEPRICATED: Use IsAtWantedPosition
   */
   bool IsAtAMP();
   bool IsAtSpeaker();
   bool IsAtIntake();
 
-  /**
-   * The motor used to run the intake.
-  */
+  // Moter for spinning the intake
   rev::CANSparkFlex m_intake{IntakeConstants::kIntakeMotorPort, rev::CANSparkFlex::MotorType::kBrushless};
 
-  /**
-   * The motor used to run the intake arm. Is setup with a PID
-  */
+  // Moter for moving the arm
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{IntakeConstants::kArmMotorPort};
 
-  /**
-   * The goal position of the arm used for some functions
-  */
+  // Goal for the arm, display only (sim/drive station)
   int m_goal;
 
-  /** Defines some digital inputs
-   * Defines limitswitch used on the intake
-   * Defines breakbeam used on the intake
-  */
+  // Breakbeam for detecting if a ring is in the intake
   frc::DigitalInput m_breakbeam{IntakeConstants::kBreakbeamPort};
 
 private:

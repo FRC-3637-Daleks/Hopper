@@ -101,13 +101,13 @@ void RobotContainer::ConfigureBindings() {
       
   //Configure Shooter Bindings.
   auto flywheel = [this] () -> double {
-    return m_copilotController.GetRightTriggerAxis();
+    return (1.0 - m_copilotController.GetRightTriggerAxis());
   };
 
   auto pivot = [this] () -> units::degrees_per_second_t {
     return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
   };
-
+  
   auto calculateDistance = [this]() -> units::meter_t {
       frc::Pose2d RobotPose2d = m_swerve.GetPose();
       
@@ -132,9 +132,11 @@ void RobotContainer::ConfigureBindings() {
       units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
       return offset; //Return the horizontal distance as units::meter_t
   };
+
+
   constexpr auto flywheelAutoSpeed = []()
   {
-   return .5;
+   return 0.5;
   };
   m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
 
@@ -146,16 +148,35 @@ void RobotContainer::ConfigureBindings() {
     return m_copilotController.GetPOV();
   };
 
-  m_intake.SetDefaultCommand(
-    frc2::cmd::Select<int>(
-      position,
-      std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)},
-      std::pair<int, frc2::CommandPtr>{OperatorConstants::kAutoIntake, m_intake.IntakeRing()}
-      )
-  );
+  // m_intake.SetDefaultCommand(
+  //   frc2::cmd::Select<int>(
+  //     position,
+  //     std::pair<int, frc2::CommandPtr>{-1, m_intake.IdleIntakeCommand()},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeGroundPOV, m_intake.IntakeArmIntakeCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeAMPPOV, m_intake.IntakeArmAMPCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kIntakeShooterPOV, m_intake.IntakeArmSpeakerCommand(false)},
+  //     std::pair<int, frc2::CommandPtr>{OperatorConstants::kAutoIntake, m_intake.IntakeRing()}
+  //     )
+  // );
+
+  frc2::Trigger IdleIntakeTrigger([this] { return m_copilotController.GetPOV() == -1; });
+  frc2::Trigger GroundIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV; });
+  frc2::Trigger AMPIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV; });
+  frc2::Trigger SpeakerIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV; });
+  frc2::Trigger AutoIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake; });
+  
+  GroundIntakeTrigger
+    .OnTrue(m_intake.IntakeArmIntakeCommand(true));
+
+  AMPIntakeTrigger
+    .OnTrue(m_intake.IntakeArmAMPCommand(true));
+  
+  SpeakerIntakeTrigger
+    .OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+
+  AutoIntakeTrigger
+    .OnTrue(m_intake.IntakeRing());
+
 
   m_copilotController.A()
     .WhileTrue(m_intake.IntakeIn());
@@ -196,16 +217,16 @@ void RobotContainer::ConfigureBindings() {
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
       
 
-      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance)); //this aint right but ill change it at some point
-      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP());
+      pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance).WithName("ShootCommand")); //this aint right but ill change it at some point
+      pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP().WithName("ShootAMP"));
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
-      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing());
-      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter());
-//       pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe));
-//       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe));
+      pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
+      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter().WithName("OutputToShooter"));
+      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true).WithTimeout(2_s).WithName("zTargetSpeaker"));
+      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false).WithName("zTargetAmp"));
+      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
+      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
 }
 
 
@@ -217,6 +238,7 @@ void RobotContainer::ConfigureDashboard()
   frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
   frc::SmartDashboard::PutData("Intake", &m_intake);
   frc::SmartDashboard::PutData("Shooter", &m_shooter);
+  frc::SmartDashboard::PutData("Drivebase", &m_swerve);
 }
 
 void RobotContainer::ConfigureAuto()

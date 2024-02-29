@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.4499999999999997,
-        "y": 5.55
+        "y": 5.549999999999997
       },
       "isLocked": false,
       "linkedName": "IntakeCloseNoteC"
@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.35,
-        "y": 5.55
+        "y": 5.549999999999997
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
