@@ -392,7 +392,8 @@ frc2::CommandPtr Drivetrain::TurnToAngleCommand(units::degree_t angle) {
 frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe,
-    bool shooterSide) {
+    bool shooterSide,
+    std::function<bool()> isRed) {
 
   auto angle = [this, pose, shooterSide] () -> units::radian_t {
     auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>( pose().Y() - GetPose().Y(), pose().X() - GetPose().X() );
@@ -408,8 +409,8 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(std::function<frc::Pose2d()> pos
       return currentAngle;
     },
     {0_rad, 0_rad_per_s},
-    [this, forward, strafe] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
-      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true, false);
+    [this, forward, strafe, isRed] (double output, frc::TrapezoidProfile<units::degree>::State setpoint) { 
+      Drive(forward(), strafe(), setpoint.velocity + units::angular_velocity::radians_per_second_t(output), true, isRed());
       // Debugging print
       frc::SmartDashboard::PutNumber("TurnPID/PID Output", output); 
       frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity", setpoint.velocity.value()); // Debugging print

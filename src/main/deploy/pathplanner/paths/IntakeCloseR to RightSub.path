@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeClose to RightSub",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.75,
-      "y": 6.75
+      "x": 1.3669845521509223,
+      "y": 5.541275082550166
     },
-    "rotation": 60.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -47,7 +47,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftSub to PrepIntakeCloseL"
+                        "pathName": "CenterSub to PrepIntakeCloseC"
                       }
                     },
                     {
@@ -59,7 +59,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCloseL to IntakeCloseL"
+                        "pathName": "PrepIntakeCloseC to IntakeCloseC"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
                       }
                     }
                   ]
@@ -97,7 +103,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseL to PrepIntakeCenterFarL"
+                        "pathName": "CenterSub to PrepIntakeCenterC"
                       }
                     },
                     {
@@ -109,7 +115,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                        "pathName": "PrepIntakeCenterC to IntakeCenterC"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.0
                       }
                     }
                   ]
@@ -121,7 +133,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarL to Left Sub"
+            "pathName": "IntakeCenterC to CenterSub"
           }
         },
         {

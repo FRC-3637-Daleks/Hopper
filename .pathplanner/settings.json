@@ -23,9 +23,21 @@
     "ShootCloseL to PrepIntakeCenter",
     "Start to Sub"
   ],
+<<<<<<< HEAD
+  "autoFolders": [
+    "New Folder"
+  ],
+  "defaultMaxVel": 1.5,
+  "defaultMaxAccel": 1.5,
+=======
   "autoFolders": [],
   "defaultMaxVel": 3.0,
+<<<<<<< HEAD
+  "defaultMaxAccel": 4.5,
+>>>>>>> pathplanner-building
+=======
   "defaultMaxAccel": 5.0,
+>>>>>>> origin/pathplanner-building
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,
   "maxModuleSpeed": 5.03

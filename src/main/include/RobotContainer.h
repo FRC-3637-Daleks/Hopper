@@ -11,6 +11,7 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Pose3d.h>
+#include <frc2/command/Command.h>
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/path/PathPlannerPath.h>
@@ -18,6 +19,7 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include "frc/apriltag/AprilTagFields.h"
 
 #include <units/acceleration.h>
@@ -132,7 +134,7 @@ class RobotContainer {
  public:
   RobotContainer();
   frc2::CommandPtr GetDisabledCommand();
-  frc2::CommandPtr GetAutonomousCommand();
+  frc2::Command* GetAutonomousCommand();
     std::unique_ptr<frc2::Command> HopperAuto;
 
 
@@ -145,6 +147,10 @@ class RobotContainer {
       OperatorConstants::kSwerveControllerPort};
 
   // The robot's subsystems are defined here...
+
+  frc2::Trigger m_slowModeTrigger{
+    [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
+  };
   
   Shooter m_shooter;
   Drivetrain m_swerve;
@@ -152,6 +158,11 @@ class RobotContainer {
   Climb m_climb;
   Vision m_vision;
 
+  frc2::CommandPtr m_rightSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_leftSubAuto{frc2::cmd::None()};
+
+  frc::SendableChooser<frc2::Command*> m_chooser; 
 
   bool m_isRed;
 
