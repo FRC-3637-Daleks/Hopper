@@ -11,6 +11,7 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Pose3d.h>
+#include <frc2/command/Command.h>
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/path/PathPlannerPath.h>
@@ -18,6 +19,7 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include "frc/apriltag/AprilTagFields.h"
 
 #include <units/acceleration.h>
@@ -152,6 +154,11 @@ class RobotContainer {
   Climb m_climb;
   Vision m_vision;
 
+  frc2::CommandPtr m_rightSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_leftSubAuto{frc2::cmd::None()};
+
+  frc::SendableChooser<frc2::Command*> m_chooser; 
 
   bool m_isRed;
 

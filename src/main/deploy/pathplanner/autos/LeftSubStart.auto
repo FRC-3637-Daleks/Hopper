@@ -61,6 +61,12 @@
                       "data": {
                         "pathName": "PrepIntakeCloseL to IntakeCloseL"
                       }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
                     }
                   ]
                 }
@@ -110,6 +116,12 @@
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.0
                       }
                     }
                   ]

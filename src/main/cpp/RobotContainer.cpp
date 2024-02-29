@@ -34,6 +34,7 @@ RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::seco
   // Configure Dashboard
   ConfigureDashboard();
 
+  // Configure Auton.
   ConfigureAuto();
 }
 
@@ -227,6 +228,15 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false).WithName("zTargetAmp"));
       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
+
+      m_rightSubAuto = pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
+      m_centerSubAuto = pathplanner::PathPlannerAuto("CenterSubStart").ToPtr();
+      m_leftSubAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
+      m_chooser.SetDefaultOption("Left Subwoofer Auto", m_leftSubAuto.get());
+      m_chooser.AddOption("Right Subwoofer Auto", m_rightSubAuto.get());
+      m_chooser.AddOption("Center Subwoofer Auto", m_centerSubAuto.get());
+
+      frc::SmartDashboard::PutData(&m_chooser);
 }
 
 
@@ -252,7 +262,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   // You can ignore this for now.
   //return autos::ExampleAuto(&m_subsystem);
-  return pathplanner::PathPlannerAuto("Hopper").ToPtr();
+  return pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
   return frc2::cmd::Idle();
 }
 
