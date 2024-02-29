@@ -44,9 +44,6 @@
   },
   "reversed": false,
   "folder": "ShootCloseL to PrepIntakeCenter",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }
