@@ -221,7 +221,9 @@ frc2::CommandPtr
 
   frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
-    std::function<units::meters_per_second_t()> strafe, bool shooterSide);
+    std::function<units::meters_per_second_t()> strafe,
+    bool shooterSide,
+    std::function<bool()> isRed);
 
 private:
   SwerveModule m_frontLeft;

@@ -73,16 +73,16 @@ void RobotContainer::ConfigureBindings() {
       .OnTrue(m_swerve.ZeroHeadingCommand());
 
   m_swerveController.A()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, checkRed));
 
   m_swerveController.B()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
   m_swerveController.X()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
 
   m_swerveController.Y()
-    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
+    .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
 
   m_swerveController.LeftStick()
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot, checkRed));
@@ -191,7 +191,7 @@ void RobotContainer::ConfigureBindings() {
 
 
 
-
+  constexpr auto alliance = []() -> bool { return false; };
 
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants 
@@ -216,7 +216,6 @@ void RobotContainer::ConfigureBindings() {
   // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
   //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
   //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
-      
 
       pathplanner::NamedCommands::registerCommand("ShootCommand", m_shooter.ShooterCommand(flywheelAutoSpeed, calculateDistance).WithName("ShootCommand")); //this aint right but ill change it at some point
       pathplanner::NamedCommands::registerCommand("ShootAmp", m_intake.ShootOnAMP().WithName("ShootAMP"));
@@ -224,10 +223,10 @@ void RobotContainer::ConfigureBindings() {
       //also need to see if the Shoot Command will work as it is currently configured
       pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
       pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter().WithName("OutputToShooter"));
-      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true).WithTimeout(2_s).WithName("zTargetSpeaker"));
-      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false).WithName("zTargetAmp"));
-      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false));
-      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false));
+      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance).WithTimeout(2_s).WithName("zTargetSpeaker"));
+      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, alliance).WithName("zTargetAmp"));
+      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, alliance));
+      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, alliance));
 
       m_rightSubAuto = pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
       m_centerSubAuto = pathplanner::PathPlannerAuto("CenterSubStart").ToPtr();
@@ -258,12 +257,13 @@ void RobotContainer::ConfigureAuto()
       });
 }
 
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   // You can ignore this for now.
   //return autos::ExampleAuto(&m_subsystem);
-  return pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
-  return frc2::cmd::Idle();
+  return m_chooser.GetSelected();
+  // return pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
+  // return frc2::cmd::Idle();
 }
 
 frc2::CommandPtr RobotContainer::GetDisabledCommand(){

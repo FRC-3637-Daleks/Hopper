@@ -134,7 +134,7 @@ class RobotContainer {
  public:
   RobotContainer();
   frc2::CommandPtr GetDisabledCommand();
-  frc2::CommandPtr GetAutonomousCommand();
+  frc2::Command* GetAutonomousCommand();
     std::unique_ptr<frc2::Command> HopperAuto;
 
 
