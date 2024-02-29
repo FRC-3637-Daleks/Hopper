@@ -79,6 +79,6 @@ namespace VisionConstants{
     units::time::second_t lastEstTimestamp;
     std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> m_addVisionMeasurement;
 
-
+    std::function<frc::Pose2d()> m_referencePose;
 };
   

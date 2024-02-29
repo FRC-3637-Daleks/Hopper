@@ -17,11 +17,13 @@ Vision::Vision(
         frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
         photon::MULTI_TAG_PNP_ON_COPROCESSOR,
         std::move(m_camera),  // change to the multitag detection algorithm
-        VisionConstants::kCameraToRobot)
+        VisionConstants::kCameraToRobot),
+      m_referencePose(getRobotPose)
 {
     fmt::println("made it to vision");
     // Inside the constructor body, you can perform additional operations if needed
     m_addVisionMeasurement = addVisionMeasurement; // Call the addVisionMeasurement function
+    m_estimator.SetMultiTagFallbackStrategy(photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
 }
 
 bool Vision::HasTargets() {
@@ -45,6 +47,7 @@ bool Vision::HasTargets() {
 //     return std::abs(diffX) <= stdDevs(0, 0) && std::abs(diffY) <= stdDevs(1, 0) && std::abs(diffTheta) <= stdDevs(2, 0);
 // }
   std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
+    m_estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
     auto visionEst = m_estimator.Update();
     auto camera = m_estimator.GetCamera();
     units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
@@ -95,6 +98,8 @@ bool Vision::HasTargets() {
     } else {
       estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 5));
     }
+
+    frc::SmartDashboard::PutNumber("Vision/average vision distance", avgDist.value());
     return estStdDevs;
   }
 

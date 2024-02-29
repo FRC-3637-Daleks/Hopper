@@ -73,6 +73,7 @@ constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
+constexpr double kClimbDeadband = 0.8;
 
 constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
 constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;

@@ -163,7 +163,7 @@ void RobotContainer::ConfigureBindings() {
   m_copilotController.B()
     .WhileTrue(m_intake.IntakeOut());
 
-  auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kDeadband); };
+  auto climb = [this] () -> double { return -frc::ApplyDeadband(m_copilotController.GetRightY(), OperatorConstants::kClimbDeadband); };
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb)); 
 

@@ -66,8 +66,8 @@ Intake::Intake():
   */
 
   // set Motion Magic settings
-  m_arm.ConfigMotionCruiseVelocity(480); // 80 rps = 16384 ticks/100ms cruise velocity
-  m_arm.ConfigMotionAcceleration(1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_arm.ConfigMotionCruiseVelocity(40); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_arm.ConfigMotionAcceleration(160); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -100,7 +100,7 @@ frc2::CommandPtr Intake::ShootOnAMP() {
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true) //when ring
     .AndThen(Run([this] {ShootOnAMPVoid();}).WithTimeout(1.2_s)).AndThen(IntakeOff())
-    .AndThen(AutoIntake()).WithTimeout(2_s).AndThen(IntakeOff())/*.AndThen(IntakeArmSpeakerCommand(true))*/, 
+    .AndThen(AutoIntake()).WithTimeout(5_s).AndThen(IntakeOff())/*.AndThen(IntakeArmSpeakerCommand(true))*/, 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
   );
@@ -258,7 +258,7 @@ void Intake::IntakeBackward() { //out, (i was adjusting the voltage for amp)
 }
 
 void Intake::IntakeBackwardSpeaker() {
-  m_intake.SetVoltage(-1*(12_V));
+  m_intake.SetVoltage(-1*(9_V));
 }
 
 void Intake::OffIntake() {
