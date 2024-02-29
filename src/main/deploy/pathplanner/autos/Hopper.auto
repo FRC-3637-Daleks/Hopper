@@ -51,15 +51,15 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "wait",
                       "data": {
-                        "pathName": "PrepIntakeCloseL to IntakeCloseL"
+                        "waitTime": 1.0
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "path",
                       "data": {
-                        "waitTime": 0.5
+                        "pathName": "PrepIntakeCloseL to IntakeCloseL"
                       }
                     }
                   ]
