@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.4,
+        "x": 2.75,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.14772990216451,
+        "x": 2.4977299021645103,
         "y": 6.429249263634048
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteC"
+      "linkedName": "IntakeCloseC"
     }
   ],
   "rotationTargets": [],

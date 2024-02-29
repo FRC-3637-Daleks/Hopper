@@ -12,20 +12,20 @@
         "y": 4.1
       },
       "isLocked": false,
-      "linkedName": "PrepIntakeCloseNoteR"
+      "linkedName": "PrepIntakeCloseR"
     },
     {
       "anchor": {
-        "x": 2.45,
+        "x": 2.4,
         "y": 4.1
       },
       "prevControl": {
-        "x": 2.35,
+        "x": 2.3,
         "y": 4.1
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteRight"
+      "linkedName": "IntakeCloseR"
     }
   ],
   "rotationTargets": [],

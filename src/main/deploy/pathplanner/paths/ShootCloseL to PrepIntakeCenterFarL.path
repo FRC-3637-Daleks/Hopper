@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4,
-        "y": 5.55
+        "x": 2.75,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4499999999999997,
-        "y": 5.549999999999997
+        "x": 3.75,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteC"
+      "linkedName": "IntakeCloseL"
     },
     {
       "anchor": {
-        "x": 2.4,
-        "y": 5.55
+        "x": 7.1,
+        "y": 7.43
       },
       "prevControl": {
-        "x": 2.35,
-        "y": 5.549999999999997
+        "x": 6.1,
+        "y": 7.43
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteC"
+      "linkedName": "PrepIntakeCenterFarL"
     }
   ],
   "rotationTargets": [],
@@ -43,10 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "BasicAuton",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "folder": "ShootCloseL to PrepIntakeCenter",
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

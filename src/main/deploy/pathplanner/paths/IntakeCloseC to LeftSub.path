@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4,
+        "x": 2.75,
         "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6080742853793417,
+        "x": 1.9580742853793418,
         "y": 6.147105371133819
       },
       "isLocked": false,
-      "linkedName": "IntakeCloseNoteC"
+      "linkedName": "IntakeCloseC"
     },
     {
       "anchor": {
