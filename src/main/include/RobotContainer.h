@@ -158,9 +158,17 @@ class RobotContainer {
   Climb m_climb;
   Vision m_vision;
 
-  frc2::CommandPtr m_rightSubAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerSubAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_leftSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_left3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_right3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_left2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_center2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_right2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_leftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_rightCenterOnlyNoteAuto{frc2::cmd::None()};
+  
 
   frc::SendableChooser<frc2::Command*> m_chooser; 
 

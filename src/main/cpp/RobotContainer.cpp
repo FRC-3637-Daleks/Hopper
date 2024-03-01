@@ -206,9 +206,13 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, alliance));
       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, alliance));
       
-      m_rightSubAuto = pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
-      m_centerSubAuto = pathplanner::PathPlannerAuto("CenterSubStart").ToPtr();
-      m_leftSubAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
+      m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
+      m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
+      m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
+      m_leftCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
+      m_rightCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
+      m_centerRightCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
+      m_centerLeftCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
       m_chooser.SetDefaultOption("Left Subwoofer Auto", m_leftSubAuto.get());
       m_chooser.AddOption("Right Subwoofer Auto", m_rightSubAuto.get());
       m_chooser.AddOption("Center Subwoofer Auto", m_centerSubAuto.get());
