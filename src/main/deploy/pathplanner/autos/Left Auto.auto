@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 0.75,
-      "y": 4.35
+      "y": 6.75
     },
-    "rotation": -60.0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -18,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -53,7 +53,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -91,43 +91,18 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ShootCloseL to PrepIntakeCenterFarL"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
-                      }
-                    }
-                  ]
+                  "pathName": "ShootCloseL to PrepIntakeCenterFarL"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeCenterFarL to Left Sub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
           }
         }
       ]
