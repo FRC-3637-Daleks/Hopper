@@ -51,12 +51,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterR to IntakeCenterR"
@@ -72,12 +66,6 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCenterR to ShootCloseC"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -104,12 +92,6 @@
                       "type": "path",
                       "data": {
                         "pathName": "ShootCloseC to PrepIntakeCenterC"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
                       }
                     },
                     {
