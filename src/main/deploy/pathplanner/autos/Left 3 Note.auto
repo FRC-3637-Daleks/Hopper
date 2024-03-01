@@ -91,18 +91,43 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "ShootCloseL to PrepIntakeCenterFarL"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootCloseL to PrepIntakeCenterFarL"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                      }
+                    }
+                  ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterFarL to ShootCloseL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutputToShooter"
           }
         }
       ]
