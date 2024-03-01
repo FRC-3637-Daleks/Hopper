@@ -165,9 +165,10 @@ class RobotContainer {
   frc2::CommandPtr m_center2NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_right2NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_leftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_rightCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_rightCenterOnlyNoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
+  
   
 
   frc::SendableChooser<frc2::Command*> m_chooser; 

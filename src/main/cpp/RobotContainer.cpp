@@ -209,14 +209,29 @@ void RobotContainer::ConfigureBindings() {
       m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
       m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
       m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
-      m_leftCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
-      m_rightCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
-      m_centerRightCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
-      m_centerLeftCenterOnlyAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
-      m_chooser.SetDefaultOption("Left Subwoofer Auto", m_leftSubAuto.get());
-      m_chooser.AddOption("Right Subwoofer Auto", m_rightSubAuto.get());
-      m_chooser.AddOption("Center Subwoofer Auto", m_centerSubAuto.get());
 
+      m_left2NoteAuto = pathplanner::PathPlannerAuto("Left 2 Note").ToPtr();
+      m_right2NoteAuto = pathplanner::PathPlannerAuto("Right 2 Note").ToPtr();
+      m_center2NoteAuto = pathplanner::PathPlannerAuto("Center 2 Note").ToPtr();
+      
+      m_leftCenterOnlyAuto = pathplanner::PathPlannerAuto("Left 3 Note Center Only").ToPtr();
+      m_rightCenterOnlyAuto = pathplanner::PathPlannerAuto("Right 3 Note Center Only").ToPtr();
+      m_centerRightCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Right 3 Note Center Only").ToPtr();
+      m_centerLeftCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Left 3 Note Center Only").ToPtr();
+
+
+      m_chooser.SetDefaultOption("Left Subwoofer 3 Note Auto", m_left3NoteAuto.get());
+      m_chooser.AddOption("Right Subwoofer 3 Note Auto", m_right3NoteAuto.get());
+      m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());
+
+      m_chooser.AddOption("Center Subwoofer 2 Note Auto", m_center2NoteAuto.get());
+      m_chooser.AddOption("Right Subwoofer 2 Note Auto", m_right2NoteAuto.get());
+      m_chooser.AddOption("Left Subwoofer 2 Note Auto", m_left2NoteAuto.get());
+
+      m_chooser.AddOption("Center-Right Center Only Auto", m_centerRightCenterOnlyAuto.get());
+      m_chooser.AddOption("Center-Left Center Only Auto", m_centerLeftCenterOnlyAuto.get());
+      m_chooser.AddOption("Right Center Only Auto", m_rightCenterOnlyAuto.get());
+      m_chooser.AddOption("Left Center Only Auto", m_leftCenterOnlyAuto.get());
       frc::SmartDashboard::PutData(&m_chooser);
 }
 
