@@ -10,7 +10,17 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc2/command/Command.h>
+
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include "frc/apriltag/AprilTagFields.h"
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -26,18 +36,17 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Climb.h"
+#include "subsystems/Vision.h"
 
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 1_mps;
-constexpr auto kMaxAcceleration = units::feet_per_second_squared_t{10};
-
-
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 4.5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 180_rpm;
+constexpr auto kMaxAngularSpeed = 120_rpm;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -49,6 +58,12 @@ constexpr double kPThetaController = 0.5;
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
 
+constexpr pathplanner::PathConstraints DefaultConstraints(AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration, AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
+
+
+
+
+
 } // namespace AutoConstants
 
 
@@ -58,6 +73,7 @@ constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
+constexpr double kClimbDeadband = 0.8;
 
 constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
 constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
@@ -69,12 +85,42 @@ constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 constexpr int kAutoIntake = 180;
 
+constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kBlueSourcePose{15.733_m, 0.410_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
+
 }  // namespace OperatorConstants
 
 namespace FieldConstants
 {
 
+constexpr auto field_length = 54_ft + 3.25_in;
+constexpr auto field_width = 26_ft + 11.75_in;
+constexpr auto mid_line = field_length/2;
+
 constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
+
+constexpr auto near_note_separation = 57_in;
+constexpr auto mid_note_separation = 66_in;
+constexpr auto near_note_wall_dist = 114_in;
+constexpr frc::Translation2d note_positions[] = {
+  {near_note_wall_dist, field_width/2},
+  {near_note_wall_dist, field_width/2 + near_note_separation},
+  {near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2},
+  {field_length - near_note_wall_dist, field_width/2 + near_note_separation},
+  {field_length - near_note_wall_dist, field_width/2 + 2*near_note_separation},
+  {mid_line, field_width/2 + 2*mid_note_separation},
+  {mid_line, field_width/2 + mid_note_separation},
+  {mid_line, field_width/2},
+  {mid_line, field_width/2 - mid_note_separation},
+  {mid_line, field_width/2 - 2*mid_note_separation},
+};
 
 }
 
@@ -88,10 +134,9 @@ constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
 class RobotContainer {
  public:
   RobotContainer();
-
-  frc2::CommandPtr GetAutonomousCommand();
-  
   frc2::CommandPtr GetDisabledCommand();
+  frc2::Command* GetAutonomousCommand();
+    std::unique_ptr<frc2::Command> HopperAuto;
 
 
  public:
@@ -103,11 +148,27 @@ class RobotContainer {
       OperatorConstants::kSwerveControllerPort};
 
   // The robot's subsystems are defined here...
+
+  frc2::Trigger m_slowModeTrigger{
+    [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
+  };
   
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
+  Vision m_vision;
+
+  frc2::CommandPtr m_rightSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_leftSubAuto{frc2::cmd::None()};
+
+  frc::SendableChooser<frc2::Command*> m_chooser; 
+
+  bool m_isRed;
+
+  //AprilTag
+  frc::AprilTagFieldLayout m_aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
   // Global Dashboard Items
   frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
@@ -115,4 +176,5 @@ class RobotContainer {
 public:
   void ConfigureBindings();
   void ConfigureDashboard();
+  void ConfigureAuto();
 };

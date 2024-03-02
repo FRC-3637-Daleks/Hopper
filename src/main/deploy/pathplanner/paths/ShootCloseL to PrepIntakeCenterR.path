@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.75,
+        "y": 7.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.362618136505887,
+        "y": 6.90939356201109
+      },
+      "isLocked": false,
+      "linkedName": "IntakeCloseL"
+    },
+    {
+      "anchor": {
+        "x": 7.1,
+        "y": 2.44
+      },
+      "prevControl": {
+        "x": 7.216281251392744,
+        "y": 5.796864090161846
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterR"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "ShootCloseL to PrepIntakeCenter",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

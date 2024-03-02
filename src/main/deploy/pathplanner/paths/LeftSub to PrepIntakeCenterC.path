@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7518994781213513,
+        "y": 6.75
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5273677394715697,
+        "y": 5.141057243598081
+      },
+      "isLocked": false,
+      "linkedName": "LeftSub"
+    },
+    {
+      "anchor": {
+        "x": 7.1,
+        "y": 4.098792791023527
+      },
+      "prevControl": {
+        "x": 7.87291521202158,
+        "y": 8.572332351512065
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterC"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "LeftSub to PrepIntakeCenter",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

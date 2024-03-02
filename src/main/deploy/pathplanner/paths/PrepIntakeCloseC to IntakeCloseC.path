@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.75,
+        "y": 5.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.85,
+        "y": 5.55
+      },
+      "isLocked": false,
+      "linkedName": "PrepIntakeCloseC"
+    },
+    {
+      "anchor": {
+        "x": 2.75,
+        "y": 5.55
+      },
+      "prevControl": {
+        "x": 2.65,
+        "y": 5.549999999999997
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IntakeCloseC"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "PrepIntakeClose to IntakeClose",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

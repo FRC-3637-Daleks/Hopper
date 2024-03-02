@@ -28,9 +28,10 @@ class Robot : public frc::TimedRobot {
  private:
   // Have it empty by default so that if testing teleop it
   // doesn't have undefined behavior and potentially crash.
-  std::optional<frc2::CommandPtr> m_autonomousCommand;
+  std::optional<frc2::Command*> m_autonomousCommand;
   std::optional<frc2::CommandPtr> m_disabledCommand;
 
 
   RobotContainer m_container;
+  bool m_note_staged[sizeof(FieldConstants::note_positions)] = {false};
 };
