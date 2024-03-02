@@ -21,7 +21,7 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxSpeed = 5_mps;
 constexpr auto kMaxTeleopSpeed = 5_mps;
 
 constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;

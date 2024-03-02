@@ -41,8 +41,8 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 3_mps;
-constexpr auto kMaxAcceleration = 4.5_mps_sq;
+constexpr auto kMaxSpeed = 4_mps;
+constexpr auto kMaxAcceleration = 5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -152,6 +152,10 @@ class RobotContainer {
   frc2::Trigger m_slowModeTrigger{
     [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
   };
+
+  frc2::Trigger m_manualIntake{
+    [this] () -> bool { return m_copilotController.GetLeftTriggerAxis() > 0.2; }
+  };
   
   Shooter m_shooter;
   Drivetrain m_swerve;
@@ -169,6 +173,8 @@ class RobotContainer {
   frc2::CommandPtr m_rightCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+
   
   
 

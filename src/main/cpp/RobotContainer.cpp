@@ -133,6 +133,9 @@ void RobotContainer::ConfigureBindings() {
   m_copilotController.Back()
     .WhileTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
 
+  m_copilotController.RightBumper()
+    .WhileTrue(frc2::cmd::Run([this] { m_shooter.SetPivotMotor(m_shooter.ToTalonUnits(43_deg)); }, {&m_shooter}));
+
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();
@@ -155,6 +158,16 @@ void RobotContainer::ConfigureBindings() {
 
   AutoIntakeTrigger
     .OnTrue(m_intake.IntakeRing());
+
+  m_manualIntake
+    .WhileTrue(frc2::cmd::Run( [this] { 
+      if(m_copilotController.GetXButton())
+        m_intake.Emergency(1.0);
+      else if(m_copilotController.GetYButton())
+        m_intake.Emergency(-1.0);
+      else
+        m_intake.Emergency(0.0);
+     }, {&m_intake} ));
 
 
   m_copilotController.A()
@@ -218,7 +231,8 @@ void RobotContainer::ConfigureBindings() {
       m_rightCenterOnlyAuto = pathplanner::PathPlannerAuto("Right 3 Note Center Only").ToPtr();
       m_centerRightCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Right 3 Note Center Only").ToPtr();
       m_centerLeftCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Left 3 Note Center Only").ToPtr();
-
+      m_getOutRight = pathplanner::PathPlannerAuto("Get Out Right").ToPtr();
+      
 
       m_chooser.SetDefaultOption("AMP-Side Subwoofer 3 Note Auto", m_left3NoteAuto.get());
       m_chooser.AddOption("Source-Side Subwoofer 3 Note Auto", m_right3NoteAuto.get());
@@ -232,6 +246,10 @@ void RobotContainer::ConfigureBindings() {
       m_chooser.AddOption("Center-AMP-Side Center Only Auto", m_centerLeftCenterOnlyAuto.get());
       m_chooser.AddOption("Source-Side Center Only Auto", m_rightCenterOnlyAuto.get());
       m_chooser.AddOption("AMP-Side Center Only Auto", m_leftCenterOnlyAuto.get());
+
+
+      m_chooser.AddOption("Get out right Side", m_getOutRight.get());
+
       frc::SmartDashboard::PutData(&m_chooser);
 }
 
