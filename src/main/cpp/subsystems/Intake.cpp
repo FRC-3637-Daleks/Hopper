@@ -66,8 +66,8 @@ Intake::Intake():
   */
 
   // set Motion Magic settings
-  m_arm.ConfigMotionCruiseVelocity(480); // 80 rps = 16384 ticks/100ms cruise velocity
-  m_arm.ConfigMotionAcceleration(1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
+  m_arm.ConfigMotionCruiseVelocity(40); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_arm.ConfigMotionAcceleration(160); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -89,20 +89,18 @@ void Intake::Periodic() {
 frc2::CommandPtr Intake::IntakeRing() {
   return frc2::cmd::Either(
     IntakeArmIntakeCommand(true) //true
-    .AndThen(AutoIntake())
-    .AndThen(IntakeArmSpeakerCommand(true)), 
+    .AndThen(AutoIntake()), 
     frc2::cmd::None(), //false
     [this] () {return !IsIntakeBreakBeamBroken();} //When broken = false
-  );
+  ).AndThen(IntakeArmSpeakerCommand()); //if true does not allow for inturupts
 }
 
 frc2::CommandPtr Intake::ShootOnAMP() {
 
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true) //when ring
-    .AndThen(IntakeArmAMPCommand(true)
-      .AlongWith(TimedRelease())
-      ).WithTimeout(2_s), 
+    .AndThen(Run([this] {ShootOnAMPVoid();}).WithTimeout(1.2_s)).AndThen(IntakeOff())
+    .AndThen(AutoIntake()).WithTimeout(5_s).AndThen(IntakeOff())/*.AndThen(IntakeArmSpeakerCommand(true))*/, 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
   );
@@ -110,8 +108,8 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 
 frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
-    IntakeArmSpeakerCommand(true) //when ring
-    .AndThen(IntakeOutSpeaker())
+    IntakeArmSpeakerCommand(true)//when ring
+    .AndThen(IntakeOutSpeaker()) 
     .WithTimeout(1_s), 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
@@ -119,21 +117,25 @@ frc2::CommandPtr Intake::OutputToShooter() {
 }
 
 frc2::CommandPtr Intake::IntakeIn() {
-  return frc2::cmd::RunEnd([this] {
+  return RunEnd([this] {
     IntakeForward();
   },
   [this] { OffIntake(); });
 }
 
+frc2::CommandPtr Intake::IntakeOff() {
+  return RunOnce([this] {OffIntake();});
+}
+
 frc2::CommandPtr Intake::IntakeOut() {
-  return frc2::cmd::RunEnd([this] {
+  return RunEnd([this] {
     IntakeBackward();
   },
   [this] { OffIntake(); });
 }
 
 frc2::CommandPtr Intake::IntakeOutSpeaker() {
-  return frc2::cmd::RunEnd([this] {
+  return this->RunEnd([this] {
     IntakeBackwardSpeaker();
   },
   [this] { OffIntake(); });
@@ -143,6 +145,13 @@ frc2::CommandPtr Intake::TimedRelease() {
   return Run([this] {OffIntake();})
     .Until([this] () -> bool {return (m_arm.GetSelectedSensorPosition()) >= IntakeConstants::IntakeArmLetGoPos;})
     .AndThen(IntakeOut());
+}
+
+void Intake::ShootOnAMPVoid() {
+  IntakeArmAMP();
+  if ((m_arm.GetSelectedSensorPosition()) >= IntakeConstants::IntakeArmLetGoPos) {
+    IntakeBackward();
+  } 
 }
 
 Intake::~Intake() {}
@@ -158,6 +167,14 @@ void Intake::InitVisualization(frc::Mechanism2d* mech)
     0_deg, // line angle
     6, // line width in pixels
     frc::Color8Bit{20, 200, 20} // RGB, green
+  );
+
+  m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
+    "arm motion magic",
+    IntakeConstants::kArmRadius.convert<units::feet>().value(),
+    0_deg,
+    2,
+    frc::Color8Bit{80, 80, 200} // blueish
   );
 
   m_mech_arm = m_mech_root->Append<frc::MechanismLigament2d>(
@@ -192,6 +209,7 @@ void Intake::UpdateVisualization()
 
   m_mech_arm->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
   m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
+  m_mech_arm_mm_setpoint->SetAngle(IntakeConstants::sensorToAngle(m_arm.GetActiveTrajectoryPosition()));
   m_mech_spinner->SetAngle(
     units::degree_t{m_mech_spinner->GetAngle()} + m_intake.GetAppliedOutput()*66.66_deg);
   m_mech_note->SetAngle(units::degree_t{m_mech_arm->GetAngle()});
@@ -226,9 +244,9 @@ _____
 
 
 frc2::CommandPtr Intake::AutoIntake() {
-  return Run([this] {IntakeForward();})
+  return this->Run([this] {IntakeForward();})
   .Until([this] () -> bool {return (IsIntakeBreakBeamBroken());})
-  .AndThen([this] {OffIntake();});
+  .AndThen([this] {OffIntake();}).HandleInterrupt([this] { OffIntake(); });
 }
 
 void Intake::IntakeForward() { //in
@@ -236,23 +254,15 @@ void Intake::IntakeForward() { //in
 }
 
 void Intake::IntakeBackward() { //out, (i was adjusting the voltage for amp)
-  m_intake.SetVoltage(-1*(2_V));
+  m_intake.SetVoltage(-1*(1.75_V));
 }
 
 void Intake::IntakeBackwardSpeaker() {
-  m_intake.SetVoltage(-1*(12_V));
+  m_intake.SetVoltage(-1*(9_V));
 }
 
 void Intake::OffIntake() {
   m_intake.SetVoltage(IntakeConstants::kOffVoltage);
-}
-
-void Intake::OutputShooterIntake() {
-  m_intake.SetVoltage(IntakeConstants::kShooterVoltage);
-}
-
-void Intake::OutputAMPIntake() {
-  m_intake.SetVoltage(IntakeConstants::kAMPVoltage);
 }
 
 void Intake::IntakeArmAMP() {
@@ -270,13 +280,17 @@ void Intake::IntakeArmIntake() {
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic/*Position*/, IntakeConstants::IntakeArmIntakePos);
 }
 
+bool Intake::IsAtWantedPosition(int goal) {
+  return (abs(goal - m_arm.GetSelectedSensorPosition()) < IntakeConstants::kAllowableMarginOfError);
+}
+
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
   //auto ret = Run([this] {IntakeArmAMP();});
   //.Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
 
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmAMP();})
-    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+    return this->Run([this] {IntakeArmAMP();})
+    .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmAMPPos);});
   }
   return RunOnce([this] {IntakeArmAMP();});
 }
@@ -284,8 +298,8 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
  
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmSpeaker();}, {this})
-    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+    return this->Run([this] {IntakeArmSpeaker();})
+    .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);});
   }
   return RunOnce([this] {IntakeArmSpeaker();});
 }
@@ -293,8 +307,8 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
   
   if (wait) {
-    return frc2::cmd::RunOnce([this] {IntakeArmIntake();})
-    .Until([this] () -> bool {return GetArmDiffrence() < IntakeConstants::kAllowableMarginOfError;});
+    return this->Run([this] {IntakeArmIntake();})
+    .Until([this] () -> bool {return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);});
   }
   return RunOnce([this] {IntakeArmIntake();});
   
@@ -367,8 +381,9 @@ void Intake::SimulationPeriodic()
   m_sim_state->m_armMotorSim.SetBusVoltage(
     frc::RobotController::GetBatteryVoltage().value());
   
+  // Voltage is reversed on real robot
   m_sim_state->m_armModel.SetInputVoltage(
-    units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
+    -units::volt_t{m_sim_state->m_armMotorSim.GetMotorOutputLeadVoltage()}
   );
   m_sim_state->m_armModel.Update(20_ms);
 
@@ -382,18 +397,16 @@ void Intake::SimulationPeriodic()
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
   const auto sensor_speed_reading = arm_speed*kAngleToSensor*100_ms;
   m_sim_state->m_armMotorSim.SetAnalogVelocity(sensor_speed_reading);
-  m_sim_state->m_armMotorSim.SetLimitFwd(
-    m_sim_state->m_armModel.HasHitUpperLimit()
-  );
+  // Real robot has the reverse limit at the full retract position
   m_sim_state->m_armMotorSim.SetLimitRev(
-    m_sim_state->m_armModel.HasHitLowerLimit()
+    m_sim_state->m_armModel.HasHitUpperLimit()
   );
   m_sim_state->m_armMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );
 }
 
-void Intake::SimulateNotePickup()
+bool Intake::SimulateNotePickup()
 {
   /* Piece grabs off floor if arm is down,
    * intake is spinning inward, and there isn't already a note inside
@@ -403,5 +416,8 @@ void Intake::SimulateNotePickup()
     && m_sim_state->m_armModel.GetAngle() < IntakeConstants::kMinAngle + 20_deg)
   {
     m_sim_state->m_notePosition = 13_in;
+    return true;
   }
+
+  return false;
 }

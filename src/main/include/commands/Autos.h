@@ -5,12 +5,13 @@
 #pragma once
 
 #include <frc2/command/CommandPtr.h>
-
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <pathplanner/lib/util/PIDConstants.h>
+#include <pathplanner/lib/util/ReplanningConfig.h>
 class Shooter;
 
 namespace autos {
-/**
- * Example static factory for an autonomous command.
- */
 frc2::CommandPtr ExampleAuto(Shooter* subsystem);
+  // namespace autos
 }  // namespace autos

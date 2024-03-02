@@ -21,8 +21,8 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 15_fps;
-constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxTeleopSpeed = 5_mps;
 
 constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
@@ -39,6 +39,8 @@ constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
     25_in; // Distance between centers of front and back wheels.
+const auto kRadius = 19.5_in; // 19.5 inches
+
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -85,6 +87,11 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
 
 constexpr double kS = 0.0545;
 
+constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
+constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kStagePose{4.869_m, 4.144_m, 0_deg};
+constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
+
 } // namespace DriveConstants
 
 // Forward Declaration
@@ -118,7 +125,8 @@ public:
   // set, the translation is relative to the field instead of the robot heading.
   void Drive(units::meters_per_second_t forwardSpeed,
              units::meters_per_second_t strafeSpeed,
-             units::radians_per_second_t angularSpeed, bool fieldRelative);
+             units::radians_per_second_t angularSpeed, bool fieldRelative,
+             bool isRed);
 
   // Sets the state of each swerve module.
   void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
@@ -143,6 +151,8 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
+  //Returns Current Chassis Speed
+  frc::ChassisSpeeds GetSpeed();
   // Resets the odometry using the given a field-relative pose using current
   // gyro angle.
   void ResetOdometry(const frc::Pose2d &pose);
@@ -163,6 +173,7 @@ public:
 
   // Display useful information on Shuffleboard.
   void UpdateDashboard();
+  frc::Field2d& GetField() {return m_field;}
 
   // Drive the robot with swerve controls.
   frc2::CommandPtr SwerveCommand(
@@ -174,13 +185,15 @@ public:
   frc2::CommandPtr SwerveCommandFieldRelative(
       std::function<units::meters_per_second_t()> forward,
       std::function<units::meters_per_second_t()> strafe,
-      std::function<units::revolutions_per_minute_t()> rot);
+      std::function<units::revolutions_per_minute_t()> rot,
+      std::function<bool()> isRed);
 
 
 frc2::CommandPtr
   SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
                 std::function<units::meters_per_second_t()> strafe,
-                std::function<units::revolutions_per_minute_t()> rot);
+                std::function<units::revolutions_per_minute_t()> rot,
+                std::function<bool()> isRed);
   // Drive the robot to pose.
   // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
 
@@ -202,13 +215,15 @@ frc2::CommandPtr
   frc2::CommandPtr BrakeCommand();
 
   // Add Vision Pose to SwerveDrivePoseEstimator.
-  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
+  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp, wpi::array<double, 3U> visionMeasurementStdDevs);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
 
   frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
     std::function<units::meters_per_second_t()> forward,
-    std::function<units::meters_per_second_t()> strafe);
+    std::function<units::meters_per_second_t()> strafe,
+    bool shooterSide,
+    std::function<bool()> isRed);
 
 private:
   SwerveModule m_frontLeft;
@@ -230,6 +245,8 @@ private:
   frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
   
+  frc::Pose2d m_zTarget;
+
 private:
   friend class DrivetrainSimulation;
   std::unique_ptr<DrivetrainSimulation> m_sim_state;

@@ -14,6 +14,8 @@
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/simulation/SimDeviceSim.h>
 #include <frc/simulation/DIOSim.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/DriverStation.h>
 
 class ShooterSimulation
 {
@@ -61,9 +63,9 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
   m_pivot.ConfigForwardSoftLimitEnable(true);
-  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor);
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor - 100);
   m_pivot.ConfigReverseSoftLimitEnable(true);
-  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor);
+  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor + 300);
 
 
   m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
@@ -107,6 +109,14 @@ void Shooter::InitVisualization(frc::Mechanism2d* mech)
     frc::Color8Bit{20, 200, 20}  // RGB, green
   );
 
+  m_mech_mm_setpoint = root->Append<frc::MechanismLigament2d>(
+    "aim motion magic",
+    1,
+    180_deg,
+    1,
+    frc::Color8Bit{80, 80, 200}  // blueish
+  );
+
   m_mech_pivot = root->Append<frc::MechanismLigament2d>(
     "aim",
     1,
@@ -121,6 +131,11 @@ void Shooter::UpdateVisualization()
   const auto sensor_goal = m_pivot.GetClosedLoopTarget();
   const auto angle_goal = (sensor_goal - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
   m_mech_pivot_goal->SetAngle(180_deg - angle_goal);
+
+  // shows current status of motion magic trajectory
+  const auto mm_sensor_setpoint = m_pivot.GetActiveTrajectoryPosition();
+  const auto mm_angle_setpoint = (mm_sensor_setpoint - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
+  m_mech_mm_setpoint->SetAngle(180_deg - mm_angle_setpoint);
 
   const auto sensor_measured = m_pivot.GetSelectedSensorPosition();
   const auto angle_measured = (sensor_measured - ShooterConstants::kMinAimSensor)/ShooterConstants::kAngleToSensor;
@@ -162,10 +177,6 @@ float pow(float d, int power) {
   return temp;
 }
 
-float Shooter::KevensCoolEquasion(float d) {
-  return (1.57 - (0.175*d) - (2.14*.001*(pow(d, 2)))+(3.58*.001*pow(d,3))-(5.3*.0001*pow(d,4))+(4.16*.00001*pow(d,5))-(1.92*.000001*pow(d,6))+(4.95*.00000001*pow(d,7))-(5.52*.0000000001*pow(d,8)));
-}
-
 //Stop pivoting motor
 void Shooter::StopTalonMotor() {
 //Stops
@@ -174,7 +185,9 @@ void Shooter::StopTalonMotor() {
 }
 
 void Shooter::SetPivotMotor(double encoderPosition) {
-  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, encoderPosition);
+  double clamped = std::clamp<double>(encoderPosition, ShooterConstants::kMaxIdeal, ShooterConstants::kMinIdeal);
+
+  m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, clamped);
 }
 
 void Shooter::Periodic(){
@@ -186,8 +199,27 @@ void Shooter::Periodic(){
   UpdateVisualization();
 }
 
-units::degree_t Shooter::DistanceToAngle(units::meter_t distance) {
-  return 30_deg; // temporary value until math is worked out.
+units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
+  // return (1.57 - 
+  // (0.175 * distance.value()) - 
+  // (2.14*.001 * (std::pow(distance.value(), 2))) + 
+  // (3.58*.001 * std::pow(distance.value(), 3)) - 
+  // (5.3*.0001 * std::pow(distance.value(), 4)) + 
+  // (4.16*.00001 * std::pow(distance.value(), 5)) -
+  // (1.92*.000001 * std::pow(distance.value(), 6)) +
+  // (4.95*.00000001 * std::pow(distance.value(), 7)) -
+  // (5.52*.0000000001 * std::pow(distance.value(), 8))) * 1_deg;
+  //(std::atan(5.55 / (distance.value() - 0.4))) * 1_rad;
+  // return (1.42 - 
+  // (0.204 * distance.value()) + 
+  // (0.0152 * std::pow(distance.value(), 2)) - 
+  // (-6.93 * 0.0001 * std::pow(distance.value(), 3)) +
+  // (4.67 * 0.00001 * std::pow(distance.value(), 4)) -
+  // (4.54 * 0.000001 * std::pow(distance.value(), 5)) + 
+  // (2.61 * 0.0000001 * std::pow(distance.value(), 6)) -
+  // (7.21 * 0.000000001 * std::pow(distance.value(), 7)) +
+  // (7.63 * 0.00000000001 * std::pow(distance.value(), 8))) * 1_rad;
+  return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
@@ -211,26 +243,34 @@ units::radian_t Shooter::GetAnglePivot() {
    //return 0_rad;
 }
 
-frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
+frc2::CommandPtr Shooter::ShooterVelocityCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
   
   auto pivotAngle = [this, pivotVelocity] {
-  m_goal+= pivotVelocity() * 20_ms; 
+    m_goal+= pivotVelocity() * 20_ms; 
 
-  if (m_goal < ShooterConstants::kMinAngle) {
-    m_goal = ShooterConstants::kMinAngle;
-  } else if(m_goal > ShooterConstants::kMaxAngle) {
-    m_goal = ShooterConstants::kMaxAngle;
-  };
+    if (m_goal < ShooterConstants::kMinAngle) {
+      m_goal = ShooterConstants::kMinAngle;
+    } else if(m_goal > ShooterConstants::kMaxAngle) {
+      m_goal = ShooterConstants::kMaxAngle;
+    };
 
-  return m_goal;
+    return m_goal;
   };
 
   
   return frc2::cmd::Parallel(
     FlywheelCommand(flywheelInput),
-    PivotAngleCommand(pivotAngle)
+    PivotAngleCommand(pivotAngle) 
   );
 }
+
+frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance) {
+    return frc2::cmd::Parallel(
+        FlywheelCommand(flywheelInput),
+        PivotAngleDistanceCommand(calculateDistance)
+    );
+}
+
 
 frc2::CommandPtr Shooter::FlywheelCommand(std::function<double()> controllerInput) {
   return frc2::cmd::Run(
@@ -254,13 +294,17 @@ frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> ang
 }
 
 
-frc2::CommandPtr Shooter::PivotAngleDistanceCommand(units::meter_t distance) {
-  return frc2::cmd::RunOnce(
+frc2::CommandPtr Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
+  return frc2::cmd::Run(
     [this, distance] () {
-      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance)));
+      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance())));
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.", distance().value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal", DistanceToAngle(distance()).value());
+      frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal", ToTalonUnits(DistanceToAngle(distance())));
     }, {this}
   );
 }
+
 
 // ************************ SIMULATION *****************************
 void Shooter::SimulationPeriodic()
@@ -306,12 +350,14 @@ void Shooter::SimulationPeriodic()
   const units::degrees_per_second_t arm_speed{m_sim_state->m_armModel.GetVelocity()};
   const auto sensor_speed_reading = arm_speed * kAngleToSensor * 100_ms;
   m_sim_state->m_aimMotorSim.SetAnalogVelocity(sensor_speed_reading);
-  m_sim_state->m_aimMotorSim.SetLimitFwd(
+  
+  // real robot has no hard limit switches so these are disabled
+  /*m_sim_state->m_aimMotorSim.SetLimitFwd(
     m_sim_state->m_armModel.HasHitUpperLimit()
   );
   m_sim_state->m_aimMotorSim.SetLimitRev(
     m_sim_state->m_armModel.HasHitLowerLimit()
-  );
+  );*/
   m_sim_state->m_aimMotorSim.SetSupplyCurrent(
     m_sim_state->m_armModel.GetCurrentDraw().value()
   );
