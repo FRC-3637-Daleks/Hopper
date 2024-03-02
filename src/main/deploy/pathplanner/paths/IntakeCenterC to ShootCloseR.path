@@ -8,40 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.2475332642972985,
-        "y": 4.380922607999063
+        "x": 6.454739063324283,
+        "y": 4.075047380863993
       },
       "isLocked": false,
       "linkedName": "IntakeCenterC"
     },
     {
       "anchor": {
-        "x": 4.967800634602694,
-        "y": 4.333009521939157
+        "x": 4.688556300189524,
+        "y": 3.798772982161349
       },
       "prevControl": {
-        "x": 5.731589696719276,
-        "y": 3.557138872835285
+        "x": 5.054975146538298,
+        "y": 4.514258031455378
       },
       "nextControl": {
-        "x": 3.9978703034329155,
-        "y": 5.318282175025889
+        "x": 3.4347136876966067,
+        "y": 1.3504664817021945
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.45,
-        "y": 5.492445188823224
+        "x": 2.4,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 3.257849592622263,
-        "y": 5.712959887458236
+        "x": 2.1527519978116896,
+        "y": 2.7331431585940105
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterSub"
+      "linkedName": "IntakeCloseR"
     }
   ],
   "rotationTargets": [],
@@ -55,11 +55,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "IntakeCenterC to ShootClose",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

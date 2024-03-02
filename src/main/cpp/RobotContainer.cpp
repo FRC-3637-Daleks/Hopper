@@ -205,14 +205,33 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, alliance).WithName("zTargetAmp"));
       pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, alliance));
       pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, alliance));
+      
+      m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
+      m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
+      m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
 
-      m_rightSubAuto = pathplanner::PathPlannerAuto("RightSubStart").ToPtr();
-      m_centerSubAuto = pathplanner::PathPlannerAuto("CenterSubStart").ToPtr();
-      m_leftSubAuto = pathplanner::PathPlannerAuto("LeftSubStart").ToPtr();
-      m_chooser.SetDefaultOption("Left Subwoofer Auto", m_leftSubAuto.get());
-      m_chooser.AddOption("Right Subwoofer Auto", m_rightSubAuto.get());
-      m_chooser.AddOption("Center Subwoofer Auto", m_centerSubAuto.get());
+      m_left2NoteAuto = pathplanner::PathPlannerAuto("Left 2 Note").ToPtr();
+      m_right2NoteAuto = pathplanner::PathPlannerAuto("Right 2 Note").ToPtr();
+      m_center2NoteAuto = pathplanner::PathPlannerAuto("Center 2 Note").ToPtr();
+      
+      m_leftCenterOnlyAuto = pathplanner::PathPlannerAuto("Left 3 Note Center Only").ToPtr();
+      m_rightCenterOnlyAuto = pathplanner::PathPlannerAuto("Right 3 Note Center Only").ToPtr();
+      m_centerRightCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Right 3 Note Center Only").ToPtr();
+      m_centerLeftCenterOnlyAuto = pathplanner::PathPlannerAuto("Center-Left 3 Note Center Only").ToPtr();
 
+
+      m_chooser.SetDefaultOption("AMP-Side Subwoofer 3 Note Auto", m_left3NoteAuto.get());
+      m_chooser.AddOption("Source-Side Subwoofer 3 Note Auto", m_right3NoteAuto.get());
+      m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());
+
+      m_chooser.AddOption("Center Subwoofer 2 Note Auto", m_center2NoteAuto.get());
+      m_chooser.AddOption("Source-Side Subwoofer 2 Note Auto", m_right2NoteAuto.get());
+      m_chooser.AddOption("AMP-Side Subwoofer 2 Note Auto", m_left2NoteAuto.get());
+
+      m_chooser.AddOption("Center-Source-Side Center Only Auto", m_centerRightCenterOnlyAuto.get());
+      m_chooser.AddOption("Center-AMP-Side Center Only Auto", m_centerLeftCenterOnlyAuto.get());
+      m_chooser.AddOption("Source-Side Center Only Auto", m_rightCenterOnlyAuto.get());
+      m_chooser.AddOption("AMP-Side Center Only Auto", m_leftCenterOnlyAuto.get());
       frc::SmartDashboard::PutData(&m_chooser);
 }
 
