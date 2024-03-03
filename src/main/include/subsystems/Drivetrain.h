@@ -134,6 +134,8 @@ public:
   // Returns the heading of the robot.
   frc::Rotation2d GetHeading();
 
+  frc::Rotation2d GetGyroHeading();
+
   // Zeroes the robot heading.
   void ZeroHeading();
 

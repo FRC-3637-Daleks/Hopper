@@ -81,7 +81,7 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.B()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
 
-  m_swerveController.X()
+  m_swerveController.Y()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
 
   m_slowModeTrigger

@@ -63,7 +63,7 @@ Drivetrain::Drivetrain()
                   kRearRightDriveMotorPIDCoefficients,
                   kRearRightSteerMotorPIDCoefficients},
       m_gyro{frc::SPI::Port::kMXP},
-      m_poseEstimator{kDriveKinematics, GetHeading(),
+      m_poseEstimator{kDriveKinematics, GetGyroHeading(),
                       wpi::array<frc::SwerveModulePosition, 4U>{
                           m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
                           m_rearLeft.GetPosition(), m_rearRight.GetPosition()},
@@ -79,7 +79,7 @@ void Drivetrain::Periodic() {
   
   // Update the odometry with the current gyro angle and module states.
   m_poseEstimator.Update(
-      GetHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+      GetGyroHeading(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
                      m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
 
   this->UpdateDashboard();
@@ -140,7 +140,9 @@ void Drivetrain::SetModuleStates(
   m_rearRight.SetDesiredState(desiredStates[3]);
 }
 
-frc::Rotation2d Drivetrain::GetHeading() { return units::degree_t(-m_gyro.GetYaw()); }
+frc::Rotation2d Drivetrain::GetHeading() { return GetPose().Rotation(); } //units::degree_t(-m_gyro.GetYaw());
+
+frc::Rotation2d Drivetrain::GetGyroHeading() { return units::degree_t(-m_gyro.GetYaw()); }
 
 void Drivetrain::ZeroHeading() { m_gyro.Reset(); }
 
@@ -187,7 +189,7 @@ frc::ChassisSpeeds Drivetrain::GetSpeed(){
 
 void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
   m_poseEstimator.ResetPosition(
-      GetHeading(),
+      GetGyroHeading(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_rearLeft.GetPosition(), m_rearRight.GetPosition()},
       pose);
