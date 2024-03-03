@@ -101,9 +101,9 @@
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 0.5
+                        "name": "zTargetingCenterNoteC"
                       }
                     },
                     {
@@ -133,7 +133,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {

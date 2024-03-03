@@ -51,6 +51,12 @@
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteFarR"
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
@@ -65,7 +71,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootCloseR"
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {
@@ -97,7 +103,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseR to PrepIntakeCenterR"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteR"
                       }
                     },
                     {
@@ -115,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterR to ShootCloseR"
+            "pathName": "IntakeCenterR to ShootMidR"
           }
         },
         {
