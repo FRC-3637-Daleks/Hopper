@@ -32,7 +32,7 @@
   "autoFolders": [
     "First Comp Autos"
   ],
-  "defaultMaxVel": 4.5,
+  "defaultMaxVel": 4.7,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,

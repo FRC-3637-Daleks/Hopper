@@ -24,6 +24,8 @@
 
 #include <frc/simulation/DCMotorSim.h>
 
+#include <wpi/interpolating_map.h>
+
 #include <memory>
 #include <numbers>
 
@@ -137,6 +139,8 @@ void Periodic() override;
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
   
   units::degree_t m_goal;
+
+  wpi::interpolating_map<units::meter_t,units::degree_t> m_map;
   
  private:
   frc::MechanismLigament2d *m_mech_pivot, *m_mech_pivot_goal, *m_mech_mm_setpoint;
