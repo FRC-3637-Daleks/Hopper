@@ -93,11 +93,11 @@ constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kCenterFarRNote{8.3_m, 7.7_m, 0_deg};
-constexpr frc::Pose2d kCenterRNote{8.3_m, 3.44_m, 0_deg};
+constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
+constexpr frc::Pose2d kCenterRNote{8.3_m, 2.44_m, 0_deg};
 constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
 constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
-constexpr frc::Pose2d kCenterFarLNote{8.3_m, 0.77_m, 0_deg};
+constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
 
 
 }  // namespace OperatorConstants
