@@ -23,6 +23,8 @@
 #include <wpi/array.h>
 #include <math.h>
 
+#include <memory>
+
 
 namespace VisionConstants{
 
@@ -32,27 +34,31 @@ namespace VisionConstants{
   const frc::Transform3d kCameraToRobot{
       {-5.125_in, -6_in, 25_in},
       frc::Rotation3d{ // transform3d can be constructed with a variety of variables, so this should be fine 
-          0_deg, 0_deg,
+          0_deg, -10_deg,
           180_deg} }; // The camera location relative to the robot's center. Need to change for actual robot
   inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
-  inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{4, 4, 8};
+  inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{0.4, 0.4, 2};
   inline const Eigen::Matrix<double, 3, 1> kMultiTagStdDevs{0.1, 0.1, 0.5};
   inline const Eigen::Matrix<double, 3, 1> kFailedTagStdDevs{std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()};
 } // namespace VisionConstants
 
-  
+class VisionSim;  // forward declaration
+
   class Vision : public frc2::SubsystemBase{
 
   public:
     Vision(std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> addVisionMeasurement,
            std::function<frc::Pose2d()> getRobotPose,
-           const Eigen::Matrix<double, 3, 1>& initialStdDevs);
+           const Eigen::Matrix<double, 3, 1>& initialStdDevs,
+           std::function<frc::Pose2d()> getSimulatedPose);
+    ~Vision();
          
     // photon::PhotonPoseEstimator m_estimator;
            
 
     void Periodic() override;
+    void SimulationPeriodic() override;
 
     void GetBestPose();
 
@@ -80,5 +86,9 @@ namespace VisionConstants{
     std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)> m_addVisionMeasurement;
 
     std::function<frc::Pose2d()> m_referencePose;
+
+  private:
+    friend class VisionSim;
+    std::unique_ptr<VisionSim> m_sim_state;
 };
   

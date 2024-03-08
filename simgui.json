@@ -9,6 +9,7 @@
       "/SmartDashboard/Select Auton": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
+      "/SmartDashboard/Vision/simulated apriltags": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
@@ -20,6 +21,27 @@
         "FR": {
           "arrows": false,
           "style": "Line"
+        },
+        "Hopper": {
+          "arrows": false,
+          "color": [
+            1.0,
+            1.0,
+            0.014705896377563477,
+            255.0
+          ],
+          "style": "Line"
+        },
+        "Notes": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.38235294818878174,
+            0.0,
+            255.0
+          ],
+          "length": 0.33000001311302185,
+          "width": 0.33000001311302185
         },
         "RL": {
           "arrows": false,
@@ -33,7 +55,30 @@
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
+        "simulation": {
+          "arrowColor": [
+            172.5000457763672,
+            0.0,
+            255.0,
+            255.0
+          ],
+          "color": [
+            232.49998474121094,
+            0.0,
+            255.0,
+            255.0
+          ]
+        },
         "top": 79,
+        "vision estimate": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            0.0,
+            255.0
+          ]
+        },
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -59,6 +104,169 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Vision/simulated apriltags": {
+        "Robot": {
+          "arrows": false,
+          "color": [
+            0.9117646217346191,
+            0.0,
+            1.0,
+            255.0
+          ]
+        },
+        "apriltag": {
+          "arrows": false,
+          "color": [
+            0.009803950786590576,
+            0.21366780996322632,
+            1.0,
+            255.0
+          ],
+          "length": 0.05000000074505806,
+          "weight": 3.0,
+          "width": 0.20000000298023224
+        },
+        "bottom": 1476,
+        "cameras": {
+          "arrowColor": [
+            0.970588207244873,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "color": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.20000000298023224,
+          "weight": 2.0,
+          "width": 0.20000000298023224
+        },
+        "fused pose": {
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ]
+        },
+        "height": 8.210550308227539,
+        "left": 150,
+        "photon pose est": {
+          "arrows": false,
+          "color": [
+            0.2647058963775635,
+            1.0,
+            0.0,
+            255.0
+          ]
+        },
+        "right": 2961,
+        "tag poses": {
+          "arrows": false,
+          "color": [
+            0.9313725233078003,
+            0.6219892501831055,
+            0.05478661507368088,
+            255.0
+          ],
+          "length": 0.05000000074505806,
+          "weight": 2.0,
+          "width": 0.20000000298023224
+        },
+        "top": 79,
+        "visibleTargetPoses": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.02941155433654785,
+            255.0
+          ],
+          "length": 0.05000000074505806,
+          "weight": 3.0,
+          "width": 0.20000000298023224
+        },
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/vision/simulated apriltags": {
+        "apriltag": {
+          "arrows": false,
+          "color": [
+            0.0,
+            0.2647061347961426,
+            1.0,
+            255.0
+          ],
+          "length": 0.05000000074505806,
+          "weight": 3.0,
+          "width": 0.20000000298023224
+        },
+        "bottom": 1476,
+        "cameras": {
+          "arrowColor": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "arrowWeight": 3.0,
+          "color": [
+            0.0,
+            0.14705896377563477,
+            1.0,
+            255.0
+          ],
+          "length": 0.4000000059604645,
+          "weight": 3.0,
+          "width": 0.4000000059604645
+        },
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "visibleTargetPoses": {
+          "arrows": false,
+          "color": [
+            0.08823537826538086,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.05000000074505806,
+          "weight": 3.0,
+          "width": 0.20000000298023224
+        },
+        "width": 16.541748046875
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "CameraPublisher": {
+        "Arducam_OV2311_USB_Camera-processed": {
+          "string[]##v_/CameraPublisher/Arducam_OV2311_USB_Camera-processed/streams": {
+            "open": true
+          }
+        },
+        "Arducam_OV2311_USB_Camera-raw": {
+          "string[]##v_/CameraPublisher/Arducam_OV2311_USB_Camera-raw/streams": {
+            "open": true
+          }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Vision": {
+          "open": true
+        },
+        "open": true
       }
     }
   },

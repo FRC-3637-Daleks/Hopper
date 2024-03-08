@@ -273,6 +273,11 @@ void Drivetrain::SimulationPeriodic()
   m_field.GetObject("simulation")->SetPose(m_sim_state->m_poseSim.GetPose());
 }
 
+frc::Pose2d Drivetrain::GetSimulatedGroundTruth()
+{
+  return m_sim_state->m_poseSim.GetPose();
+}
+
 frc2::CommandPtr Drivetrain::SwerveCommand(
     std::function<units::meters_per_second_t()> forward,
     std::function<units::meters_per_second_t()> strafe,

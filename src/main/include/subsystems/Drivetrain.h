@@ -151,6 +151,9 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
+  // Simulation only. Returns the simulated ground truth position of the robot
+  frc::Pose2d GetSimulatedGroundTruth();
+
   //Returns Current Chassis Speed
   frc::ChassisSpeeds GetSpeed();
   // Resets the odometry using the given a field-relative pose using current

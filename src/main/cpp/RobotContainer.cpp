@@ -15,13 +15,19 @@
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
 
-RobotContainer::RobotContainer() : m_vision([this](frc::Pose2d pose, units::second_t timestamp,
-                                  wpi::array<double, 3U> stdDevs){
-                                    m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
-                                  }, [this](){
-                                    return m_swerve.GetPose();
-                                  }, Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0}){
-                                   
+RobotContainer::RobotContainer() : 
+  m_vision(
+    [this](frc::Pose2d pose, units::second_t timestamp,
+    wpi::array<double, 3U> stdDevs){
+      m_swerve.AddVisionPoseEstimate(pose, timestamp, stdDevs);
+    },
+    [this](){
+      return m_swerve.GetPose();
+    },
+    Eigen::Matrix<double, 3, 1>{1.0, 1.0, 1.0},
+    [this] {return m_swerve.GetSimulatedGroundTruth();})
+    {
+      
   fmt::println("made it to robot container");
   // Initialize all of your commands and subsystems here
   frc::DataLogManager::Start();
