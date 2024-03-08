@@ -18,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -28,62 +28,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeRing"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "zTargetingCenterNoteFarR"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
           }
         },
         {
@@ -128,6 +72,62 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCenterR to ShootMidR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutputToShooter"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeRing"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteFarR"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {

@@ -64,11 +64,11 @@ void RobotContainer::ConfigureBindings() {
   auto targetAMP = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedAMPPose : OperatorConstants::kBlueAMPPose; }; //implement live apriltag targeting
   auto targetStage = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedStagePose : OperatorConstants::kBlueStagePose; }; //implement live apriltag targeting
   auto targetSource = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kRedSourcePose : OperatorConstants::kBlueSourcePose;};
-  auto targetCenterFarRNote = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kCenterFarRNote : OperatorConstants::kCenterFarRNote; }; //implement live apriltag targeting
-  auto targetCenterRNote = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kCenterRNote : OperatorConstants::kCenterRNote; }; //implement live apriltag targeting
-  auto targetCenterCNote = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kCenterCNote : OperatorConstants::kCenterCNote; }; //implement live apriltag targeting
-  auto targetCenterLNote = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kCenterLNote : OperatorConstants::kCenterLNote; }; //implement live apriltag targeting
-  auto targetCenterFarLNote = [this] () -> frc::Pose2d { return m_isRed ? OperatorConstants::kCenterFarLNote : OperatorConstants::kCenterFarLNote; }; //implement live apriltag targeting
+  auto targetCenterFarRNote = [this] () -> frc::Pose2d { return OperatorConstants::kCenterFarRNote; }; //implement live apriltag targeting
+  auto targetCenterRNote = [this] () -> frc::Pose2d { return OperatorConstants::kCenterRNote; }; //implement live apriltag targeting
+  auto targetCenterCNote = [this] () -> frc::Pose2d { return OperatorConstants::kCenterCNote; }; //implement live apriltag targeting
+  auto targetCenterLNote = [this] () -> frc::Pose2d { return OperatorConstants::kCenterLNote; }; //implement live apriltag targeting
+  auto targetCenterFarLNote = [this] () -> frc::Pose2d { return OperatorConstants::kCenterFarLNote; }; //implement live apriltag targeting
   constexpr auto SubWoofer = [] () -> frc::Pose2d { return {-2_m, 0_m, 0_rad}; };
 
   m_swerve.SetDefaultCommand(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot, checkRed));

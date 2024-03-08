@@ -101,6 +101,7 @@ constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
 
 constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
 constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
 
 
 }  // namespace OperatorConstants
