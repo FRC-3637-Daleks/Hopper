@@ -39,7 +39,8 @@ constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
     25_in; // Distance between centers of front and back wheels.
-const auto kRadius = 19.5_in; // 19.5 inches
+// const auto kRadius = 19.5_in; // 19.5 inches
+const auto kRadius = units::meter_t(std::sqrt(.91));
 
 
 constexpr int kFrontLeftDriveMotorId = 1;

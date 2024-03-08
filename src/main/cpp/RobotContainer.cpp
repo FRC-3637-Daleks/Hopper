@@ -228,6 +228,10 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::NamedCommands::registerCommand("zTargetingCenterNoteL", m_swerve.ZTargetPoseCommand(targetCenterLNote, fwd, strafe, false, alliance).WithTimeout(1_s));
       pathplanner::NamedCommands::registerCommand("zTargetingCenterNoteFarL", m_swerve.ZTargetPoseCommand(targetCenterFarLNote, fwd, strafe, false, alliance).WithTimeout(1_s));
 
+      pathplanner::PathConstraints constraints = pathplanner::PathConstraints(AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration, AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
+
+      m_testAuto = pathplanner::AutoBuilder::pathfindToPose(OperatorConstants::kCenterCNote,  constraints, 0_mps, 0_m);
+
       m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
       m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
       m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
@@ -256,9 +260,10 @@ void RobotContainer::ConfigureBindings() {
       m_chooser.AddOption("CenterLeft Mid Only 3 Note Auto", m_centerLeftCenterOnlyAuto.get());
       m_chooser.AddOption("Right Mid Only 3 Note Auto", m_rightCenterOnlyAuto.get());
       m_chooser.AddOption("Left Mid Only 3 Note Auto", m_leftCenterOnlyAuto.get());
+      m_chooser.AddOption("Left Mid Only 3 Note Auto", m_leftCenterOnlyAuto.get());
 
 
-      m_chooser.AddOption("Get out right Side", m_getOutRight.get());
+      m_chooser.AddOption("testing", m_testAuto.get());
 
       frc::SmartDashboard::PutData(&m_chooser);
 }

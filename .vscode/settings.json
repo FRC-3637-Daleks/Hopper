@@ -91,7 +91,6 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-<<<<<<< HEAD
     "*.inc": "cpp",
 =======
 >>>>>>> pathplanner-building
@@ -99,13 +98,7 @@
     "xstddef": "cpp",
     "xtr1common": "cpp",
     "xutility": "cpp",
-<<<<<<< HEAD
     "charconv": "cpp"
-  }
-=======
-    "charconv": "cpp",
-    "*.inc": "cpp"
   },
   "wpilib.skipTests": true
->>>>>>> pathplanner-building
 }
