@@ -15,6 +15,11 @@
     "**/*~": true
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
+  "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: LLVM, IndentWidth: 2 }",
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true
+  },
   "files.associations": {
     "any": "cpp",
     "array": "cpp",
@@ -91,21 +96,11 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-<<<<<<< HEAD
     "*.inc": "cpp",
-=======
->>>>>>> pathplanner-building
     "xmemory": "cpp",
     "xstddef": "cpp",
     "xtr1common": "cpp",
     "xutility": "cpp",
-<<<<<<< HEAD
     "charconv": "cpp"
   }
-=======
-    "charconv": "cpp",
-    "*.inc": "cpp"
-  },
-  "wpilib.skipTests": true
->>>>>>> pathplanner-building
 }
