@@ -182,13 +182,13 @@ void Intake::ShootOnAMPVoid() {
 Intake::~Intake() {}
 
 void Intake::InitVisualization(frc::Mechanism2d *mech) {
-  // position of pivot approximated in feet
-  m_mech_root = mech->GetRoot("intake", 3, 1);
+  // position of pivot approximated in meters
+  m_mech_root = mech->GetRoot("intake", 0.73152, 0.1524);
 
   m_mech_arm_goal = m_mech_root->Append<frc::MechanismLigament2d>(
       "arm goal",
-      IntakeConstants::kArmRadius.convert<units::feet>()
-          .value(),               // line length in feet
+      IntakeConstants::kArmRadius.convert<units::meter>()
+          .value(),               // line length in meters
       0_deg,                      // line angle
       6,                          // line width in pixels
       frc::Color8Bit{20, 200, 20} // RGB, green
@@ -196,24 +196,24 @@ void Intake::InitVisualization(frc::Mechanism2d *mech) {
 
   m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
       "arm motion magic",
-      IntakeConstants::kArmRadius.convert<units::feet>().value(), 0_deg, 2,
+      IntakeConstants::kArmRadius.convert<units::meter>().value(), 0_deg, 2,
       frc::Color8Bit{80, 80, 200} // blueish
   );
 
   m_mech_arm = m_mech_root->Append<frc::MechanismLigament2d>(
-      "arm", IntakeConstants::kArmRadius.convert<units::feet>().value(), 0_deg,
+      "arm", IntakeConstants::kArmRadius.convert<units::meter>().value(), 0_deg,
       6, frc::Color8Bit{200, 20, 200} // magenta
   );
 
   m_mech_spinner = m_mech_arm->Append<frc::MechanismLigament2d>(
       "wheel",
-      (IntakeConstants::kWheelDiameter / 2).convert<units::feet>().value(),
+      (IntakeConstants::kWheelDiameter / 2).convert<units::meter>().value(),
       0_deg, 2, frc::Color8Bit{20, 200, 200} // cyan
   );
 
   m_mech_note = m_mech_root->Append<frc::MechanismLigament2d>(
       "note",
-      0.8,                                   // lets say 0.8_ft with compression
+      0.24384,                               // lets say 0.8_ft with compression
       0_deg, 1, frc::Color8Bit{240, 20, 180} // orange
   );
 }

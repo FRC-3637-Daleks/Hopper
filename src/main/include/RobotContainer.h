@@ -204,7 +204,7 @@ public:
       frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
   // Global Dashboard Items
-  frc::Mechanism2d m_mech_sideview{4, 3}; // scaled to feet
+  frc::Mechanism2d m_mech_sideview{0.762, 0.660401016}; // scaled to meters
 
 public:
   void ConfigureBindings();

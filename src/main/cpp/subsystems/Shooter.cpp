@@ -116,22 +116,23 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 Shooter::~Shooter() {}
 
 void Shooter::InitVisualization(frc::Mechanism2d *mech) {
-  auto root = mech->GetRoot("shooter", 1.5, 1.5);
+  auto root = mech->GetRoot("shooter", 0.3048, 0.3048);
 
   m_mech_pivot_goal = root->Append<frc::MechanismLigament2d>(
       "aim goal",                 // name
-      1,                          // feet long
+      0.3048,                     // meters long
       180_deg,                    // start angle
       4,                          // pixel width
       frc::Color8Bit{20, 200, 20} // RGB, green
   );
 
   m_mech_mm_setpoint = root->Append<frc::MechanismLigament2d>(
-      "aim motion magic", 1, 180_deg, 1, frc::Color8Bit{80, 80, 200} // blueish
+      "aim motion magic", 0.3048, 180_deg, 1, frc::Color8Bit{80, 80, 200}
+      // blueish
   );
 
   m_mech_pivot = root->Append<frc::MechanismLigament2d>(
-      "aim", 1, 180_deg, 10, frc::Color8Bit{240, 240, 240} // white
+      "aim", 0.3048, 180_deg, 10, frc::Color8Bit{240, 240, 240} // white
   );
 }
 
