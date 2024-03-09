@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -12,6 +19,11 @@
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
+      "/SmartDashboard/Drivebase": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "FL": {
           "arrows": false,
@@ -62,7 +74,20 @@
       }
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
     "visible": true
   }
 }

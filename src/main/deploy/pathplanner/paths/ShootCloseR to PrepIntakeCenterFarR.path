@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6170512494871154,
-        "y": 0.9176256814052094
+        "x": 2.3698247396494807,
+        "y": 1.134698423243001
       },
       "isLocked": false,
       "linkedName": "IntakeCloseR"
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0

@@ -1,0 +1,65 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.95,
+        "y": 4.1
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.454739063324283,
+        "y": 4.075047380863993
+      },
+      "isLocked": false,
+      "linkedName": "IntakeCenterC"
+    },
+    {
+      "anchor": {
+        "x": 4.688556300189524,
+        "y": 3.798772982161349
+      },
+      "prevControl": {
+        "x": 5.054975146538298,
+        "y": 4.514258031455378
+      },
+      "nextControl": {
+        "x": 3.4347136876966067,
+        "y": 1.3504664817021945
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 2.1527519978116896,
+        "y": 2.7331431585940105
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IntakeCloseR"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "IntakeCenterC to ShootClose",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
