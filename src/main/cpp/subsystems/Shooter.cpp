@@ -162,8 +162,31 @@ float pow(float d, int power) {
   return temp;
 }
 
-float Shooter::KevensCoolEquasion(float d) {
-  return (1.57 - (0.175*d) - (2.14*.001*(pow(d, 2)))+(3.58*.001*pow(d,3))-(5.3*.0001*pow(d,4))+(4.16*.00001*pow(d,5))-(1.92*.000001*pow(d,6))+(4.95*.00000001*pow(d,7))-(5.52*.0000000001*pow(d,8)));
+units::degree_t Shooter::DistanceToAngleError(std::function<units::feet_t> distance) {
+    return distance(units::math::tan(GetAnglePivot())) - 
+           16.1 * std::pow(distance() - 0.77 * units::math::cos(GetAnglePivot()), 2) / 
+           std::pow(note, 2) * std::pow(units::math::cos(GetAnglePivot()), 2) 
+           - 5.55;
+}
+units::degree_t DistanceToAngleBinarySearch() {
+
+    auto min = ShooterConstants::kMinAngle;
+    auto max = ShooterConstants::kMaxAngle;
+    auto pivot =  max + min / 2;
+    x = DistanceToAngleError();
+
+    for (int i = 0; i <= 10; i++) {
+        
+        x = (pivot);
+
+        if (x < 0) {
+            min = pivot;
+        } else {
+            max = pivot;
+        }
+    }
+
+     return pivot;
 }
 
 //Stop pivoting motor
