@@ -17,6 +17,13 @@
 #include <pathplanner/lib/path/PathPlannerPath.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc2/command/Command.h>
+
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/smartdashboard/SendableChooser.h>

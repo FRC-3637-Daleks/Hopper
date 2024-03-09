@@ -78,11 +78,17 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.B()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
-  m_swerveController.Y()
+  m_swerveController.X()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
 
-  m_swerveController.X()
+  m_swerveController.Y()
     .WhileTrue(m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
+
+  m_slowModeTrigger
+      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot, checkRed));
+  
+  m_swerveController.Back()
+      .WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_slowModeTrigger
       .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot, checkRed));
@@ -132,11 +138,56 @@ void RobotContainer::ConfigureBindings() {
 
   m_copilotController.Back()
     .WhileTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
+  
+  auto calculateDistance = [this]() -> units::meter_t {
+      frc::Pose2d RobotPose2d = m_swerve.GetPose();
+      
+      // Determine the IDs of the speaker AprilTags based on the alliance color
+      int id = m_isRed ? 4 : 7;
+
+      // Get the pose of the speaker AprilTag based on its ID
+      frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
+      frc::Pose2d SpeakerPose2d = frc::Pose2d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Rotation().Angle()};
+      
+      units::meter_t z = 1.5_ft; // estimation of shooter height 
+
+      // Calculate the horizontal distance between RobotPose and SpeakerPose
+      units::meter_t offset = RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
+      return offset; //Return the horizontal distance as units::meter_t
+  };
+
+
+  constexpr auto flywheelAutoSpeed = []()
+  {
+   return 0.5;
+  };
+  m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
+
+  m_copilotController.Back()
+    .WhileTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
 
   // Configure Intake Bindings.
   auto position = [this]() -> int {
     return m_copilotController.GetPOV();
   };
+
+  frc2::Trigger IdleIntakeTrigger([this] { return m_copilotController.GetPOV() == -1; });
+  frc2::Trigger GroundIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV; });
+  frc2::Trigger AMPIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV; });
+  frc2::Trigger SpeakerIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV; });
+  frc2::Trigger AutoIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake; });
+  
+  GroundIntakeTrigger
+    .OnTrue(m_intake.IntakeArmIntakeCommand(true));
+
+  AMPIntakeTrigger
+    .OnTrue(m_intake.IntakeArmAMPCommand(true));
+  
+  SpeakerIntakeTrigger
+    .OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+
+  AutoIntakeTrigger
+    .OnTrue(m_intake.IntakeRing());
 
   frc2::Trigger IdleIntakeTrigger([this] { return m_copilotController.GetPOV() == -1; });
   frc2::Trigger GroundIntakeTrigger([this] { return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV; });

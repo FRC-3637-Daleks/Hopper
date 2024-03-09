@@ -1,0 +1,65 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.95,
+        "y": 7.43
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.5238076629999435,
+        "y": 2.2299290752427665
+      },
+      "isLocked": false,
+      "linkedName": "IntakeCenterFarL"
+    },
+    {
+      "anchor": {
+        "x": 4.797092671114436,
+        "y": 3.729704382489669
+      },
+      "prevControl": {
+        "x": 6.005291373993474,
+        "y": 4.943656412526475
+      },
+      "nextControl": {
+        "x": 2.725034680850626,
+        "y": 1.647779449413014
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 1.9850139700339577,
+        "y": 3.5422324690843046
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IntakeCloseR"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "IntakeCenterFarL to ShootClose",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

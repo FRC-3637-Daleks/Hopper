@@ -12,6 +12,11 @@
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
+      "/SmartDashboard/Drivebase": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "FL": {
           "arrows": false,
@@ -63,6 +68,12 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
     "visible": true
   }
 }
