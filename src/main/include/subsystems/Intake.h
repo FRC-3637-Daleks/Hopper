@@ -38,7 +38,7 @@ namespace IntakeConstants {
 
     //From documetation: output value is in encoder ticks or an analog value, 
     //depending on the sensor
-    constexpr int IntakeArmIntakePos = 997; // -
+    constexpr int IntakeArmIntakePos = 995; // -
     constexpr int IntakeArmAMPPos = 660; // maybe make forward to catch the note if miss
     constexpr int IntakeArmSpeakerPos = 450;
     //constexpr int IntakeArmPreAMPPos = 600;
@@ -116,6 +116,8 @@ class Intake : public frc2::SubsystemBase {
 
   void Periodic() override;
   void SimulationPeriodic() override;
+
+  void Emergency(double input);
 
   /** Automaticaly intakes ring and goes to speaker pos
    * If doesent have ring

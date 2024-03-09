@@ -17,6 +17,7 @@
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/DriverStation.h>
 
+
 class ShooterSimulation
 {
 public:
@@ -92,6 +93,11 @@ Shooter::Shooter(): m_sim_state(new ShooterSimulation(*this)) {
   m_followMotor.SetInverted(false);
 
   m_goal = 0_deg; 
+
+  m_map.insert(1.336_m,43_deg);
+  m_map.insert(2.439_m,21.477_deg);
+  m_map.insert(3.3_m,18_deg);
+
   
 }
 
@@ -297,7 +303,7 @@ frc2::CommandPtr Shooter::PivotAngleCommand(std::function<units::degree_t()> ang
 frc2::CommandPtr Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
   return frc2::cmd::Run(
     [this, distance] () {
-      SetPivotMotor(ToTalonUnits(DistanceToAngle(distance())));
+      SetPivotMotor(ToTalonUnits(m_map[distance()]));
       frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.", distance().value());
       frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal", DistanceToAngle(distance()).value());
       frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal", ToTalonUnits(DistanceToAngle(distance())));

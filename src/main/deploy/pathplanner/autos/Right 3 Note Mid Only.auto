@@ -18,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -47,13 +47,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -65,7 +71,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootCloseR"
+            "pathName": "IntakeCenterR to ShootMidR"
           }
         },
         {
@@ -97,13 +103,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseR to PrepIntakeCenterR"
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteFarR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
                       }
                     }
                   ]
@@ -115,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterR to ShootCloseR"
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {

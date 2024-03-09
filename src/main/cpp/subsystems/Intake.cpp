@@ -61,6 +61,9 @@ Intake::Intake():
   m_arm.Config_kI(IntakeConstants::kPIDLoopIdx, IntakeConstants::kI, IntakeConstants::kTimeoutMs);
   m_arm.Config_kD(IntakeConstants::kPIDLoopIdx, IntakeConstants::kD, IntakeConstants::kTimeoutMs);
 
+  m_arm.ConfigFeedbackNotContinuous(true);
+
+  m_arm.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
   /**
    * I am just pasting from documentation for this motion magic config and stuff
   */
@@ -84,6 +87,10 @@ void Intake::Periodic() {
   frc::SmartDashboard::PutNumber("Intake/Break Beam Broken (function)",IsIntakeBreakBeamBroken());
   frc::SmartDashboard::PutNumber("Intake/Arm Position", m_arm.GetSelectedSensorPosition());
   UpdateVisualization();
+}
+
+void Intake::Emergency(double input) {
+  m_arm.Set(input);
 }
 
 frc2::CommandPtr Intake::IntakeRing() {

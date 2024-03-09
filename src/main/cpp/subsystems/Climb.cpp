@@ -36,7 +36,7 @@ Climb::Climb():
   m_climbMotor.ConfigFactoryDefault();
 
   m_climbMotor.SetInverted(true);
-//   m_climbMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  m_climbMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
   m_climbMotor.SetSelectedSensorPosition(0, ClimbConstants::kPIDLoopIdx, ClimbConstants::kTimeoutMs);
   m_climbMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog/*idk if correct*/, ClimbConstants::kPIDLoopIdx, ClimbConstants::kTimeoutMs);

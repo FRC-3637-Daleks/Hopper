@@ -21,7 +21,7 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxSpeed = 5_mps;
 constexpr auto kMaxTeleopSpeed = 5_mps;
 
 constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
@@ -39,7 +39,8 @@ constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
     25_in; // Distance between centers of front and back wheels.
-const auto kRadius = 19.5_in; // 19.5 inches
+// const auto kRadius = 19.5_in; // 19.5 inches
+const auto kRadius = units::meter_t(std::sqrt(.91));
 
 
 constexpr int kFrontLeftDriveMotorId = 1;
@@ -133,6 +134,8 @@ public:
 
   // Returns the heading of the robot.
   frc::Rotation2d GetHeading();
+
+  frc::Rotation2d GetGyroHeading();
 
   // Zeroes the robot heading.
   void ZeroHeading();

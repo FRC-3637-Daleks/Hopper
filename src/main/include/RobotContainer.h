@@ -48,8 +48,8 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 3_mps;
-constexpr auto kMaxAcceleration = 4.5_mps_sq;
+constexpr auto kMaxSpeed = 4.5_mps;
+constexpr auto kMaxAcceleration = 5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -100,6 +100,16 @@ constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
+
+constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
+constexpr frc::Pose2d kCenterRNote{8.3_m, 2.44_m, 0_deg};
+
+constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
+
+constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
+constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+
 
 }  // namespace OperatorConstants
 
@@ -159,6 +169,10 @@ class RobotContainer {
   frc2::Trigger m_slowModeTrigger{
     [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
   };
+
+  frc2::Trigger m_manualIntake{
+    [this] () -> bool { return m_copilotController.GetLeftTriggerAxis() > 0.2; }
+  };
   
   Shooter m_shooter;
   Drivetrain m_swerve;
@@ -166,9 +180,20 @@ class RobotContainer {
   Climb m_climb;
   Vision m_vision;
 
-  frc2::CommandPtr m_rightSubAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerSubAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_leftSubAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_left3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_right3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_left2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_center2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_right2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_leftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_rightCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+  frc2::CommandPtr m_testAuto{frc2::cmd::None()};
+  
+  
 
   frc::SendableChooser<frc2::Command*> m_chooser; 
 

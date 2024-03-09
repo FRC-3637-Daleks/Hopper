@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.91,
-  "robotLength": 0.91,
+  "robotWidth": 0.9144,
+  "robotLength": 0.9144,
   "holonomicMode": true,
   "pathFolders": [
     "BasicAuton",
@@ -9,12 +9,17 @@
     "IntakeCenter to CenterSub",
     "IntakeCenter to LeftSub",
     "IntakeCenter to RightSub",
+    "IntakeCenterC to ShootClose",
+    "IntakeCenterFarL to ShootClose",
+    "IntakeCenterFarR to ShootClose",
+    "IntakeCenterL to ShootClose",
+    "IntakeCenterR to ShootClose",
     "IntakeClose to CenterSub",
     "IntakeClose to LeftSub",
     "IntakeClose to RightSub",
     "LeftSub to PrepIntakeCenter",
     "LeftSub to PrepIntakeClose",
-    "ShootCloseR to PrepIntakeCenter",
+    "IntakeCenter to Shoot MidR",
     "PrepIntakeCenter to IntakeCenter",
     "PrepIntakeClose to IntakeClose",
     "RightSub to PrepIntakeCenter",
@@ -27,15 +32,7 @@
   "autoFolders": [
     "New Folder"
   ],
-  "defaultMaxVel": 1.5,
-  "defaultMaxAccel": 1.5,
-=======
-  "autoFolders": [],
-  "defaultMaxVel": 3.0,
-<<<<<<< HEAD
-  "defaultMaxAccel": 4.5,
->>>>>>> pathplanner-building
-=======
+  "defaultMaxVel": 4.7,
   "defaultMaxAccel": 5.0,
 >>>>>>> origin/pathplanner-building
   "defaultMaxAngVel": 120.0,

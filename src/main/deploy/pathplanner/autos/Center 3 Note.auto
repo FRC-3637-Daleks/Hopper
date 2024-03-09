@@ -53,7 +53,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -101,9 +101,9 @@
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 0.5
+                        "name": "zTargetingCenterNoteC"
                       }
                     },
                     {
@@ -122,6 +122,18 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCenterC to ShootCloseC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
