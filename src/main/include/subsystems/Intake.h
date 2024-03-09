@@ -68,12 +68,9 @@ constexpr int kAllowableMarginOfError = 15;
 
 // voltage for funtions (i dide't even have to use auto)
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
-// constexpr units::voltage::volt_t kIntakeVoltage = 1.0_V;
-// constexpr units::voltage::volt_t kShooterVoltage = 0.5_V;
-// constexpr units::voltage::volt_t kAMPVoltage = 1.0_V;
 
 // physical characteristics
-constexpr auto kWheelMoment = 0.001_kg_sq_m;
+constexpr auto kWheelMoment = 1.0_kg_sq_m;
 constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
 constexpr auto kArmMass = 12_lb;
 constexpr auto kArmRadius = 13_in;

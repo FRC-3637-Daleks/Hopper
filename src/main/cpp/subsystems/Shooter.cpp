@@ -215,25 +215,6 @@ void Shooter::Periodic() {
 }
 
 units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
-  // return (1.57 -
-  // (0.175 * distance.value()) -
-  // (2.14*.001 * (std::pow(distance.value(), 2))) +
-  // (3.58*.001 * std::pow(distance.value(), 3)) -
-  // (5.3*.0001 * std::pow(distance.value(), 4)) +
-  // (4.16*.00001 * std::pow(distance.value(), 5)) -
-  // (1.92*.000001 * std::pow(distance.value(), 6)) +
-  // (4.95*.00000001 * std::pow(distance.value(), 7)) -
-  // (5.52*.0000000001 * std::pow(distance.value(), 8))) * 1_deg;
-  //(std::atan(5.55 / (distance.value() - 0.4))) * 1_rad;
-  // return (1.42 -
-  // (0.204 * distance.value()) +
-  // (0.0152 * std::pow(distance.value(), 2)) -
-  // (-6.93 * 0.0001 * std::pow(distance.value(), 3)) +
-  // (4.67 * 0.00001 * std::pow(distance.value(), 4)) -
-  // (4.54 * 0.000001 * std::pow(distance.value(), 5)) +
-  // (2.61 * 0.0000001 * std::pow(distance.value(), 6)) -
-  // (7.21 * 0.000000001 * std::pow(distance.value(), 7)) +
-  // (7.63 * 0.00000000001 * std::pow(distance.value(), 8))) * 1_rad;
   return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
