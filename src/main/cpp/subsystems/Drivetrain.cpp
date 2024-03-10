@@ -240,9 +240,14 @@ void Drivetrain::UpdateDashboard() {
 
   frc::SmartDashboard::PutNumber("Swerve/Gyro", m_gyro.GetAngle());
 
-  frc::SmartDashboard::PutNumber("PDH/Voltage", m_pdh.GetVoltage());
+  frc::SmartDashboard::PutData("PDH", &m_pdh);
 
-  frc::SmartDashboard::PutNumber("PDH/Total Current", m_pdh.GetTotalCurrent());
+  frc::SmartDashboard::PutData("Swerve/TurnPIDController", &m_turnPID);
+
+  // frc::SmartDashboard::PutNumber("PDH/Voltage", m_pdh.GetVoltage());
+
+  // frc::SmartDashboard::PutNumber("PDH/Total Current",
+  // m_pdh.GetTotalCurrent());
 }
 
 void Drivetrain::SimulationPeriodic() {

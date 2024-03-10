@@ -81,12 +81,12 @@ constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 constexpr int kAutoIntake = 180;
 
-constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
-constexpr frc::Pose2d kBlueSourcePose{15.733_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSourcePose{15.743_m, 0.410_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
 constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
@@ -152,6 +152,10 @@ public:
 
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
     return m_swerveController.GetLeftTriggerAxis() > 0.2;
+  }};
+
+  frc2::Trigger m_autoAmpTrigger{[this]() -> bool {
+    return m_swerveController.GetRightTriggerAxis() > 0.2;
   }};
 
   frc2::Trigger m_manualIntake{[this]() -> bool {

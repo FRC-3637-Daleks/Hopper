@@ -319,6 +319,8 @@ void RobotContainer::ConfigureBindings() {
                                                      false, alliance)
                                  .WithTimeout(1_s));
 
+  m_autoAmpTrigger.OnTrue(m_ampLineUp.get());
+
   m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
   m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
   m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();

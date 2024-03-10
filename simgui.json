@@ -16,6 +16,7 @@
       "/SmartDashboard/Select Auton": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
+      "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
@@ -46,13 +47,16 @@
           "style": "Line"
         },
         "Robot": {
-          "arrows": false,
           "style": "Box/Image"
         },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
+        "simulation": {
+          "arrows": false,
+          "style": "Hidden"
+        },
         "top": 79,
         "width": 16.541748046875,
         "window": {
@@ -86,7 +90,7 @@
     "transitory": {
       "SmartDashboard": {
         "Swerve": {
-          "FL": {
+          "TurnPIDController": {
             "open": true
           },
           "open": true
