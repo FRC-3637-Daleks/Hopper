@@ -261,7 +261,7 @@ void SwerveModule::SetDesiredState(
       velocityControl.WithVelocity(state.speed / kDistanceToRotations));
 
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps,
-                                                              false};
+                                                              true};
 
   m_steerMotor.SetControl(positionControl.WithPosition(state.angle.Radians()));
 }

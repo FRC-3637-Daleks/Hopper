@@ -33,6 +33,10 @@
           "arrows": false,
           "style": "Line"
         },
+        "Hopper": {
+          "arrows": false,
+          "style": "Line"
+        },
         "RL": {
           "arrows": false,
           "style": "Line"
@@ -40,6 +44,10 @@
         "RR": {
           "arrows": false,
           "style": "Line"
+        },
+        "Robot": {
+          "arrows": false,
+          "style": "Box/Image"
         },
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -77,6 +85,12 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Swerve": {
+          "FL": {
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       }
     }

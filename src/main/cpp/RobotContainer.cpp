@@ -309,6 +309,16 @@ void RobotContainer::ConfigureBindings() {
                               alliance)
           .WithTimeout(1_s));
 
+  // Line up with AMP using pathfinding.
+  auto ampPath = pathplanner::PathPlannerPath::fromPathFile("Line Up With AMP");
+
+  m_ampLineUp = pathplanner::AutoBuilder::pathfindThenFollowPath(
+                    ampPath, AutoConstants::DefaultConstraints, 3.0_m)
+                    .AndThen(m_swerve
+                                 .ZTargetPoseCommand(targetAMP, fwd, strafe,
+                                                     false, alliance)
+                                 .WithTimeout(1_s));
+
   m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
   m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
   m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
@@ -350,6 +360,8 @@ void RobotContainer::ConfigureBindings() {
                       m_leftCenterOnlyAuto.get());
 
   m_chooser.AddOption("Get out right Side", m_getOutRight.get());
+
+  m_chooser.AddOption("Auto amp line up test", m_ampLineUp.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
 }

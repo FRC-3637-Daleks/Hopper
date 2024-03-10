@@ -40,7 +40,7 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 4_mps;
+constexpr auto kMaxSpeed = 15.7_fps;
 constexpr auto kMaxAcceleration = 5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
@@ -194,6 +194,8 @@ public:
   frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+
+  frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
 
