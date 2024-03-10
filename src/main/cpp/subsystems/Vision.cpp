@@ -4,6 +4,7 @@
 #include <photon/simulation/VisionSystemSim.h>
 #include <photon/simulation/SimCameraProperties.h>
 
+#include <frc/RobotBase.h>
 
 class VisionSim
 {
@@ -32,9 +33,11 @@ Vision::Vision(
         photon::MULTI_TAG_PNP_ON_COPROCESSOR,
         std::move(m_camera),  // change to the multitag detection algorithm
         VisionConstants::kCameraToRobot),
-      m_referencePose(getRobotPose),
-      m_sim_state(new VisionSim(*this, std::move(getSimulatedPose)))
+      m_referencePose(getRobotPose)
 {
+    if constexpr (frc::RobotBase::IsSimulation()) {
+      m_sim_state.reset(new VisionSim(*this, std::move(getSimulatedPose)));
+    }
     // Inside the constructor body, you can perform additional operations if needed
     m_addVisionMeasurement = addVisionMeasurement; // Call the addVisionMeasurement function
     m_estimator.SetMultiTagFallbackStrategy(photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
@@ -137,13 +140,12 @@ bool Vision::HasTargets() {
 photon::SimCameraProperties getShooterCameraProperties()
 {
   photon::SimCameraProperties ret;
-  //ret.SetCalibration(1280, 800, 70_deg);
-  ret.SetCalibration(1280, 720, 75_deg);
-  //ret.SetCalibError(0.15, 0.04);
+  ret.SetCalibration(1600, 1200, 95_deg);
+  ret.SetCalibError(0.15, 0.04);
   ret.SetFPS(15_Hz);
-  //ret.SetAvgLatency(0.04_s);
-  //ret.SetLatencyStdDev(0.01_s);
-
+  ret.SetAvgLatency(0.04_s);
+  ret.SetLatencyStdDev(0.01_s);
+  
   return ret;
 }
 
