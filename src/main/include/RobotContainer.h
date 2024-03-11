@@ -185,6 +185,11 @@ public:
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
   }};
 
+  frc2::Trigger SourcePathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+  frc2::Trigger AmpPathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 180; }};
+
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;

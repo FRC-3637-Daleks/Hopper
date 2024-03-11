@@ -225,6 +225,9 @@ void RobotContainer::ConfigureBindings() {
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
+  pathplanner::ReplanningConfig replanningConfig =
+      pathplanner::ReplanningConfig(true, true, .5_m, .125_m);
+
   constexpr auto alliance = []() -> bool { return false; };
 
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
@@ -333,8 +336,8 @@ void RobotContainer::ConfigureBindings() {
 
   m_getOutRight = pathplanner::PathPlannerAuto("Get Out Right").ToPtr();
 
-  m_swerveController.LeftStick().WhileTrue(m_SourcePath.get());
-  m_swerveController.RightStick().WhileTrue(m_AmpShotPath.get());
+  SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
 
   m_chooser.SetDefaultOption("Left (Amp-Side) Subwoofer 3 Note Auto",
                              m_left3NoteAuto.get());
