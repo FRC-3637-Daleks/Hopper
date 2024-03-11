@@ -199,15 +199,15 @@ void RobotContainer::ConfigureBindings() {
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb)); 
 
 
-
+  pathplanner::ReplanningConfig replanningConfig = pathplanner::ReplanningConfig(true, true,.5_m, .125_m);
   constexpr auto alliance = []() -> bool { return false; };
 
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig = pathplanner::HolonomicPathFollowerConfig(
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants 
     pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
-    AutoConstants::kMaxSpeed,
+    ModuleConstants::kPhysicalMaxSpeed,
     DriveConstants::kRadius, // Drive base radius (distance from center to furthest module) 
-    pathplanner::ReplanningConfig());
+    replanningConfig);
 
 
     pathplanner::AutoBuilder::configureHolonomic(
@@ -215,7 +215,7 @@ void RobotContainer::ConfigureBindings() {
           [this](frc::Pose2d pose){this->m_swerve.ResetOdometry(pose);},
           [this](){return this->m_swerve.GetSpeed();},
           [this](frc::ChassisSpeeds speed){this->m_swerve.Drive(
-          speed.vx, speed.vy, speed.omega, false, false);},
+          speed.vx, speed.vy, speed.omega, false, m_isRed);},
           pathFollowerConfig,
           [this](){  
             return m_isRed;            
@@ -231,11 +231,7 @@ void RobotContainer::ConfigureBindings() {
       //need to find out what the output command is, how all that stuff works and implement here
       //also need to see if the Shoot Command will work as it is currently configured
       pathplanner::NamedCommands::registerCommand("IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
-      pathplanner::NamedCommands::registerCommand("OutputToShooter", m_intake.OutputToShooter().WithName("OutputToShooter"));
-      pathplanner::NamedCommands::registerCommand("zTargetingSpeaker", m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance).WithTimeout(1_s).WithName("zTargetSpeaker"));
-      pathplanner::NamedCommands::registerCommand("zTargetingAmp", m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, alliance).WithName("zTargetAmp"));
-      pathplanner::NamedCommands::registerCommand("zTargetingSource", m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, alliance).WithTimeout(1_s));
-      pathplanner::NamedCommands::registerCommand("zTargetingStage", m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, alliance).WithTimeout(1_s));
+      pathplanner::NamedCommands::registerCommand("OutputToShooter", frc2::cmd::Sequence(m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance).WithTimeout(1_s), m_intake.OutputToShooter().WithName("OutputToShooter")));
       pathplanner::NamedCommands::registerCommand("zTargetingCenterNoteFarR", m_swerve.ZTargetPoseCommand(targetCenterFarRNote, fwd, strafe, false, alliance).WithTimeout(1_s));
       pathplanner::NamedCommands::registerCommand("zTargetingCenterNoteR", m_swerve.ZTargetPoseCommand(targetCenterRNote, fwd, strafe, false, alliance).WithTimeout(1_s));
       pathplanner::NamedCommands::registerCommand("zTargetingCenterNoteC", m_swerve.ZTargetPoseCommand(targetCenterCNote, fwd, strafe, false, alliance).WithTimeout(1_s));
@@ -267,10 +263,10 @@ void RobotContainer::ConfigureBindings() {
       m_getOutRight = pathplanner::PathPlannerAuto("Get Out Right").ToPtr();
       
 
-  m_copilotController.LeftStick()
-      .OnTrue(m_SourcePath.get());
-  m_copilotController.RightStick()
-      .OnTrue(m_AmpShotPath.get());
+  m_swerveController.LeftStick()
+      .WhileTrue(m_SourcePath.get());
+  m_swerveController.RightStick()
+      .WhileTrue(m_AmpShotPath.get());
   
 
 
@@ -287,6 +283,8 @@ void RobotContainer::ConfigureBindings() {
       m_chooser.AddOption("Right Mid Only 3 Note Auto", m_rightCenterOnlyAuto.get());
       m_chooser.AddOption("Left Mid Only 3 Note Auto", m_leftCenterOnlyAuto.get());
       m_chooser.AddOption("Left Mid Only 3 Note Auto", m_leftCenterOnlyAuto.get());
+      m_chooser.AddOption("Source Path", m_SourcePath.get());
+      m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
 
       frc::SmartDashboard::PutData(&m_chooser);
 }
