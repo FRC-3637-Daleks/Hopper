@@ -4,9 +4,9 @@
 
 #include "Robot.h"
 
-#include <frc2/command/CommandScheduler.h>
 #include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/CommandScheduler.h>
 
 void Robot::RobotInit() {}
 
@@ -19,10 +19,12 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  m_container.m_isRed =
+      frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
   frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
   frc2::CommandScheduler::GetInstance().Run();
-  m_container.m_isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  m_container.m_isRed =
+      frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
   frc::SmartDashboard::PutBoolean("is red", m_container.m_isRed);
 }
 
@@ -31,8 +33,7 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {
-}
+void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
@@ -47,14 +48,13 @@ void Robot::AutonomousInit() {
     m_autonomousCommand.value()->Schedule();
   }
 
-  if constexpr (IsSimulation())
-  {
-    for (auto &note : m_note_staged) note = true;
+  if constexpr (IsSimulation()) {
+    for (auto &note : m_note_staged)
+      note = true;
   }
 }
 
-void Robot::AutonomousPeriodic() { 
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
@@ -70,8 +70,7 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {
-}
+void Robot::TeleopPeriodic() {}
 
 /**
  * This function is called periodically during test mode.
@@ -88,20 +87,19 @@ void Robot::SimulationInit() {}
  */
 void Robot::SimulationPeriodic() {
   const auto pose = m_container.m_swerve.GetPose();
-  if (pose.Translation().Distance(FieldConstants::feeder_station.Translation()) < 0.5_m)
-  {
+  if (pose.Translation().Distance(
+          FieldConstants::feeder_station.Translation()) < 0.5_m) {
     m_container.m_intake.SimulateNotePickup();
   }
 
   std::vector<frc::Pose2d> note_poses;
-  for (int i = 0; i < std::size(FieldConstants::note_positions); i++)
-  {
-    if (!m_note_staged[i]) continue;
+  for (int i = 0; i < std::size(FieldConstants::note_positions); i++) {
+    if (!m_note_staged[i])
+      continue;
 
-    if (pose.Translation().Distance(FieldConstants::note_positions[i]) < 0.5_m)
-    {
-      if (m_container.m_intake.SimulateNotePickup())
-      {
+    if (pose.Translation().Distance(FieldConstants::note_positions[i]) <
+        0.5_m) {
+      if (m_container.m_intake.SimulateNotePickup()) {
         fmt::println("Picked up note {}", i);
         m_note_staged[i] = false;
         continue;
@@ -115,7 +113,5 @@ void Robot::SimulationPeriodic() {
 }
 
 #ifndef RUNNING_FRC_TESTS
-int main() {
-  return frc::StartRobot<Robot>();
-}
+int main() { return frc::StartRobot<Robot>(); }
 #endif

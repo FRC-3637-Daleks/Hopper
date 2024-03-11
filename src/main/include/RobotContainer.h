@@ -4,30 +4,22 @@
 
 #pragma once
 
-#include <frc/XboxController.h>
 #include <frc/MathUtil.h>
-#include <frc2/command/CommandPtr.h>
-#include <frc2/command/button/CommandXboxController.h>
-#include <frc/trajectory/TrapezoidProfile.h>
+#include <frc/XboxController.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Pose3d.h>
+#include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/button/CommandXboxController.h>
 
-#include <pathplanner/lib/auto/AutoBuilder.h>
-#include <pathplanner/lib/path/PathPlannerPath.h>
-#include <pathplanner/lib/commands/PathPlannerAuto.h>
-#include <pathplanner/lib/auto/NamedCommands.h>
-#include <frc/geometry/Pose3d.h>
-#include <frc2/command/Command.h>
-
-#include <pathplanner/lib/auto/AutoBuilder.h>
-#include <pathplanner/lib/path/PathPlannerPath.h>
-#include <pathplanner/lib/commands/PathPlannerAuto.h>
-#include <pathplanner/lib/auto/NamedCommands.h>
-#include <frc/smartdashboard/Mechanism2d.h>
-#include <frc/apriltag/AprilTagFieldLayout.h>
-#include <frc/smartdashboard/SendableChooser.h>
 #include "frc/apriltag/AprilTagFields.h"
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -39,12 +31,11 @@
 
 #include <numbers>
 
-#include "subsystems/Shooter.h"
+#include "subsystems/Climb.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
-#include "subsystems/Climb.h"
+#include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
-
 
 namespace AutoConstants {
 
@@ -65,14 +56,11 @@ constexpr double kPThetaController = 0.5;
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
 
-constexpr pathplanner::PathConstraints DefaultConstraints(AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration, AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
-
-
-
-
+constexpr pathplanner::PathConstraints DefaultConstraints(
+    AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
+    AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
 
 } // namespace AutoConstants
-
 
 namespace OperatorConstants {
 
@@ -115,17 +103,13 @@ constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.6_m, 90_deg};
 constexpr frc::Pose2d kBlueSourcePickUp{15.4_m, 1_m, -60_deg};
 constexpr frc::Pose2d kRedSourcePickUp{1.2_m, 1_m, -120_deg};
 
+} // namespace OperatorConstants
 
-
-
-}  // namespace OperatorConstants
-
-namespace FieldConstants
-{
+namespace FieldConstants {
 
 constexpr auto field_length = 54_ft + 3.25_in;
 constexpr auto field_width = 26_ft + 11.75_in;
-constexpr auto mid_line = field_length/2;
+constexpr auto mid_line = field_length / 2;
 
 constexpr frc::Pose2d feeder_station{{625_in, 12_in}, -80_deg};
 
@@ -133,20 +117,22 @@ constexpr auto near_note_separation = 57_in;
 constexpr auto mid_note_separation = 66_in;
 constexpr auto near_note_wall_dist = 114_in;
 constexpr frc::Translation2d note_positions[] = {
-  {near_note_wall_dist, field_width/2},
-  {near_note_wall_dist, field_width/2 + near_note_separation},
-  {near_note_wall_dist, field_width/2 + 2*near_note_separation},
-  {field_length - near_note_wall_dist, field_width/2},
-  {field_length - near_note_wall_dist, field_width/2 + near_note_separation},
-  {field_length - near_note_wall_dist, field_width/2 + 2*near_note_separation},
-  {mid_line, field_width/2 + 2*mid_note_separation},
-  {mid_line, field_width/2 + mid_note_separation},
-  {mid_line, field_width/2},
-  {mid_line, field_width/2 - mid_note_separation},
-  {mid_line, field_width/2 - 2*mid_note_separation},
+    {near_note_wall_dist, field_width / 2},
+    {near_note_wall_dist, field_width / 2 + near_note_separation},
+    {near_note_wall_dist, field_width / 2 + 2 * near_note_separation},
+    {field_length - near_note_wall_dist, field_width / 2},
+    {field_length - near_note_wall_dist,
+     field_width / 2 + near_note_separation},
+    {field_length - near_note_wall_dist,
+     field_width / 2 + 2 * near_note_separation},
+    {mid_line, field_width / 2 + 2 * mid_note_separation},
+    {mid_line, field_width / 2 + mid_note_separation},
+    {mid_line, field_width / 2},
+    {mid_line, field_width / 2 - mid_note_separation},
+    {mid_line, field_width / 2 - 2 * mid_note_separation},
 };
 
-}
+} // namespace FieldConstants
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -156,14 +142,13 @@ constexpr frc::Translation2d note_positions[] = {
  * commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
- public:
+public:
   RobotContainer();
   frc2::CommandPtr GetDisabledCommand();
-  frc2::Command* GetAutonomousCommand();
-    std::unique_ptr<frc2::Command> HopperAuto;
+  frc2::Command *GetAutonomousCommand();
+  std::unique_ptr<frc2::Command> HopperAuto;
 
-
- public:
+public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_copilotController{
       OperatorConstants::kCopilotControllerPort};
@@ -173,14 +158,33 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
 
-  frc2::Trigger m_slowModeTrigger{
-    [this] () -> bool { return m_swerveController.GetLeftTriggerAxis() > 0.2; }
-  };
+  frc2::Trigger m_slowModeTrigger{[this]() -> bool {
+    return m_swerveController.GetLeftTriggerAxis() > 0.2;
+  }};
 
-  frc2::Trigger m_manualIntake{
-    [this] () -> bool { return m_copilotController.GetLeftTriggerAxis() > 0.2; }
-  };
-  
+  frc2::Trigger m_manualIntake{[this]() -> bool {
+    return m_copilotController.GetLeftTriggerAxis() > 0.2;
+  }};
+
+  frc2::Trigger IdleIntakeTrigger{
+      [this]() -> bool { return m_copilotController.GetPOV() == -1; }};
+
+  frc2::Trigger GroundIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV;
+  }};
+
+  frc2::Trigger AMPIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV;
+  }};
+
+  frc2::Trigger SpeakerIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV;
+  }};
+
+  frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
+  }};
+
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
@@ -201,18 +205,16 @@ class RobotContainer {
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
 
-  
-  
-
-  frc::SendableChooser<frc2::Command*> m_chooser; 
+  frc::SendableChooser<frc2::Command *> m_chooser;
 
   bool m_isRed;
 
-  //AprilTag
-  frc::AprilTagFieldLayout m_aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
+  // AprilTag
+  frc::AprilTagFieldLayout m_aprilTagFieldLayout =
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
   // Global Dashboard Items
-  frc::Mechanism2d m_mech_sideview{4, 3};  // scaled to feet
+  frc::Mechanism2d m_mech_sideview{0.762, 0.660401016}; // scaled to meters
 
 public:
   void ConfigureBindings();
