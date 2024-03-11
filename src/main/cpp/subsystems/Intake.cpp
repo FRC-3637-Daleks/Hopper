@@ -16,7 +16,7 @@ public:
       : m_intakeMotorSim{"SPARK MAX ", IntakeConstants::kIntakeMotorPort},
         m_armMotorSim{intake.m_arm.GetSimCollection()},
         m_breakBeamSim{intake.m_breakbeam},
-        m_intakeModel{frc::DCMotor::NeoVortex(1), 2,
+        m_intakeModel{frc::DCMotor::NeoVortex(1), 1,
                       IntakeConstants::kWheelMoment},
         m_armModel{IntakeConstants::kWindowMotor,
                    IntakeConstants::kArmGearing,
@@ -424,7 +424,7 @@ bool Intake::SimulateNotePickup() {
       m_sim_state->m_intakeModel.GetAngularVelocity() < 0_rad_per_s &&
       m_sim_state->m_armModel.GetAngle() <
           IntakeConstants::kMinAngle + 20_deg) {
-    m_sim_state->m_notePosition = 13_in;
+    m_sim_state->m_notePosition = IntakeConstants::kIntakeLength;
     return true;
   }
 

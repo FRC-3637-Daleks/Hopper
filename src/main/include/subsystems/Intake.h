@@ -70,11 +70,11 @@ constexpr int kAllowableMarginOfError = 15;
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
 
 // physical characteristics
-constexpr auto kWheelMoment = 1.0_kg_sq_m;
+constexpr auto kWheelMoment = 0.01_kg_sq_m;
 constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
 constexpr auto kArmMass = 12_lb;
 constexpr auto kArmRadius = 13_in;
-constexpr auto kWheelDiameter = 1.5_in; //< Verify this
+constexpr auto kWheelDiameter = 2_in; //< Verify this
 constexpr auto kWheelCircum = kWheelDiameter * std::numbers::pi / 1_tr;
 constexpr double kArmGearing = 4.0;
 // you can play with the leading constant to get the dynamics you want
@@ -92,7 +92,7 @@ constexpr int kArmSensorFullExtend =
 constexpr int kArmSensorFullRetract = 400; // corresponds to kMaxAngle
 constexpr auto kAngleToSensor =
     (kArmSensorFullRetract - kArmSensorFullExtend) / (kMaxAngle - kMinAngle);
-constexpr auto kIntakeLength = 13.0_in;
+constexpr auto kIntakeLength = 9.0_in;
 constexpr auto kIntakeSensorPosition = 0.5_in;
 
 constexpr auto sensorToAngle(int sensor) {
