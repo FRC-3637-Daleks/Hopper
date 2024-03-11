@@ -45,6 +45,22 @@ public:
   frc::sim::SingleJointedArmSim m_armModel;
 };
 
+units::radian_t distance_adjustment(units::feet_per_second_t robot_velocity,
+                                    units::foot_t distance,
+                                    units::radian_t thetaf) {
+  constexpr units::feet_per_second_t note_velocity =
+      1_fps; // not correct, also move to constant
+
+  return units::radian_t{
+      note_velocity.value() *
+          ((robot_velocity.value() +
+            (note_velocity.value() * std::cos(thetaf.value()))) /
+           (distance.value() - 0.77 * (std::cos(thetaf.value())))) *
+          std::sin(thetaf.value()) -
+      ((0.5) * (32.15) * (distance.value() * distance.value())) - 5.55 -
+      0.77 * (std::sin(thetaf.value()))};
+}
+
 Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   // Implementation of subsystem constructor goes here.
   // Needs arguments to work between power cycles!!

@@ -45,7 +45,7 @@ constexpr auto kMaxAcceleration = 5_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 120_rpm;
+constexpr auto kMaxAngularSpeed = 180_rpm;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -69,7 +69,7 @@ constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
-constexpr double kClimbDeadband = 0.8;
+constexpr double kClimbDeadband = 0.08;
 
 constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
 constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
@@ -136,6 +136,7 @@ constexpr frc::Translation2d note_positions[] = {
 class RobotContainer {
 public:
   RobotContainer();
+
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;

@@ -103,7 +103,7 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
 
 void Vision::Periodic() {
   auto PoseEst = CalculateRobotPoseEstimate();
-  if (PoseEst) {
+  if (PoseEst.has_value()) {
     auto EstPose2d = PoseEst.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};

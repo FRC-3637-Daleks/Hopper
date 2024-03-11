@@ -18,7 +18,7 @@ public:
         m_breakBeamSim{intake.m_breakbeam},
         m_intakeModel{frc::DCMotor::NeoVortex(1), 2,
                       IntakeConstants::kWheelMoment},
-        m_armModel{IntakeConstants::kWindowMotor,
+        m_armModel{frc::DCMotor::Vex775Pro(1),
                    IntakeConstants::kArmGearing,
                    IntakeConstants::kArmMoment,
                    IntakeConstants::kArmRadius,
@@ -79,9 +79,9 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
 
   // set Motion Magic settings
   m_arm.ConfigMotionCruiseVelocity(
-      40); // 80 rps = 16384 ticks/100ms cruise velocity
+      180); // 80 rps = 16384 ticks/100ms cruise velocity
   m_arm.ConfigMotionAcceleration(
-      160); // 160 rps/s = 32768 ticks/100ms/s acceleration
+      1800); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -121,6 +121,10 @@ frc2::CommandPtr Intake::IntakeRing() {
           IntakeArmSpeakerCommand()); // if true does not allow for inturupts
 }
 
+frc2::CommandPtr Intake::IntakeFromPlayerStation() {
+  return IntakeArmAMPCommand(false).AndThen(AutoIntake());
+}
+
 frc2::CommandPtr Intake::ShootOnAMP() {
 
   return frc2::cmd::Either(
@@ -128,7 +132,7 @@ frc2::CommandPtr Intake::ShootOnAMP() {
           .AndThen(Run([this] { ShootOnAMPVoid(); }).WithTimeout(1.2_s))
           .AndThen(IntakeOff())
           .AndThen(AutoIntake())
-          .WithTimeout(5_s)
+          .WithTimeout(2_s)
           .AndThen(IntakeOff()) /*.AndThen(IntakeArmSpeakerCommand(true))*/,
       frc2::cmd::None(),                             // no ring
       [this]() { return IsIntakeBreakBeamBroken(); } // When broken = true
@@ -158,8 +162,8 @@ frc2::CommandPtr Intake::IntakeOut() {
 }
 
 frc2::CommandPtr Intake::IntakeOutSpeaker() {
-  return this->RunEnd([this] { IntakeBackwardSpeaker(); },
-                      [this] { OffIntake(); });
+  return frc2::cmd::RunEnd([this] { IntakeBackwardSpeaker(); },
+                           [this] { OffIntake(); });
 }
 
 frc2::CommandPtr Intake::TimedRelease() {
@@ -223,6 +227,8 @@ void Intake::UpdateVisualization() {
   if (!m_mech_root)
     return;
 
+  PreviousSensorPosition = m_arm.GetSelectedSensorPosition();
+
   m_mech_arm->SetAngle(
       IntakeConstants::sensorToAngle(m_arm.GetSelectedSensorPosition()));
   m_mech_arm_goal->SetAngle(IntakeConstants::sensorToAngle(m_goal));
@@ -258,7 +264,7 @@ _____
 */
 
 frc2::CommandPtr Intake::AutoIntake() {
-  return this->Run([this] { IntakeForward(); })
+  return Run([this] { IntakeForward(); })
       .Until([this]() -> bool { return (IsIntakeBreakBeamBroken()); })
       .AndThen([this] { OffIntake(); })
       .HandleInterrupt([this] { OffIntake(); });
@@ -272,9 +278,9 @@ void Intake::IntakeBackward() { // out, (i was adjusting the voltage for amp)
   m_intake.SetVoltage(-1 * (1.75_V));
 }
 
-void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (9_V)); }
+void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (12_V)); }
 
-void Intake::OffIntake() { m_intake.SetVoltage(IntakeConstants::kOffVoltage); }
+void Intake::OffIntake() { m_intake.SetVoltage(0_V); }
 
 void Intake::IntakeArmAMP() {
   m_goal = IntakeConstants::IntakeArmAMPPos;
@@ -302,7 +308,7 @@ bool Intake::IsAtWantedPosition(int goal) {
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 
   if (wait) {
-    return this->Run([this] { IntakeArmAMP(); }).Until([this]() -> bool {
+    return frc2::cmd::Run([this] { IntakeArmAMP(); }).Until([this]() -> bool {
       return IsAtWantedPosition(IntakeConstants::IntakeArmAMPPos);
     });
   }
@@ -312,9 +318,10 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 
   if (wait) {
-    return this->Run([this] { IntakeArmSpeaker(); }).Until([this]() -> bool {
-      return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);
-    });
+    return frc2::cmd::Run([this] { IntakeArmSpeaker(); }, {this})
+        .Until([this]() -> bool {
+          return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);
+        });
   }
   return RunOnce([this] { IntakeArmSpeaker(); });
 }
@@ -322,9 +329,10 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
 
   if (wait) {
-    return this->Run([this] { IntakeArmIntake(); }).Until([this]() -> bool {
-      return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);
-    });
+    return frc2::cmd::Run([this] { IntakeArmIntake(); })
+        .Until([this]() -> bool {
+          return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);
+        });
   }
   return RunOnce([this] { IntakeArmIntake(); });
 }
