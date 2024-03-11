@@ -108,7 +108,14 @@ constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
 
 constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
 constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
-constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+
+constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.6_m, 90_deg};
+constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.6_m, 90_deg};
+
+constexpr frc::Pose2d kBlueSourcePickUp{15.4_m, 1_m, -60_deg};
+constexpr frc::Pose2d kRedSourcePickUp{1.2_m, 1_m, -120_deg};
+
+
 
 
 }  // namespace OperatorConstants
@@ -191,7 +198,9 @@ class RobotContainer {
   frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
-  frc2::CommandPtr m_testAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
+
   
   
 

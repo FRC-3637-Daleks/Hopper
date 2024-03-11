@@ -97,10 +97,8 @@ frc2::CommandPtr Intake::IntakeRing() {
   return frc2::cmd::Either(
     IntakeArmIntakeCommand(true) //true
     .AndThen(AutoIntake()), 
-    .AndThen(AutoIntake()), 
     frc2::cmd::None(), //false
     [this] () {return !IsIntakeBreakBeamBroken();} //When broken = false
-  ).AndThen(IntakeArmSpeakerCommand()); //if true does not allow for inturupts
   ).AndThen(IntakeArmSpeakerCommand()); //if true does not allow for inturupts
 }
 
@@ -119,8 +117,6 @@ frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
     IntakeArmSpeakerCommand(true)//when ring
     .AndThen(IntakeOutSpeaker()) 
-    IntakeArmSpeakerCommand(true)//when ring
-    .AndThen(IntakeOutSpeaker()) 
     .WithTimeout(1_s), 
     frc2::cmd::None(), //no ring
     [this] () {return IsIntakeBreakBeamBroken();} //When broken = true
@@ -129,22 +125,16 @@ frc2::CommandPtr Intake::OutputToShooter() {
 
 frc2::CommandPtr Intake::IntakeIn() {
   return RunEnd([this] {
-  return RunEnd([this] {
     IntakeForward();
   },
   [this] { OffIntake(); });
 }
-
 frc2::CommandPtr Intake::IntakeOff() {
   return RunOnce([this] {OffIntake();});
 }
 
-frc2::CommandPtr Intake::IntakeOff() {
-  return RunOnce([this] {OffIntake();});
-}
 
 frc2::CommandPtr Intake::IntakeOut() {
-  return RunEnd([this] {
   return RunEnd([this] {
     IntakeBackward();
   },
@@ -152,7 +142,6 @@ frc2::CommandPtr Intake::IntakeOut() {
 }
 
 frc2::CommandPtr Intake::IntakeOutSpeaker() {
-  return this->RunEnd([this] {
   return this->RunEnd([this] {
     IntakeBackwardSpeaker();
   },
@@ -172,12 +161,6 @@ void Intake::ShootOnAMPVoid() {
   } 
 }
 
-void Intake::ShootOnAMPVoid() {
-  IntakeArmAMP();
-  if ((m_arm.GetSelectedSensorPosition()) >= IntakeConstants::IntakeArmLetGoPos) {
-    IntakeBackward();
-  } 
-}
 
 Intake::~Intake() {}
 
@@ -192,14 +175,6 @@ void Intake::InitVisualization(frc::Mechanism2d* mech)
     0_deg, // line angle
     6, // line width in pixels
     frc::Color8Bit{20, 200, 20} // RGB, green
-  );
-
-  m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
-    "arm motion magic",
-    IntakeConstants::kArmRadius.convert<units::feet>().value(),
-    0_deg,
-    2,
-    frc::Color8Bit{80, 80, 200} // blueish
   );
 
   m_mech_arm_mm_setpoint = m_mech_root->Append<frc::MechanismLigament2d>(
