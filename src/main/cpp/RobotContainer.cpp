@@ -109,6 +109,7 @@ void RobotContainer::ConfigureBindings() {
                    : OperatorConstants::kBlueSourcePose;
   };
 
+<<<<<<< HEAD
   constexpr auto targetCenterFarRNote = []() -> frc::Pose2d {
     return OperatorConstants::kCenterFarRNote;
   }; // implement live apriltag targeting
@@ -172,6 +173,10 @@ void RobotContainer::ConfigureBindings() {
           static_cast<std::function<units::angular_velocity::degrees_per_second_t()>>(pivot)
       )
   );
+=======
+  m_swerveController.Y()
+      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
+>>>>>>> origin/carolina-wip
   
 
   auto calculateDistance = [this]() -> units::meter_t {
@@ -201,6 +206,7 @@ void RobotContainer::ConfigureBindings() {
       return offset; //Return the horizontal distance as units::meter_t
   };
 
+<<<<<<< HEAD
   // m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
    m_shooter.ShooterCommand(
         static_cast<std::function<double()>>(flywheel),
@@ -220,6 +226,10 @@ void RobotContainer::ConfigureBindings() {
     units::meter_t offset =
         RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
     return offset; // Return the horizontal distance as units::meter_t
+=======
+  auto pivot = [this] () -> units::degrees_per_second_t {
+    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
+>>>>>>> origin/carolina-wip
   };
 
   constexpr auto flywheelAutoSpeed = []() { return 0.5; };

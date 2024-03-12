@@ -85,6 +85,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
   m_pivot.ConfigForwardSoftLimitEnable(true);
+<<<<<<< HEAD
   m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor -
                                           100);
   m_pivot.ConfigReverseSoftLimitEnable(true);
@@ -100,14 +101,31 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot,
                     ShooterConstants::kTimeoutMs);
   // Motors following + leading
+=======
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor);
+  m_pivot.ConfigReverseSoftLimitEnable(true);
+  m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor);
+
+
+  m_pivot.Config_kF(ShooterConstants::kPIDLoopIdx, ShooterConstants::kFPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kP(ShooterConstants::kPIDLoopIdx, ShooterConstants::kPPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kI(ShooterConstants::kPIDLoopIdx, ShooterConstants::kIPivot, ShooterConstants::kTimeoutMs);
+  m_pivot.Config_kD(ShooterConstants::kPIDLoopIdx, ShooterConstants::kDPivot, ShooterConstants::kTimeoutMs);
+//Motors following + leading
+>>>>>>> origin/carolina-wip
 
   m_pivot.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::MotionMagic, 0);
 
   // set Motion Magic settings
+<<<<<<< HEAD
   m_pivot.ConfigMotionCruiseVelocity(
       480); // 80 rps = 16384 ticks/100ms cruise velocity
   m_pivot.ConfigMotionAcceleration(
       1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
+=======
+  m_pivot.ConfigMotionCruiseVelocity(480); // 80 rps = 16384 ticks/100ms cruise velocity
+  m_pivot.ConfigMotionAcceleration(1280); // 160 rps/s = 32768 ticks/100ms/s acceleration
+>>>>>>> origin/carolina-wip
   m_pivot.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -119,6 +137,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 
   m_followMotor.SetInverted(false);
 
+<<<<<<< HEAD
   m_goal = 0_deg;
 
   m_map.insert(1.336_m, 43_deg);
@@ -127,6 +146,10 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));
+=======
+  m_goal = 0_deg; 
+  
+>>>>>>> origin/carolina-wip
 }
 
 Shooter::~Shooter() {}
@@ -205,7 +228,38 @@ float pow(float d, int power) {
   return temp;
 }
 
+<<<<<<< HEAD
 // Stop pivoting motor
+=======
+units::degree_t Shooter::DistanceToAngleError(std::function<units::feet_t> distance) {
+    return distance(units::math::tan(GetAnglePivot())) - 
+           16.1 * std::pow(distance() - 0.77 * units::math::cos(GetAnglePivot()), 2) / 
+           std::pow(note, 2) * std::pow(units::math::cos(GetAnglePivot()), 2) 
+           - 5.55;
+}
+units::degree_t DistanceToAngleBinarySearch() {
+
+    auto min = ShooterConstants::kMinAngle;
+    auto max = ShooterConstants::kMaxAngle;
+    auto pivot =  max + min / 2;
+    x = DistanceToAngleError();
+
+    for (int i = 0; i <= 10; i++) {
+        
+        x = (pivot);
+
+        if (x < 0) {
+            min = pivot;
+        } else {
+            max = pivot;
+        }
+    }
+
+     return pivot;
+}
+
+//Stop pivoting motor
+>>>>>>> origin/carolina-wip
 void Shooter::StopTalonMotor() {
   // Stops
   m_pivot.StopMotor();
@@ -239,10 +293,15 @@ double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
       m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
   // Puts the rotation in the correct scope for the incremental encoder.
   return ((frc::AngleModulus(rotation.Radians() - currentHeading) +
+<<<<<<< HEAD
            currentHeading) *
           ShooterConstants::kAngleToSensor)
              .value() +
          ShooterConstants::kMinAimSensor;
+=======
+          currentHeading) *
+         ShooterConstants::kAngleToSensor).value() + ShooterConstants::kMinAimSensor;
+>>>>>>> origin/carolina-wip
 }
 
 units::radian_t Shooter::GetAnglePivot() {
@@ -251,6 +310,7 @@ units::radian_t Shooter::GetAnglePivot() {
           ShooterConstants::kOffset);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 // frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle) {
@@ -308,6 +368,22 @@ frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, 
 
     return m_goal;
   }; 
+=======
+frc2::CommandPtr Shooter::ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity) {
+  
+  auto pivotAngle = [this, pivotVelocity] {
+  m_goal+= pivotVelocity() * 20_ms; 
+
+  if (m_goal < ShooterConstants::kMinAngle) {
+    m_goal = ShooterConstants::kMinAngle;
+  } else if(m_goal > ShooterConstants::kMaxAngle) {
+    m_goal = ShooterConstants::kMaxAngle;
+  };
+
+  return m_goal;
+  };
+
+>>>>>>> origin/carolina-wip
   
   return frc2::cmd::Parallel(
     FlywheelCommand(flywheelInput),
