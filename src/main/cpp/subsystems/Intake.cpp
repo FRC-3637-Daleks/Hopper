@@ -126,10 +126,21 @@ frc2::CommandPtr Intake::IntakeFromPlayerStation() {
 }
 
 frc2::CommandPtr Intake::ShootOnAMP() {
-
   return frc2::cmd::Either(
       IntakeArmSpeakerCommand(true) // when ring
           .AndThen(Run([this] { ShootOnAMPVoid(); }).WithTimeout(1.2_s))
+          .Until([this]() -> bool { // when we reach the AMP pos
+            return ((m_arm.GetSelectedSensorPosition() >=
+                         IntakeConstants::IntakeArmAMPPos - 10 &&
+                     m_arm.GetSelectedSensorPosition() <=
+                         IntakeConstants::IntakeArmAMPPos +
+                             30) && // when 10 before or 30 after AMP
+                    m_goal == IntakeConstants::IntakeArmAMPVelocityPos);
+          }) // And Goal is set to Velocity (only happen when AMP shot)
+          .AndThen(IntakeArmAMPCommand(false))
+          .AndThen(Run([this] {
+                     IntakeBackward();
+                   }).WithTimeout(0.6_s)) // Just so it runs for a little longer
           .AndThen(IntakeOff())
           .AndThen(AutoIntake())
           .WithTimeout(2_s)
@@ -176,7 +187,7 @@ frc2::CommandPtr Intake::TimedRelease() {
 }
 
 void Intake::ShootOnAMPVoid() {
-  IntakeArmAMP();
+  IntakeArmAMPVelocity();
   if ((m_arm.GetSelectedSensorPosition()) >=
       IntakeConstants::IntakeArmLetGoPos) {
     IntakeBackward();
@@ -305,6 +316,11 @@ bool Intake::IsAtWantedPosition(int goal) {
           IntakeConstants::kAllowableMarginOfError);
 }
 
+void Intake::IntakeArmAMPVelocity() {
+  m_goal = IntakeConstants::IntakeArmAMPVelocityPos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 40);
+}
+
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 
   if (wait) {
@@ -318,10 +334,9 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 
   if (wait) {
-    return this->Run([this] { IntakeArmSpeaker(); })
-        .Until([this]() -> bool {
-          return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);
-        });
+    return this->Run([this] { IntakeArmSpeaker(); }).Until([this]() -> bool {
+      return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);
+    });
   }
   return RunOnce([this] { IntakeArmSpeaker(); });
 }
@@ -329,9 +344,19 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
 
   if (wait) {
-    return this->Run([this] { IntakeArmIntake(); })
+    return this->Run([this] { IntakeArmIntake(); }).Until([this]() -> bool {
+      return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);
+    });
+  }
+  return RunOnce([this] { IntakeArmIntake(); });
+}
+
+frc2::CommandPtr Intake::IntakeArmAMPVelocityCommand(bool wait) {
+
+  if (wait) {
+    return this->Run([this] { IntakeArmAMPVelocity(); })
         .Until([this]() -> bool {
-          return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);
+          return IsAtWantedPosition(IntakeConstants::IntakeArmAMPPos);
         });
   }
   return RunOnce([this] { IntakeArmIntake(); });

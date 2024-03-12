@@ -42,6 +42,7 @@ constexpr int kBreakbeamPort = 0;
 constexpr int IntakeArmIntakePos = 995; // -
 constexpr int IntakeArmAMPPos =
     660; // maybe make forward to catch the note if miss
+  constexpr int IntakeArmAMPVelocityPos = IntakeArmAMPPos - 10;
 constexpr int IntakeArmSpeakerPos = 441;
 // constexpr int IntakeArmPreAMPPos = 600;
 constexpr int IntakeArmLetGoPos = 560; // Maybe make later
@@ -216,6 +217,8 @@ public:
   // Moves arm to AMP using motion magic (also sets goal (for visualization))
   void IntakeArmAMP();
 
+  void IntakeArmAMPVelocity();
+
   // Moves arm to speaker using motion magic (also sets goal (for
   // visualization))
   void IntakeArmSpeaker();
@@ -229,6 +232,8 @@ public:
   // Uses corresponding void function to move to AMP position, if wait is true,
   // waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
+
+  frc2::CommandPtr IntakeArmAMPVelocityCommand(bool wait = false);
   // waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
   // Uses corresponding void function to move to  ground, if wait is true,
