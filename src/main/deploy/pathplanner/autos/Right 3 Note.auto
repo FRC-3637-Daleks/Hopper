@@ -51,12 +51,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseR to IntakeCloseR"
@@ -66,12 +60,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -101,12 +89,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
@@ -122,12 +104,6 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCenterFarR to ShootCloseR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
           }
         },
         {
