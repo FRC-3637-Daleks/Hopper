@@ -1,5 +1,5 @@
 {
-  "Keyboard 1 Settings": {
+  "Keyboard 0 Settings": {
     "window": {
       "visible": true
     }
@@ -46,7 +46,7 @@
           "key270": 324,
           "key315": 322,
           "key45": 329,
-          "key90": 326
+          "key90": 54
         }
       ],
       "povCount": 1
@@ -118,11 +118,7 @@
   ],
   "robotJoysticks": [
     {
-      "guid": "78696e70757401000000000000000000",
-      "useGamepad": true
-    },
-    {
-      "guid": "Keyboard1"
+      "guid": "Keyboard0"
     }
   ]
 }
