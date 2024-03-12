@@ -19,37 +19,37 @@
 
 #include <numbers>
 
+namespace ModuleConstants
+{
 
+  constexpr double NeutralDeadBand = 0.01;
+  constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
+  constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
+  constexpr auto kCurrentLimitPeriod = 0.04_s;   // Can exceed limit for 40ms seconds
 
-namespace ModuleConstants {
+  // Best defense against current
+  constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
-constexpr double NeutralDeadBand = 0.01;
-constexpr double kDriveMotorCurrentLimit = 50; // Up to 80 A is okay
-constexpr double kSteerMotorCurrentLimit = 50; // An educated guess.
-constexpr auto kCurrentLimitPeriod = 0.2_s; // Can exceed limit for 0.2 seconds
+  constexpr auto kWheelDiameter = 4_in;
+  constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
+  constexpr auto kDriveEncoderDistancePerRevolution =
+      kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
+  constexpr auto kWheelMoment = 0.015_kg_sq_m;
 
-// Best defense against current
-constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
+  constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
-constexpr auto kWheelDiameter = 4_in;
-constexpr double kDriveEncoderReduction = 6.75;  // reduction in drive motor
-constexpr auto kDriveEncoderDistancePerRevolution =
-    kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
-constexpr auto kWheelMoment = 0.015_kg_sq_m;
+  constexpr double kSteerGearReduction = 150.0 / 7.0;
+  constexpr auto kSteerMoment = 0.005_kg_sq_m;
 
-constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
-
-constexpr double kSteerGearReduction = 150.0/7.0;
-constexpr auto kSteerMoment = 0.005_kg_sq_m;
-
-// Values measured with the drivetrain suspended.
-constexpr auto kPhysicalMaxSpeed = 15.7_fps;
+  // Values measured with the drivetrain suspended.
+  constexpr auto kPhysicalMaxSpeed = 15.7_fps;
 } // namespace ModuleConstants
 
 // forward declaration
 class SwerveModuleSim;
 
-struct PIDCoefficients {
+struct PIDCoefficients
+{
   double kP, kI, kD, kFF, kIz;
 };
 
@@ -58,12 +58,13 @@ struct PIDCoefficients {
  * (both Falcon 500s/Krakens/Talon FXs).
  * Additionally, there is an absolute encoder (CANCoder) which regardless of
  * start position, reports the exact heading of the wheels.
- * Each module can be commanded to a certain state, that is, 
+ * Each module can be commanded to a certain state, that is,
  * its wheel will be driven at the specified velocity in the specified direction.
  * The Drivetrain subsystem makes use of SwerveModule objects so that it doesn't
  * need to deal with directly commanding each motor.
  */
-class SwerveModule {
+class SwerveModule
+{
 public:
   // The ctor of the SwerveModule class.
   SwerveModule(const std::string name, const int driveMotorId,
@@ -79,8 +80,8 @@ public:
 
   // This one is even more efficient than RefreshSignals as it groups ALL
   // swerve module signals into a single call
-  template<typename... T>
-  static void RefreshAllSignals(T&... modules);
+  template <typename... T>
+  static void RefreshAllSignals(T &...modules);
 
   // Returns the meters driven based on encoder reading.
   units::meter_t GetModuleDistance();
@@ -100,7 +101,7 @@ public:
   void CoastMode(bool coast);
 
   void SetEncoderOffset();
-  
+
   void ZeroAbsEncoders();
 
   void SyncEncoders();
@@ -128,7 +129,7 @@ private:
   // Keeps track of the module heading between power cycles.
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
-private:  // signal objects to cache
+private: // signal objects to cache
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition;
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t> m_driveVelocity;
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_steerPosition;
@@ -140,14 +141,13 @@ private:
 };
 
 // Template method must be defined in .h
-template<typename... T>
-void SwerveModule::RefreshAllSignals(T&... modules)
+template <typename... T>
+void SwerveModule::RefreshAllSignals(T &...modules)
 {
   // This passes all 4N signals to one call to RefreshAll
   ctre::phoenix6::BaseStatusSignal::RefreshAll(
-    modules.m_drivePosition...,
-    modules.m_driveVelocity...,
-    modules.m_steerPosition...,
-    modules.m_steerVelocity...
-  );
+      modules.m_drivePosition...,
+      modules.m_driveVelocity...,
+      modules.m_steerPosition...,
+      modules.m_steerVelocity...);
 }

@@ -1,6 +1,6 @@
 {
   "HALProvider": {
-    "Timing": {
+    "Other Devices": {
       "window": {
         "visible": false
       }
@@ -9,18 +9,61 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Drivebase": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/Mechanisms": "Mechanism2d",
+      "/SmartDashboard/Select Auton": "String Chooser",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Shooter": "Subsystem",
+      "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
+      "/SmartDashboard/Drivebase": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
+        "FL": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "FR": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "Hopper": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "RL": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "RR": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "Robot": {
+          "style": "Box/Image"
+        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
+        "simulation": {
+          "arrows": false,
+          "style": "Hidden"
+        },
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Intake": {
         "window": {
           "visible": true
         }
@@ -29,21 +72,27 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/SendableChooser[0]": {
+        "window": {
+          "name": "Select Auton",
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "SmartDashboard": {
-        "Field": {
-          "double[]##v_/SmartDashboard/Field/simulation": {
+        "Swerve": {
+          "TurnPIDController": {
             "open": true
-          }
-        },
-        "Shooter": {
+          },
           "open": true
         },
         "open": true
@@ -51,6 +100,12 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
     "visible": true
   }
 }

@@ -1,9 +1,4 @@
 {
-  "Keyboard 0 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "Keyboard 1 Settings": {
     "window": {
       "visible": true
@@ -38,16 +33,20 @@
         67,
         86,
         66,
-        -1,
-        -1,
+        39,
+        47,
         82
       ],
       "povConfig": [
         {
+          "key0": 328,
           "key135": 323,
           "key180": 50,
           "key225": 49,
-          "key45": 329
+          "key270": 324,
+          "key315": 322,
+          "key45": 329,
+          "key90": 326
         }
       ],
       "povCount": 1
@@ -74,12 +73,15 @@
         }
       ],
       "axisCount": 6,
-      "buttonCount": 4,
+      "buttonCount": 7,
       "buttonKeys": [
         77,
         44,
         46,
-        47
+        -1,
+        -1,
+        -1,
+        -1
       ],
       "povConfig": [
         {

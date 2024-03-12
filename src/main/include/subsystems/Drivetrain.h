@@ -4,6 +4,7 @@
 
 #include <AHRS.h>
 #include <cmath>
+#include <frc/PowerDistribution.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -11,7 +12,6 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/PowerDistribution.h>
 
 #include <frc/controller/ProfiledPIDController.h>
 
@@ -21,24 +21,24 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 15_fps;
-constexpr auto kMaxTeleopSpeed = 15_fps;
+constexpr auto kMaxSpeed = 15.7_fps;
+constexpr auto kMaxTeleopSpeed = 15.7_fps;
 
 constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 // NOTE: Guess value!
 
-constexpr double kPTurn = 0.061;// 0.0605 
-constexpr double kITurn = 0.00; // 0.001 
-constexpr double kDTurn = 0.0;  // 0.03  
-
+constexpr double kPTurn = 0.071; // 0.061
+constexpr double kITurn = 0.00;  // 0.00
+constexpr double kDTurn = 0.00; // 0.0
 
 // Swerve Constants
 constexpr auto kTrackWidth =
     25_in; // Distance between centers of right and left wheels.
 constexpr auto kWheelBase =
     25_in; // Distance between centers of front and back wheels.
+const auto kRadius = 19.5_in; // 19.5 inches
 
 constexpr int kFrontLeftDriveMotorId = 1;
 constexpr int kRearLeftDriveMotorId = 3;
@@ -54,7 +54,6 @@ constexpr int kFrontLeftAbsoluteEncoderChannel = 9;
 constexpr int kRearLeftAbsoluteEncoderChannel = 10;
 constexpr int kFrontRightAbsoluteEncoderChannel = 11;
 constexpr int kRearRightAbsoluteEncoderChannel = 12;
-
 
 // XXX Roughly estimated values, needs to be properly tuned.
 constexpr struct PIDCoefficients kFrontLeftDriveMotorPIDCoefficients {
@@ -123,13 +122,16 @@ public:
   // set, the translation is relative to the field instead of the robot heading.
   void Drive(units::meters_per_second_t forwardSpeed,
              units::meters_per_second_t strafeSpeed,
-             units::radians_per_second_t angularSpeed, bool fieldRelative);
+             units::radians_per_second_t angularSpeed, bool fieldRelative,
+             bool isRed);
 
   // Sets the state of each swerve module.
   void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
 
   // Returns the heading of the robot.
   frc::Rotation2d GetHeading();
+
+  frc::Rotation2d GetGyroHeading();
 
   // Zeroes the robot heading.
   void ZeroHeading();
@@ -148,6 +150,8 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
+  // Returns Current Chassis Speed
+  frc::ChassisSpeeds GetSpeed();
   // Resets the odometry using the given a field-relative pose using current
   // gyro angle.
   void ResetOdometry(const frc::Pose2d &pose);
@@ -168,10 +172,11 @@ public:
 
   // Display useful information on Shuffleboard.
   void UpdateDashboard();
+  frc::Field2d &GetField() { return m_field; }
 
   // Drive the robot with swerve controls.
-  frc2::CommandPtr SwerveCommand(
-                std::function<units::meters_per_second_t()> forward,
+  frc2::CommandPtr
+  SwerveCommand(std::function<units::meters_per_second_t()> forward,
                 std::function<units::meters_per_second_t()> strafe,
                 std::function<units::revolutions_per_minute_t()> rot);
 
@@ -179,13 +184,14 @@ public:
   frc2::CommandPtr SwerveCommandFieldRelative(
       std::function<units::meters_per_second_t()> forward,
       std::function<units::meters_per_second_t()> strafe,
-      std::function<units::revolutions_per_minute_t()> rot);
+      std::function<units::revolutions_per_minute_t()> rot,
+      std::function<bool()> isRed);
 
-
-frc2::CommandPtr
+  frc2::CommandPtr
   SwerveSlowCommand(std::function<units::meters_per_second_t()> forward,
-                std::function<units::meters_per_second_t()> strafe,
-                std::function<units::revolutions_per_minute_t()> rot);
+                    std::function<units::meters_per_second_t()> strafe,
+                    std::function<units::revolutions_per_minute_t()> rot,
+                    std::function<bool()> isRed);
   // Drive the robot to pose.
   // frc2::CommandPtr DriveToPoseCommand(frc::Pose2d targetPose);
 
@@ -207,13 +213,16 @@ frc2::CommandPtr
   frc2::CommandPtr BrakeCommand();
 
   // Add Vision Pose to SwerveDrivePoseEstimator.
-  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp);
+  void AddVisionPoseEstimate(frc::Pose2d pose, units::second_t timestamp,
+                             wpi::array<double, 3U> visionMeasurementStdDevs);
 
   frc2::CommandPtr TurnToAngleCommand(units::degree_t angle);
 
-  frc2::CommandPtr ZTargetPoseCommand(std::function<frc::Pose2d()> pose, 
-    std::function<units::meters_per_second_t()> forward,
-    std::function<units::meters_per_second_t()> strafe);
+  frc2::CommandPtr
+  ZTargetPoseCommand(std::function<frc::Pose2d()> pose,
+                     std::function<units::meters_per_second_t()> forward,
+                     std::function<units::meters_per_second_t()> strafe,
+                     bool shooterSide, std::function<bool()> isRed);
 
 private:
   SwerveModule m_frontLeft;
@@ -229,12 +238,15 @@ private:
   // Field widget for Shuffleboard.
   frc::Field2d m_field;
 
-  frc::PowerDistribution m_pdh{25,
-                               frc::PowerDistribution::ModuleType::kRev};
+  frc::PowerDistribution m_pdh{25, frc::PowerDistribution::ModuleType::kRev};
 
-  frc::ProfiledPIDController<units::degree> m_turnPID{DriveConstants::kPTurn, DriveConstants::kITurn, DriveConstants::kDTurn, {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
+  frc::ProfiledPIDController<units::degree> m_turnPID{
+      DriveConstants::kPTurn,
+      DriveConstants::kITurn,
+      DriveConstants::kDTurn,
+      {DriveConstants::kMaxTurnRate, DriveConstants::kMaxTurnAcceleration}};
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
-  
+
   frc::Pose2d m_zTarget;
 
 private:

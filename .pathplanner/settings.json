@@ -1,0 +1,40 @@
+{
+  "robotWidth": 0.91,
+  "robotLength": 0.91,
+  "holonomicMode": true,
+  "pathFolders": [
+    "BasicAuton",
+    "CenterSub to PrepIntakeCenter",
+    "CenterSub to PrepIntakeClose",
+    "IntakeCenter to CenterSub",
+    "IntakeCenter to LeftSub",
+    "IntakeCenter to RightSub",
+    "IntakeCenterC to ShootClose",
+    "IntakeCenterFarL to ShootClose",
+    "IntakeCenterFarR to ShootClose",
+    "IntakeCenterL to ShootClose",
+    "IntakeCenterR to ShootClose",
+    "IntakeClose to CenterSub",
+    "IntakeClose to LeftSub",
+    "IntakeClose to RightSub",
+    "LeftSub to PrepIntakeCenter",
+    "LeftSub to PrepIntakeClose",
+    "AMP Line Up",
+    "PrepIntakeCenter to IntakeCenter",
+    "PrepIntakeClose to IntakeClose",
+    "RightSub to PrepIntakeCenter",
+    "RightSub to PrepIntakeClose",
+    "ShootCloseC to PrepIntakeCenter",
+    "ShootCloseL to PrepIntakeCenter",
+    "ShootCloseR to PrepIntakeCenter",
+    "Start to Sub"
+  ],
+  "autoFolders": [
+    "First Comp Autos"
+  ],
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 5.0,
+  "defaultMaxAngVel": 120.0,
+  "defaultMaxAngAccel": 180.0,
+  "maxModuleSpeed": 5.03
+}
