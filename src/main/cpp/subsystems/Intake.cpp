@@ -79,9 +79,9 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
 
   // set Motion Magic settings
   m_arm.ConfigMotionCruiseVelocity(
-      180); // 80 rps = 16384 ticks/100ms cruise velocity
+      130); // 80 rps = 16384 ticks/100ms cruise velocity
   m_arm.ConfigMotionAcceleration(
-      1800); // 160 rps/s = 32768 ticks/100ms/s acceleration
+      1300); // 160 rps/s = 32768 ticks/100ms/s acceleration
   m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
@@ -308,7 +308,7 @@ bool Intake::IsAtWantedPosition(int goal) {
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 
   if (wait) {
-    return frc2::cmd::Run([this] { IntakeArmAMP(); }).Until([this]() -> bool {
+    return this->Run([this] { IntakeArmAMP(); }).Until([this]() -> bool {
       return IsAtWantedPosition(IntakeConstants::IntakeArmAMPPos);
     });
   }
@@ -318,7 +318,7 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 
   if (wait) {
-    return frc2::cmd::Run([this] { IntakeArmSpeaker(); }, {this})
+    return this->Run([this] { IntakeArmSpeaker(); })
         .Until([this]() -> bool {
           return IsAtWantedPosition(IntakeConstants::IntakeArmSpeakerPos);
         });
@@ -329,7 +329,7 @@ frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
 frc2::CommandPtr Intake::IntakeArmIntakeCommand(bool wait) {
 
   if (wait) {
-    return frc2::cmd::Run([this] { IntakeArmIntake(); })
+    return this->Run([this] { IntakeArmIntake(); })
         .Until([this]() -> bool {
           return IsAtWantedPosition(IntakeConstants::IntakeArmIntakePos);
         });

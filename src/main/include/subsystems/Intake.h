@@ -42,7 +42,7 @@ constexpr int kBreakbeamPort = 0;
 constexpr int IntakeArmIntakePos = 995; // -
 constexpr int IntakeArmAMPPos =
     660; // maybe make forward to catch the note if miss
-constexpr int IntakeArmSpeakerPos = 450;
+constexpr int IntakeArmSpeakerPos = 441;
 // constexpr int IntakeArmPreAMPPos = 600;
 constexpr int IntakeArmLetGoPos = 560; // Maybe make later
 
@@ -55,9 +55,13 @@ constexpr int kPIDLoopIdx = 0;
 // timeout for the PID loop
 constexpr int kTimeoutMs = 30;
 
+constexpr double kNominalOutputFwd = 0.1;
+constexpr double kNominalOutputRev = 0;
+constexpr double kNeutralDeadband = 0.05;
+
 // pid configurations
 constexpr float kF = 4.0;
-constexpr float kP = 1.5;
+constexpr float kP = 2.0;
 constexpr float kI = 0.0;
 constexpr float kD = 0.0;
 
