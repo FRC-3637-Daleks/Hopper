@@ -69,8 +69,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
   m_pivot.ConfigForwardSoftLimitEnable(true);
-  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor -
-                                          100);
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor - 50);
   m_pivot.ConfigReverseSoftLimitEnable(true);
   m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor +
                                           300);
@@ -103,11 +102,27 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 
   m_followMotor.SetInverted(false);
 
+  m_leadMotor.SetOpenLoopRampRate(0.1);
+  m_followMotor.SetOpenLoopRampRate(0.1);
+
+  m_leadMotor.SetClosedLoopRampRate(0.1);
+  m_followMotor.SetClosedLoopRampRate(0.1);
+
+  // m_leadMotor.SetSmartCurrentLimit(5);
+  // m_followMotor.SetSmartCurrentLimit(5);
+
   m_goal = 0_deg;
 
   m_map.insert(1.336_m, 43_deg);
   m_map.insert(2.439_m, 21.477_deg);
   m_map.insert(3.3_m, 18_deg);
+  // m_map.insert(3.408470_m, 21.534357_deg);
+  // m_map.insert(3.949039_m, 12.174549_deg);
+  m_map.insert(3.231028_m, 20.455068_deg);
+  m_map.insert(1.424465_m, 41.296232_deg);
+  m_map.insert(2.388467_m, 27.834950_deg);
+
+  m_map.insert(3.141301_m, 23.401145_deg);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));
@@ -338,12 +353,11 @@ frc2::CommandPtr Shooter::ShooterVelocityCommand(
                              PivotAngleCommand(pivotAngle));
 }
 
-frc2::CommandPtr Shooter::ShooterCommand(
-    std::function<double()> flywheelInput,
-    std::function<units::meter_t()> calculateDistance) {
-  return frc2::cmd::Parallel(
-      FlywheelCommand(flywheelInput),
-      PivotAngleDistanceCommand(calculateDistance));
+frc2::CommandPtr
+Shooter::ShooterCommand(std::function<double()> flywheelInput,
+                        std::function<units::meter_t()> calculateDistance) {
+  return frc2::cmd::Parallel(FlywheelCommand(flywheelInput),
+                             PivotAngleDistanceCommand(calculateDistance));
 }
 
 frc2::CommandPtr

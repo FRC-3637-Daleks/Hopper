@@ -77,7 +77,7 @@ constexpr auto kMinAngle = 0_deg;
 constexpr auto kMaxAngle = 80_deg;
 constexpr auto kMinAimSensor = 935;
 constexpr auto kMaxAimSensor = 51;
-constexpr auto kMinIdeal = 740;
+constexpr auto kMinIdeal = 850;
 constexpr auto kMaxIdeal = 388;
 constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);
@@ -118,7 +118,7 @@ public:
   units::degree_t DistanceToAngle(units::foot_t distance);
 
   units::degree_t DistanceToAngleError(units::foot_t distance,
-                                                units::radian_t angle);
+                                       units::radian_t angle);
 
   units::degree_t DistanceToAngleBinarySearch(units::foot_t distance);
 
@@ -143,11 +143,11 @@ public:
   ShooterCommand(std::function<double()> flywheelInput,
                  std::function<units::meter_t()> calculateDistance);
 
-  frc2::CommandPtr
-  ShooterVelocityDistanceCommand(std::function<double()> flywheelInput,
-                 std::function<units::meter_t()> calculateDistance,
-                 std::function<units::feet_per_second_t()> fwd_velocity,
-                 std::function<units::feet_per_second_t()> strafe_velocity);
+  frc2::CommandPtr ShooterVelocityDistanceCommand(
+      std::function<double()> flywheelInput,
+      std::function<units::meter_t()> calculateDistance,
+      std::function<units::feet_per_second_t()> fwd_velocity,
+      std::function<units::feet_per_second_t()> strafe_velocity);
 
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 
