@@ -45,22 +45,6 @@ public:
   frc::sim::SingleJointedArmSim m_armModel;
 };
 
-units::radian_t distance_adjustment(units::feet_per_second_t robot_velocity,
-                                    units::foot_t distance,
-                                    units::radian_t thetaf) {
-  constexpr units::feet_per_second_t note_velocity =
-      1_fps; // not correct, also move to constant
-
-  return units::radian_t{
-      note_velocity.value() *
-          ((robot_velocity.value() +
-            (note_velocity.value() * std::cos(thetaf.value()))) /
-           (distance.value() - 0.77 * (std::cos(thetaf.value())))) *
-          std::sin(thetaf.value()) -
-      ((0.5) * (32.15) * (distance.value() * distance.value())) - 5.55 -
-      0.77 * (std::sin(thetaf.value()))};
-}
-
 Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   // Implementation of subsystem constructor goes here.
   // Needs arguments to work between power cycles!!
@@ -234,6 +218,88 @@ units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
   return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
+units::degree_t Shooter::DistanceToAngleError(units::foot_t distance,
+                                              units::radian_t angle) {
+  return units::degree_t{
+      distance.value() * (units::math::tan(angle).value()) -
+      ((16.1 * std::pow(distance.value() - 0.77 * std::cos(angle.value()), 2)) /
+       (std::pow((ShooterConstants::kNoteVelocity / 1_fps).value(), 2) *
+        std::pow(std::cos(angle.value()), 2))) -
+      5.55};
+}
+units::degree_t Shooter::DistanceToAngleBinarySearch(units::foot_t distance) {
+
+  auto min = ShooterConstants::kMinAngle;
+  auto max = ShooterConstants::kMaxAngle;
+  auto pivot = max + min / 2;
+  auto x = DistanceToAngleError(distance, pivot);
+
+  for (int i = 0; i <= 10; i++) {
+
+    if (x.value() < 0) {
+      min = pivot;
+    } else {
+      max = pivot;
+    }
+    pivot = max + min / 2;
+
+    x = DistanceToAngleError(distance, pivot);
+  }
+
+  return pivot;
+}
+
+double Shooter::distance_adjustment(units::feet_per_second_t robot_velocity,
+                                    units::foot_t distance,
+                                    units::radian_t thetaf) {
+  constexpr units::feet_per_second_t note_velocity =
+      ShooterConstants::kNoteVelocity; // not correct, also move to constant
+
+  auto t = (robot_velocity.value() +
+            (note_velocity.value() * std::cos(thetaf.value()))) /
+           (distance.value() - 0.77 * (std::cos(thetaf.value())));
+
+  return note_velocity.value() * t * std::sin(thetaf.value()) -
+         ((0.5) * (32.15) * (t * t)) - 5.55 - 0.77 * (std::sin(thetaf.value()));
+}
+
+units::foot_t Shooter::DistanceAdjustmentBinarySearch(
+    units::feet_per_second_t robot_velocity, units::foot_t distance,
+    units::feet_per_second_t perp_velocity) {
+  auto min = ShooterConstants::kMinAngle;
+  auto max = ShooterConstants::kMaxAngle;
+  units::radian_t pivot = max + min / 2;
+  auto x = distance_adjustment(robot_velocity, distance, pivot);
+
+  for (int i = 0; i <= 10; i++) {
+
+    if (x < 0) {
+      min = pivot;
+    } else {
+      max = pivot;
+    }
+    pivot = max + min / 2;
+
+    x = distance_adjustment(robot_velocity, distance, pivot);
+  }
+  return 0_m;
+
+  double t = (robot_velocity.value() +
+              ((ShooterConstants::kNoteVelocity / 1_fps).value() *
+               std::cos(pivot.value()))) /
+             (distance.value() - 0.77 * (std::cos(pivot.value())));
+
+  units::foot_t df =
+      units::foot_t{robot_velocity.value() * t * std::cos(pivot.value())};
+
+  // Should be using perpendicular velocity to complement zTargeting.
+  auto dAdjust =
+      df / std::cos(std::asin(
+               (perp_velocity / ShooterConstants::kNoteVelocity).value()));
+
+  return units::foot_t{robot_velocity.value() * t * std::cos(pivot.value())};
+}
+
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
       m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
@@ -272,11 +338,12 @@ frc2::CommandPtr Shooter::ShooterVelocityCommand(
                              PivotAngleCommand(pivotAngle));
 }
 
-frc2::CommandPtr
-Shooter::ShooterCommand(std::function<double()> flywheelInput,
-                        std::function<units::meter_t()> calculateDistance) {
-  return frc2::cmd::Parallel(FlywheelCommand(flywheelInput),
-                             PivotAngleDistanceCommand(calculateDistance));
+frc2::CommandPtr Shooter::ShooterCommand(
+    std::function<double()> flywheelInput,
+    std::function<units::meter_t()> calculateDistance) {
+  return frc2::cmd::Parallel(
+      FlywheelCommand(flywheelInput),
+      PivotAngleDistanceCommand(calculateDistance));
 }
 
 frc2::CommandPtr
@@ -314,6 +381,27 @@ Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
         frc::SmartDashboard::PutNumber(
             "Shooter/Pivot Encoder Goal",
             ToTalonUnits(DistanceToAngle(distance())));
+      },
+      {this});
+}
+
+frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
+    std::function<units::foot_t()> distance,
+    std::function<units::feet_per_second_t()> fwd_velocity,
+    std::function<units::feet_per_second_t()> strafe_velocity) {
+  return frc2::cmd::Run(
+      [this, distance, fwd_velocity, strafe_velocity]() {
+        // auto angle =
+        // DistanceToAngleBinarySearch(DistanceAdjustmentBinarySearch(
+        //         fwd_velocity(), distance(), strafe_velocity()));
+        auto angle = DistanceToAngleBinarySearch(distance());
+        SetPivotMotor(ToTalonUnits(angle));
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.",
+                                       distance().value());
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal",
+                                       angle.value());
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal",
+                                       ToTalonUnits(angle));
       },
       {this});
 }

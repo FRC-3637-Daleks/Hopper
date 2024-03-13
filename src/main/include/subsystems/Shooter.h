@@ -81,6 +81,8 @@ constexpr auto kMinIdeal = 740;
 constexpr auto kMaxIdeal = 388;
 constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);
+
+constexpr auto kNoteVelocity = 15.7_mps;
 } // namespace ShooterConstants
 
 // forward declaration
@@ -115,6 +117,19 @@ public:
 
   units::degree_t DistanceToAngle(units::foot_t distance);
 
+  units::degree_t DistanceToAngleError(units::foot_t distance,
+                                                units::radian_t angle);
+
+  units::degree_t DistanceToAngleBinarySearch(units::foot_t distance);
+
+  double distance_adjustment(units::feet_per_second_t robot_velocity,
+                             units::foot_t distance, units::radian_t thetaf);
+
+  units::foot_t
+  DistanceAdjustmentBinarySearch(units::feet_per_second_t robot_velocity,
+                                 units::foot_t distance,
+                                 units::feet_per_second_t perp_velocity);
+
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
   frc2::CommandPtr ShooterVelocityCommand(
@@ -128,6 +143,12 @@ public:
   ShooterCommand(std::function<double()> flywheelInput,
                  std::function<units::meter_t()> calculateDistance);
 
+  frc2::CommandPtr
+  ShooterVelocityDistanceCommand(std::function<double()> flywheelInput,
+                 std::function<units::meter_t()> calculateDistance,
+                 std::function<units::feet_per_second_t()> fwd_velocity,
+                 std::function<units::feet_per_second_t()> strafe_velocity);
+
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 
   frc2::CommandPtr
@@ -135,6 +156,11 @@ public:
 
   frc2::CommandPtr
   PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
+
+  frc2::CommandPtr PivotAngleVelocityDistanceCommand(
+      std::function<units::foot_t()> distance,
+      std::function<units::feet_per_second_t()> fwd_velocity,
+      std::function<units::feet_per_second_t()> strafe_velocity);
 
   // initializes Lead + Follow motors (makes motors run in parallel)
   const int leadDeviceID = 1, followDeviceID = 2;

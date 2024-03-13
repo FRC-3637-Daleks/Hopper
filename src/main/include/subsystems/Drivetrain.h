@@ -89,6 +89,9 @@ constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
 constexpr frc::Pose2d kStagePose{4.869_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
 
+// estimation
+constexpr auto kNoteVelocity = 50_fps;
+
 } // namespace DriveConstants
 
 // Forward Declaration

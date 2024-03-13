@@ -318,7 +318,7 @@ bool Intake::IsAtWantedPosition(int goal) {
 
 void Intake::IntakeArmAMPVelocity() {
   m_goal = IntakeConstants::IntakeArmAMPVelocityPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 40);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 50);
 }
 
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
