@@ -117,24 +117,6 @@ public:
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
->>>>>>> origin/carolina-wip
-
-  // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
-
-  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
-
-
-  frc2::CommandPtr ShooterVelocityCommand(std::function<double()> flywheelInput, std::function<units::angular_velocity::degrees_per_second_t()> pivotVelocity);
-  // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::degree_t()> pivotAngle);
-
-
-  frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput, std::function<units::meter_t()> calculateDistance);
-  
-=======
   frc2::CommandPtr ShooterVelocityCommand(
       std::function<double()> flywheelInput,
       std::function<units::angular_velocity::degrees_per_second_t()>
@@ -146,28 +128,15 @@ public:
   ShooterCommand(std::function<double()> flywheelInput,
                  std::function<units::meter_t()> calculateDistance);
 
->>>>>>> origin/visvam-wip
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
 
   frc2::CommandPtr
   PivotAngleCommand(std::function<units::degree_t()> pivotAngle);
 
-<<<<<<< HEAD
-
-  frc2::CommandPtr PivotAngleDistanceCommand(units::meter_t distance);
-
-  frc2::CommandPtr AimSubwoofer(units::meter_t distance);
-
-  frc2::CommandPtr PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
-
-
- //initializes Lead + Follow motors (makes motors run in parallel) 
-=======
   frc2::CommandPtr
   PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
 
   // initializes Lead + Follow motors (makes motors run in parallel)
->>>>>>> origin/visvam-wip
   const int leadDeviceID = 1, followDeviceID = 2;
 
   rev::CANSparkFlex m_leadMotor{ShooterConstants::kFlywheelLeadMotorPort,
@@ -175,14 +144,8 @@ public:
   rev::CANSparkFlex m_followMotor{ShooterConstants::kFlywheelFollowMotorPort,
                                   rev::CANSparkFlex::MotorType::kBrushless};
 
-<<<<<<< HEAD
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{
       ShooterConstants::kPivotMotorPort};
-=======
-  ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_pivot{ShooterConstants::kPivotMotorPort};
-  
-  units::degree_t m_goal;
->>>>>>> origin/carolina-wip
 
   units::degree_t m_goal;
 

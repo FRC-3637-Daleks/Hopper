@@ -109,7 +109,6 @@ void RobotContainer::ConfigureBindings() {
                    : OperatorConstants::kBlueSourcePose;
   };
 
-<<<<<<< HEAD
   constexpr auto targetCenterFarRNote = []() -> frc::Pose2d {
     return OperatorConstants::kCenterFarRNote;
   }; // implement live apriltag targeting
@@ -166,54 +165,9 @@ void RobotContainer::ConfigureBindings() {
                                              OperatorConstants::kDeadband);
   };
 
-
-  m_shooter.SetDefaultCommand(
-      m_shooter.ShooterCommand(
-          static_cast<std::function<double()>>(flywheel),
-          static_cast<std::function<units::angular_velocity::degrees_per_second_t()>>(pivot)
-      )
-  );
-=======
-  m_swerveController.Y()
-      .WhileTrue(m_swerve.SwerveSlowCommand(fwd,strafe,rot));
->>>>>>> origin/carolina-wip
-  
-
   auto calculateDistance = [this]() -> units::meter_t {
     frc::Pose2d RobotPose2d = m_swerve.GetPose();
 
-<<<<<<< HEAD
-      // Get the pose of the speaker AprilTag based on its ID
-      frc::Pose3d TagPose3d = m_aprilTagFieldLayout.GetTagPose(id).value();
-      // SpeakerPose = frc::Pose3d{SpeakerPose.X(), SpeakerPose.Y(), SpeakerPose.Z() + 0.5_m, SpeakerPose.Rotation()};
-      frc::Pose2d SpeakerPose2d = TagPose3d.ToPose2d();
-      // auto it1 = m_aprilTagFieldLayout.GetTagPose(id);
-      // if (it1.has_value()) {
-      //     SpeakerPose = it1.value();
-      // } else {
-      //     // Handle case where neither tag is found
-      //     SpeakerPose = frc::Pose3d();
-      // }
-      
-      units::meter_t z = 1.5_ft; // estimation of shooter height
-      
-      // Construct Pose3d using the constructor that takes a Pose2d
-      frc::Pose3d RobotPose3d{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), z, frc::Rotation3d{0_deg, RobotPose2d.Rotation().Degrees(), 0_deg}};
-      frc::Pose2d RobotPose2dConverted{RobotPose2d.Translation().X(), RobotPose2d.Translation().Y(), RobotPose2d.Rotation()};
-      // frc::SmartDashboard::PutData(RobotPose3d);
-      // Calculate the horizontal distance between RobotPose and SpeakerPose
-      units::meter_t offset = RobotPose2dConverted.Translation().Distance(SpeakerPose2d.Translation());
-      return offset; //Return the horizontal distance as units::meter_t
-  };
-
-<<<<<<< HEAD
-  // m_shooter.SetDefaultCommand(m_shooter.ShooterCommand(flywheel, calculateDistance));
-   m_shooter.ShooterCommand(
-        static_cast<std::function<double()>>(flywheel),
-        static_cast<std::function<units::meter_t()>>(calculateDistance)
-    );
-
-=======
     // Determine the IDs of the speaker AprilTags based on the alliance color
     int id = m_isRed ? 4 : 7;
 
@@ -226,10 +180,6 @@ void RobotContainer::ConfigureBindings() {
     units::meter_t offset =
         RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
     return offset; // Return the horizontal distance as units::meter_t
-=======
-  auto pivot = [this] () -> units::degrees_per_second_t {
-    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(), OperatorConstants::kDeadband);
->>>>>>> origin/carolina-wip
   };
 
   constexpr auto flywheelAutoSpeed = []() { return 0.5; };
@@ -242,7 +192,6 @@ void RobotContainer::ConfigureBindings() {
   m_copilotController.RightBumper().WhileTrue(frc2::cmd::Run(
       [this] { m_shooter.SetPivotMotor(m_shooter.ToTalonUnits(43_deg)); },
       {&m_shooter}));
->>>>>>> origin/visvam-wip
 
   // Configure Intake Bindings.
 
