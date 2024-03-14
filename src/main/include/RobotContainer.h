@@ -75,6 +75,7 @@ constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeSourcePOV = 45;
 constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
@@ -188,6 +189,10 @@ public:
 
   frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
+  }};
+
+  frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
   }};
 
   frc2::Trigger SourcePathTrigger{

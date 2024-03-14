@@ -42,7 +42,9 @@ constexpr int kBreakbeamPort = 0;
 constexpr int IntakeArmIntakePos = 995; // -
 constexpr int IntakeArmAMPPos =
     660; // maybe make forward to catch the note if miss
-  constexpr int IntakeArmAMPVelocityPos = IntakeArmAMPPos - 10;
+constexpr int IntakeArmAMPVelocityPos = IntakeArmAMPPos - 10;
+
+constexpr int IntakeArmSourceIntakePos = 625;
 constexpr int IntakeArmSpeakerPos = 441;
 // constexpr int IntakeArmPreAMPPos = 600;
 constexpr int IntakeArmLetGoPos = 560; // Maybe make later
@@ -62,7 +64,7 @@ constexpr double kNeutralDeadband = 0.05;
 
 // pid configurations
 constexpr float kF = 4.0;
-constexpr float kP = 2.0;
+constexpr float kP = 3.0;
 constexpr float kI = 0.0;
 constexpr float kD = 0.0;
 
@@ -226,12 +228,19 @@ public:
   // Moves arm to intake using motion magic (also sets goal (for visualization))
   void IntakeArmIntake();
 
+  // Moves arm to intake using motion magic (also sets goal (for visualization))
+  void IntakeArmSource();
+
   // Checks if arm is at passed in position (goal != m_goal)
   bool IsAtWantedPosition(int goal);
 
   // Uses corresponding void function to move to AMP position, if wait is true,
   // waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
+
+  // Uses corresponding void function to move to Source position, if wait is
+  // true, waits for cmd to finish, if false does not wait
+  frc2::CommandPtr IntakeArmSourceCommand(bool wait = false);
 
   frc2::CommandPtr IntakeArmAMPVelocityCommand(bool wait = false);
   // waits for cmd to finish, if false does not wait

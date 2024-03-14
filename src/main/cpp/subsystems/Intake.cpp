@@ -122,7 +122,15 @@ frc2::CommandPtr Intake::IntakeRing() {
 }
 
 frc2::CommandPtr Intake::IntakeFromPlayerStation() {
-  return IntakeArmAMPCommand(false).AndThen(AutoIntake());
+  return frc2::cmd::Either(IntakeArmSourceCommand(false) // true
+                               .AndThen(AutoIntake()),
+                           frc2::cmd::None(), // false
+                           [this]() {
+                             return !IsIntakeBreakBeamBroken();
+                           } // When broken = false
+                           )
+      .AndThen(IntakeArmSpeakerCommand());
+  ;
 }
 
 frc2::CommandPtr Intake::ShootOnAMP() {
@@ -310,6 +318,12 @@ void Intake::IntakeArmIntake() {
             IntakeConstants::IntakeArmIntakePos);
 }
 
+void Intake::IntakeArmSource() {
+  m_goal = IntakeConstants::IntakeArmSourceIntakePos;
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
+            IntakeConstants::IntakeArmSourceIntakePos);
+}
+
 bool Intake::IsAtWantedPosition(int goal) {
   return (abs(goal - m_arm.GetSelectedSensorPosition()) <
           IntakeConstants::kAllowableMarginOfError);
@@ -328,6 +342,16 @@ frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
     });
   }
   return RunOnce([this] { IntakeArmAMP(); });
+}
+
+frc2::CommandPtr Intake::IntakeArmSourceCommand(bool wait) {
+
+  if (wait) {
+    return this->Run([this] { IntakeArmSource(); }).Until([this]() -> bool {
+      return IsAtWantedPosition(IntakeConstants::IntakeArmSourceIntakePos);
+    });
+  }
+  return RunOnce([this] { IntakeArmSource(); });
 }
 
 frc2::CommandPtr Intake::IntakeArmSpeakerCommand(bool wait) {
