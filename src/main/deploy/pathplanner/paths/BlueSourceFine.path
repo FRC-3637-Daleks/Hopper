@@ -3,47 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.3,
-        "y": 5.78
+        "x": 14.693636310349543,
+        "y": 2.150993532756296
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.923142377053987,
-        "y": 6.502315312322933
+        "x": 15.088314022781894,
+        "y": 1.5787108497293916
       },
       "isLocked": false,
-      "linkedName": "IntakeCenterL"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 15.4,
+        "y": 1.0
       },
       "prevControl": {
-        "x": 5.0470926711084205,
-        "y": 7.035130224106603
+        "x": 14.9,
+        "y": 1.8660254037844386
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCloseL"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 180.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": -60.0,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenterL to ShootClose",
+  "folder": null,
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

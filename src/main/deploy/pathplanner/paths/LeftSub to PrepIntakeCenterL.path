@@ -8,43 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.343662687325376,
-        "y": 6.926593853187707
+        "x": 1.7824530941501242,
+        "y": 5.796864090161846
       },
       "isLocked": false,
       "linkedName": "LeftSub"
-    },
-    {
-      "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.245774799241906
-      },
-      "prevControl": {
-        "x": 1.9455461987847067,
-        "y": 6.393778941404038
-      },
-      "nextControl": {
-        "x": 3.0568171618564524,
-        "y": 6.2219329161867565
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.6525273050546114,
-        "y": 6.245774799241906
-      },
-      "prevControl": {
-        "x": 3.528718601207836,
-        "y": 6.206863492318634
-      },
-      "nextControl": {
-        "x": 4.34321330181122,
-        "y": 6.462847541079698
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -52,26 +20,15 @@
         "y": 5.78
       },
       "prevControl": {
-        "x": 6.050194408081124,
-        "y": 7.459408764971376
+        "x": 4.972282384793013,
+        "y": 6.956236908194216
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCenterL"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 2,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {

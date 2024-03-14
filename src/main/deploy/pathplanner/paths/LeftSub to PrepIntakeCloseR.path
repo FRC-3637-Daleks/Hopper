@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.45,
-        "y": 5.49
+        "x": 0.7518994781213513,
+        "y": 6.75
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.11085570453789,
-        "y": 5.548742729292257
+        "x": 2.3445732483476367,
+        "y": 7.003080254377342
       },
       "isLocked": false,
-      "linkedName": "CenterSub"
+      "linkedName": "LeftSub"
     },
     {
       "anchor": {
-        "x": 4.040780031470618,
-        "y": 4.831589484288092
+        "x": 1.75,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 3.6825553566281246,
-        "y": 5.066097389983952
-      },
-      "nextControl": {
-        "x": 6.8898024021450555,
-        "y": 2.9665078292589504
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.3,
-        "y": 4.098792791023527
-      },
-      "prevControl": {
-        "x": 7.585670463648622,
-        "y": 3.9467771243234795
+        "x": 1.5090314210585614,
+        "y": 5.386984811059493
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterC"
+      "linkedName": "PrepIntakeCloseR"
     }
   ],
   "rotationTargets": [],
@@ -59,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LeftSub to PrepIntakeClose",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

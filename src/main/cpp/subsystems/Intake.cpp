@@ -110,7 +110,7 @@ void Intake::Periodic() {
 void Intake::Emergency(double input) { m_arm.Set(input); }
 
 frc2::CommandPtr Intake::IntakeRing() {
-  return frc2::cmd::Either(IntakeArmIntakeCommand(true) // true
+  return frc2::cmd::Either(IntakeArmIntakeCommand(false) // true
                                .AndThen(AutoIntake()),
                            frc2::cmd::None(), // false
                            [this]() {
@@ -163,7 +163,6 @@ frc2::CommandPtr Intake::OutputToShooter() {
 frc2::CommandPtr Intake::IntakeIn() {
   return RunEnd([this] { IntakeForward(); }, [this] { OffIntake(); });
 }
-
 frc2::CommandPtr Intake::IntakeOff() {
   return RunOnce([this] { OffIntake(); });
 }

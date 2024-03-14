@@ -20,7 +20,6 @@
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
-#include <pathplanner/lib/path/PathPlannerPath.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -41,7 +40,7 @@
 namespace AutoConstants {
 
 constexpr auto kMaxSpeed = 15.7_fps;
-constexpr auto kMaxAcceleration = 5_mps_sq;
+constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -89,11 +88,20 @@ constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.523_m, 0_deg};
 constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
+
 constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
 constexpr frc::Pose2d kCenterRNote{8.3_m, 2.44_m, 0_deg};
+
 constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
+
 constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
 constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+
+constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.6_m, 90_deg};
+constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.6_m, 90_deg};
+
+constexpr frc::Pose2d kBlueSourcePickUp{15.4_m, 1_m, -60_deg};
+constexpr frc::Pose2d kRedSourcePickUp{1.2_m, 1_m, -120_deg};
 
 } // namespace OperatorConstants
 
@@ -182,6 +190,11 @@ public:
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
   }};
 
+  frc2::Trigger SourcePathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+  frc2::Trigger AmpPathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 180; }};
+
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
@@ -199,6 +212,8 @@ public:
   frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+  frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
 
   frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 

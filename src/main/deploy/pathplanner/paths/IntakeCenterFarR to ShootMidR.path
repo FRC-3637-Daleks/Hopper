@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.45,
-        "y": 5.49
+        "x": 8.3,
+        "y": 0.77
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.11085570453789,
-        "y": 5.548742729292257
+        "x": 6.6996793470049125,
+        "y": 0.5972526638348568
       },
       "isLocked": false,
-      "linkedName": "CenterSub"
+      "linkedName": "IntakeCenterFarR"
     },
     {
       "anchor": {
-        "x": 4.040780031470618,
-        "y": 4.831589484288092
+        "x": 1.5950797094176201,
+        "y": 3.5366726368260153
       },
       "prevControl": {
-        "x": 3.6825553566281246,
-        "y": 5.066097389983952
-      },
-      "nextControl": {
-        "x": 6.8898024021450555,
-        "y": 2.9665078292589504
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.3,
-        "y": 4.098792791023527
-      },
-      "prevControl": {
-        "x": 7.585670463648622,
-        "y": 3.9467771243234795
+        "x": 1.6302122190549648,
+        "y": 3.5366726368260153
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterC"
+      "linkedName": "ShootMidR"
     }
   ],
   "rotationTargets": [],
@@ -55,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -60.0,
     "rotateFast": true
   },
   "reversed": false,

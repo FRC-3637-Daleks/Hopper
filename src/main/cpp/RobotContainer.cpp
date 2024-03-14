@@ -225,29 +225,33 @@ void RobotContainer::ConfigureBindings() {
 
   m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
+  pathplanner::ReplanningConfig replanningConfig =
+      pathplanner::ReplanningConfig(true, true, .5_m, .125_m);
+
   constexpr auto alliance = []() -> bool { return false; };
 
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
-          pathplanner::PIDConstants(1.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(1.0, 0.0, 0.0), // Rotation constants
-          AutoConstants::kMaxSpeed,
+          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants
+          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants
+          ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
-          pathplanner::ReplanningConfig());
+          replanningConfig);
 
   pathplanner::AutoBuilder::configureHolonomic(
       [this]() { return this->m_swerve.GetPose(); },
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, false);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
-
-  // Register Auton.
+  // m_swerve.SetDefaultCommand(m_swerve.SwerveCommand(fwd, strafe, rot));
+  //  m_swerveController.Button(OperatorConstants::kFieldRelativeButton)
+  //     .WhileTrue(m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot));
 
   pathplanner::NamedCommands::registerCommand(
       "ShootCommand",
@@ -263,24 +267,11 @@ void RobotContainer::ConfigureBindings() {
       "IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
   pathplanner::NamedCommands::registerCommand(
       "OutputToShooter",
-      m_intake.OutputToShooter().WithName("OutputToShooter"));
-  pathplanner::NamedCommands::registerCommand(
-      "zTargetingSpeaker",
-      m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
-          .WithTimeout(1_s)
-          .WithName("zTargetSpeaker"));
-  pathplanner::NamedCommands::registerCommand(
-      "zTargetingAmp",
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, alliance)
-          .WithName("zTargetAmp"));
-  pathplanner::NamedCommands::registerCommand(
-      "zTargetingSource",
-      m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, alliance)
-          .WithTimeout(1_s));
-  pathplanner::NamedCommands::registerCommand(
-      "zTargetingStage",
-      m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, alliance)
-          .WithTimeout(1_s));
+      frc2::cmd::Sequence(
+          m_swerve
+              .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
+              .WithTimeout(1_s),
+          m_intake.OutputToShooter().WithName("OutputToShooter")));
   pathplanner::NamedCommands::registerCommand(
       "zTargetingCenterNoteFarR",
       m_swerve
@@ -309,18 +300,23 @@ void RobotContainer::ConfigureBindings() {
                               alliance)
           .WithTimeout(1_s));
 
-  // Line up with AMP using pathfinding.
-  auto ampPath = pathplanner::PathPlannerPath::fromPathFile("Line Up With AMP");
+  pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
+      AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
+      AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
 
-  m_ampLineUp = pathplanner::AutoBuilder::pathfindThenFollowPath(
-                    ampPath, AutoConstants::DefaultConstraints, 3.0_m)
-                    .AndThen(m_swerve
-                                 .ZTargetPoseCommand(targetAMP, fwd, strafe,
-                                                     false, alliance)
-                                 .WithTimeout(1_s));
+  auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
+      OperatorConstants::kBlueSourcePickUp, constraints, 0_mps, 0_m);
+  auto RedSourcePath = pathplanner::AutoBuilder::pathfindToPose(
+      OperatorConstants::kRedSourcePickUp, constraints, 0_mps, 0_m);
+  auto BlueAmpShotPath = pathplanner::AutoBuilder::pathfindToPose(
+      OperatorConstants::kBlueAmpShot, constraints, 0_mps, 0_m);
+  auto RedAmpShotPath = pathplanner::AutoBuilder::pathfindToPose(
+      OperatorConstants::kRedAmpShot, constraints, 0_mps, 0_m);
 
-  m_autoAmpTrigger.OnTrue(m_ampLineUp.get());
-
+  m_SourcePath = frc2::cmd::Either(std::move(RedSourcePath),
+                                   std::move(BlueSourcePath), checkRed);
+  m_AmpShotPath = frc2::cmd::Either(std::move(RedAmpShotPath),
+                                    std::move(BlueAmpShotPath), checkRed);
   m_left3NoteAuto = pathplanner::PathPlannerAuto("Left 3 Note").ToPtr();
   m_right3NoteAuto = pathplanner::PathPlannerAuto("Right 3 Note").ToPtr();
   m_center3NoteAuto = pathplanner::PathPlannerAuto("Center 3 Note").ToPtr();
@@ -330,15 +326,18 @@ void RobotContainer::ConfigureBindings() {
   m_center2NoteAuto = pathplanner::PathPlannerAuto("Center 2 Note").ToPtr();
 
   m_leftCenterOnlyAuto =
-      pathplanner::PathPlannerAuto("Left 3 Note Center Only").ToPtr();
+      pathplanner::PathPlannerAuto("Left 3 Note Mid Only").ToPtr();
   m_rightCenterOnlyAuto =
-      pathplanner::PathPlannerAuto("Right 3 Note Center Only").ToPtr();
+      pathplanner::PathPlannerAuto("Right 3 Note Mid Only").ToPtr();
   m_centerRightCenterOnlyAuto =
-      pathplanner::PathPlannerAuto("Center-Right 3 Note Center Only").ToPtr();
+      pathplanner::PathPlannerAuto("Center-Right 3 Note Mid Only").ToPtr();
   m_centerLeftCenterOnlyAuto =
-      pathplanner::PathPlannerAuto("Center-Left 3 Note Center Only").ToPtr();
+      pathplanner::PathPlannerAuto("Center-Left 3 Note Mid Only").ToPtr();
 
   m_getOutRight = pathplanner::PathPlannerAuto("Get Out Right").ToPtr();
+
+  SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
 
   m_chooser.SetDefaultOption("Left (Amp-Side) Subwoofer 3 Note Auto",
                              m_left3NoteAuto.get());
@@ -352,18 +351,16 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Left (AMP-Side) Subwoofer 2 Note Auto",
                       m_left2NoteAuto.get());
 
-  m_chooser.AddOption("CenterRight Center Only 3 Note Auto",
+  m_chooser.AddOption("CenterRight Mid Only 3 Note Auto",
                       m_centerRightCenterOnlyAuto.get());
-  m_chooser.AddOption("CenterLeft Center Only 3 Note Auto",
+  m_chooser.AddOption("CenterLeft Mid Only 3 Note Auto",
                       m_centerLeftCenterOnlyAuto.get());
-  m_chooser.AddOption("Right Center Only 3 Note Auto",
+  m_chooser.AddOption("Right Mid Only 3 Note Auto",
                       m_rightCenterOnlyAuto.get());
   m_chooser.AddOption("Left Center Only 3 Note Auto",
                       m_leftCenterOnlyAuto.get());
 
   m_chooser.AddOption("Get out right Side", m_getOutRight.get());
-
-  m_chooser.AddOption("Auto amp line up test", m_ampLineUp.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
 }

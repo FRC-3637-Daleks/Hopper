@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 0.75,
-      "y": 4.35
+      "y": 6.75
     },
-    "rotation": -60.0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -18,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -47,13 +47,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                        "pathName": "LeftSub to PrepIntakeCenterFarL"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
                       }
                     }
                   ]
@@ -65,13 +65,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootCloseR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
+            "pathName": "IntakeCenterFarL to ShootCloseL"
           }
         },
         {
@@ -97,13 +91,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseR to PrepIntakeCenterR"
+                        "pathName": "ShootCloseL to PrepIntakeCenterL"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
+                        "pathName": "PrepIntakeCenterL to IntakeCenterL"
                       }
                     }
                   ]
@@ -113,26 +107,14 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeCenterR to ShootCloseR"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "ShootCommand"
           }
         }
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": "Cool Fun Autons",
   "choreoAuto": false
 }

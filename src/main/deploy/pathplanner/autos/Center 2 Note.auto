@@ -51,37 +51,12 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseC to IntakeCloseC"
                       }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "zTargetingSpeaker"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
                 }
               }
             ]
@@ -96,6 +71,6 @@
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": "Cool Fun Autons",
   "choreoAuto": false
 }

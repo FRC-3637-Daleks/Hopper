@@ -13,38 +13,33 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake": "Subsystem",
       "/SmartDashboard/Mechanisms": "Mechanism2d",
-      "/SmartDashboard/Select Auton": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
-      "/SmartDashboard/Drivebase": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "FL": {
           "arrows": false,
-          "style": "Line"
+          "style": "Hidden"
         },
         "FR": {
           "arrows": false,
-          "style": "Line"
+          "style": "Hidden"
         },
         "Hopper": {
           "arrows": false,
+          "length": 0.6859999895095825,
           "style": "Line"
         },
         "RL": {
           "arrows": false,
-          "style": "Line"
+          "style": "Hidden"
         },
         "RR": {
           "arrows": false,
-          "style": "Line"
+          "style": "Hidden"
         },
         "Robot": {
           "style": "Box/Image"
@@ -63,11 +58,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Intake": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Mechanisms": {
         "window": {
           "visible": true
@@ -75,11 +65,11 @@
       },
       "/SmartDashboard/SendableChooser[0]": {
         "window": {
-          "name": "Select Auton",
+          "name": "AutoChooser",
           "visible": true
         }
       },
-      "/SmartDashboard/Shooter": {
+      "/SmartDashboard/zeroEncodersCommand": {
         "window": {
           "visible": true
         }
@@ -87,6 +77,14 @@
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "SmartDashboard": {
         "Shooter": {
@@ -102,12 +100,6 @@
     }
   },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
-    "Connections": {
-      "open": true
-    },
     "visible": true
   }
 }

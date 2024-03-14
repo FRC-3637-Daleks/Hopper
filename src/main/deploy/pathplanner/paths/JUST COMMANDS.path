@@ -85,8 +85,48 @@
               "data": {
                 "name": "zTargetingStage"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteFarR"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteR"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteC"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteL"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteFarL"
+              }
             }
           ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
         }
       }
     }

@@ -122,6 +122,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_map.insert(3.141301_m, 23.401145_deg);
   m_map.insert(2.640507_m, 25.355256_deg);
   m_map.insert(3.047757_m, 23.894969_deg);
+  m_map.insert(4.079345_m, 14.305907_deg);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));

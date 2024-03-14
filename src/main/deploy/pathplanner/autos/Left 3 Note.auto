@@ -16,12 +16,6 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "OutputToShooter"
@@ -51,12 +45,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseL to IntakeCloseL"
@@ -66,12 +54,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -121,18 +103,12 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": null,
   "choreoAuto": false
 }

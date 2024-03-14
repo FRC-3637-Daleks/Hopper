@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 0.75,
-      "y": 6.75
+      "y": 4.35
     },
-    "rotation": 60.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -47,13 +47,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftSub to PrepIntakeCenterFarL"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -65,13 +71,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarL to ShootCloseL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
+            "pathName": "IntakeCenterR to ShootMidR"
           }
         },
         {
@@ -97,13 +97,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseL to PrepIntakeCenterL"
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "zTargetingCenterNoteFarR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterL to IntakeCenterL"
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
                       }
                     }
                   ]
@@ -113,20 +119,20 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "zTargetingSpeaker"
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootCommand"
+            "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": "Cool Fun Autons",
   "choreoAuto": false
 }

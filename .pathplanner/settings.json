@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.91,
-  "robotLength": 0.91,
+  "robotWidth": 0.9144,
+  "robotLength": 0.9144,
   "holonomicMode": true,
   "pathFolders": [
     "BasicAuton",
@@ -20,19 +20,19 @@
     "LeftSub to PrepIntakeCenter",
     "LeftSub to PrepIntakeClose",
     "AMP Line Up",
+    "IntakeCenter to Shoot MidR",
     "PrepIntakeCenter to IntakeCenter",
     "PrepIntakeClose to IntakeClose",
     "RightSub to PrepIntakeCenter",
     "RightSub to PrepIntakeClose",
     "ShootCloseC to PrepIntakeCenter",
     "ShootCloseL to PrepIntakeCenter",
-    "ShootCloseR to PrepIntakeCenter",
     "Start to Sub"
   ],
   "autoFolders": [
-    "First Comp Autos"
+    "Cool Fun Autons"
   ],
-  "defaultMaxVel": 4.0,
+  "defaultMaxVel": 4.7,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 180.0,

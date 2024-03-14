@@ -51,12 +51,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseC to IntakeCloseC"
@@ -66,12 +60,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -101,12 +89,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterC to IntakeCenterC"
@@ -127,24 +109,12 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": "Cool Fun Autons",
   "choreoAuto": false
 }

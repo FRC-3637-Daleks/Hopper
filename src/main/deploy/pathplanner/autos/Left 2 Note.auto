@@ -45,21 +45,9 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "LeftSub to PrepIntakeCloseL"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
                       }
                     },
                     {
@@ -77,18 +65,12 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "First Comp Autos",
+  "folder": "Cool Fun Autons",
   "choreoAuto": false
 }
