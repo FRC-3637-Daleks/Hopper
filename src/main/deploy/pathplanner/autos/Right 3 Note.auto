@@ -16,15 +16,9 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooter"
+                  "name": "OutputToShooterSinZ"
                 }
               }
             ]
@@ -85,13 +79,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseR to PrepIntakeCenterFarR"
+                        "pathName": "ShootCloseR to PrepIntakeCenterR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -103,7 +97,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootCloseR"
+            "pathName": "IntakeCenterR to ShootCloseR"
           }
         },
         {
@@ -115,6 +109,6 @@
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": null,
   "choreoAuto": false
 }

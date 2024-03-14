@@ -274,6 +274,9 @@ void RobotContainer::ConfigureBindings() {
               .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
               .WithTimeout(1_s),
           m_intake.OutputToShooter().WithName("OutputToShooter")));
+
+  // pathplanner::NamedCommands::registerCommand("OutputToShooterSinZ",
+  //                                             m_intake.OutputToShooterSinZ());
   pathplanner::NamedCommands::registerCommand(
       "zTargetingCenterNoteFarR",
       m_swerve

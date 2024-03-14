@@ -77,7 +77,7 @@ constexpr auto kMinAngle = 0_deg;
 constexpr auto kMaxAngle = 80_deg;
 constexpr auto kMinAimSensor = 935;
 constexpr auto kMaxAimSensor = 51;
-constexpr auto kMinIdeal = 850;
+constexpr auto kMinIdeal = 920;
 constexpr auto kMaxIdeal = 388;
 constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);

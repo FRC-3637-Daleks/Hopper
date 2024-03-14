@@ -16,12 +16,6 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "OutputToShooter"
@@ -48,12 +42,6 @@
                       "type": "path",
                       "data": {
                         "pathName": "ShootMidR to PrepIntakeCenterR"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "zTargetingCenterNoteR"
                       }
                     },
                     {
@@ -101,12 +89,6 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "zTargetingCenterNoteFarR"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
@@ -133,6 +115,6 @@
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": null,
   "choreoAuto": false
 }
