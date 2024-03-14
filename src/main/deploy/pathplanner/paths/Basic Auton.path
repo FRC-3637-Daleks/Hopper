@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 1.45,
-        "y": 5.492445188823224
+        "y": 5.551
       },
       "prevControl": {
         "x": 1.45,
-        "y": 5.442445188823224
+        "y": 5.501
       },
       "nextControl": {
         "x": 1.45,
-        "y": 5.542445188823224
+        "y": 5.601
       },
       "isLocked": false,
       "linkedName": "CenterSub"

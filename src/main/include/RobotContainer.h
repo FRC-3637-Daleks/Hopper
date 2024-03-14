@@ -39,7 +39,7 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 4_mps;
+constexpr auto kMaxSpeed = 3_mps;
 constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
@@ -89,19 +89,22 @@ constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
 
-constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
-constexpr frc::Pose2d kCenterRNote{8.3_m, 2.44_m, 0_deg};
+constexpr frc::Pose2d kMidFarRNote{8.3_m, .77_m, 0_deg};
+constexpr frc::Pose2d kMidRNote{8.3_m, 2.44_m, 0_deg};
 
-constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
+constexpr frc::Pose2d kMidCNote{8.3_m, 4.1_m, 0_deg};
 
-constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
-constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+constexpr frc::Pose2d kMidLNote{8.3_m, 5.78_m, 0_deg};
+constexpr frc::Pose2d kMidFarLNote{8.3_m, 7.43_m, 0_deg};
 
-constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.6_m, 90_deg};
-constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.6_m, 90_deg};
+constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.4_m, 90_deg};
+constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.4_m, 90_deg};
 
 constexpr frc::Pose2d kBlueSourcePickUp{15.4_m, 1_m, -60_deg};
 constexpr frc::Pose2d kRedSourcePickUp{1.2_m, 1_m, -120_deg};
+
+constexpr frc::Pose2d kBlueCenterSub{1.45_m, 5.55_m, 0_deg};
+constexpr frc::Pose2d kRedCenterSub{15.3_m, 5.55_m, 180_deg};
 
 } // namespace OperatorConstants
 
@@ -188,7 +191,9 @@ public:
   frc2::Trigger SourcePathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
   frc2::Trigger AmpPathTrigger{
-      [this]() -> bool { return m_swerveController.GetPOV() == 180; }};
+      [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
+  frc2::Trigger SubPathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
 
   Shooter m_shooter;
   Drivetrain m_swerve;
@@ -196,19 +201,20 @@ public:
   Climb m_climb;
   Vision m_vision;
 
-  frc2::CommandPtr m_left3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_right3NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_left2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSide3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpSide2NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center2NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_right2NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_leftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_rightCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSide2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerAmpSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
+  frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
 
