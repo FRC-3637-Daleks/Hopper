@@ -197,11 +197,13 @@ void RobotContainer::ConfigureBindings() {
 
   GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
 
-  AMPIntakeTrigger.OnTrue(m_intake.IntakeArmAMPCommand(true));
+  AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
 
   SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
 
   AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
+
+  // SourceIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
 
   m_manualIntake.WhileTrue(frc2::cmd::Run(
       [this] {

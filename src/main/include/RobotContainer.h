@@ -39,7 +39,11 @@
 
 namespace AutoConstants {
 
+<<<<<<< HEAD
 constexpr auto kMaxSpeed = 3_mps;
+=======
+constexpr auto kMaxSpeed = 15.7_fps;
+>>>>>>> visvam-wip
 constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
@@ -63,24 +67,25 @@ constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
-constexpr double kClimbDeadband = 0.8;
+constexpr double kClimbDeadband = 0.08;
 
 constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
 constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeSourcePOV = 45;
 constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 constexpr int kAutoIntake = 180;
 
-constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
-constexpr frc::Pose2d kBlueSourcePose{15.733_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSourcePose{15.743_m, 0.410_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
 
@@ -142,6 +147,7 @@ constexpr frc::Translation2d note_positions[] = {
 class RobotContainer {
 public:
   RobotContainer();
+
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
@@ -158,6 +164,10 @@ public:
 
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
     return m_swerveController.GetLeftTriggerAxis() > 0.2;
+  }};
+
+  frc2::Trigger m_autoAmpTrigger{[this]() -> bool {
+    return m_swerveController.GetRightTriggerAxis() > 0.2;
   }};
 
   frc2::Trigger m_manualIntake{[this]() -> bool {
@@ -181,6 +191,10 @@ public:
 
   frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
+  }};
+
+  frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
   }};
 
   frc2::Trigger SourcePathTrigger{
@@ -210,6 +224,8 @@ public:
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
   frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
+
+  frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
 

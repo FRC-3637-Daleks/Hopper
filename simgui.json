@@ -15,6 +15,7 @@
       "/SmartDashboard/Mechanisms": "Mechanism2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
+      "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
@@ -41,16 +42,15 @@
           "style": "Hidden"
         },
         "Robot": {
-          "length": 0.9100000262260437,
-          "width": 0.9100000262260437
+          "style": "Box/Image"
         },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
         "simulation": {
-          "length": 0.9100000262260437,
-          "width": 0.9100000262260437
+          "arrows": false,
+          "style": "Hidden"
         },
         "top": 79,
         "width": 16.541748046875,
@@ -87,8 +87,13 @@
     },
     "transitory": {
       "SmartDashboard": {
-        "Swerve": {
+        "Shooter": {
           "open": true
+        },
+        "Swerve": {
+          "TurnPIDController": {
+            "open": true
+          }
         },
         "open": true
       }

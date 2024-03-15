@@ -105,6 +105,13 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       kCurrentLimitPeriod.convert<units::second>().value();
   driveConfig.WithCurrentLimits(driveCurrentConfigs);
 
+  ctre::phoenix6::configs::TorqueCurrentConfigs driveTorqueCurrentConfig{};
+  driveTorqueCurrentConfig.PeakForwardTorqueCurrent = kDriveMotorCurrentLimit;
+  driveTorqueCurrentConfig.PeakReverseTorqueCurrent =
+      -1 * kDriveMotorCurrentLimit;
+  driveTorqueCurrentConfig.TorqueNeutralDeadband = NeutralDeadBand;
+  driveConfig.WithTorqueCurrent(driveTorqueCurrentConfig);
+
   ctre::phoenix6::configs::CurrentLimitsConfigs steerCurrentConfigs{};
   steerCurrentConfigs.SupplyCurrentLimitEnable = true;
   steerCurrentConfigs.SupplyCurrentLimit = kSteerMotorCurrentLimit;
@@ -112,6 +119,13 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerCurrentConfigs.SupplyTimeThreshold =
       kCurrentLimitPeriod.convert<units::second>().value();
   steerConfig.WithCurrentLimits(steerCurrentConfigs);
+
+  ctre::phoenix6::configs::TorqueCurrentConfigs steerTorqueCurrentConfig{};
+  steerTorqueCurrentConfig.PeakForwardTorqueCurrent = kSteerMotorCurrentLimit;
+  steerTorqueCurrentConfig.PeakReverseTorqueCurrent =
+      -1 * kSteerMotorCurrentLimit;
+  steerTorqueCurrentConfig.TorqueNeutralDeadband = NeutralDeadBand;
+  steerConfig.WithTorqueCurrent(steerTorqueCurrentConfig);
 
   ctre::phoenix6::configs::Slot0Configs drivePIDConfigs{};
   drivePIDConfigs.kP = driveMotorPIDCoefficients.kP;
@@ -266,7 +280,7 @@ void SwerveModule::SetDesiredState(
       velocityControl.WithVelocity(state.speed / kDistanceToRotations));
 
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps,
-                                                              false};
+                                                              true};
 
   m_steerMotor.SetControl(positionControl.WithPosition(state.angle.Radians()));
 }

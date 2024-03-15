@@ -69,8 +69,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
   m_pivot.ConfigForwardSoftLimitEnable(true);
-  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor -
-                                          100);
+  m_pivot.ConfigForwardSoftLimitThreshold(ShooterConstants::kMinAimSensor - 50);
   m_pivot.ConfigReverseSoftLimitEnable(true);
   m_pivot.ConfigReverseSoftLimitThreshold(ShooterConstants::kMaxAimSensor +
                                           300);
@@ -103,11 +102,30 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 
   m_followMotor.SetInverted(false);
 
+  m_leadMotor.SetOpenLoopRampRate(0.1);
+  m_followMotor.SetOpenLoopRampRate(0.1);
+
+  m_leadMotor.SetClosedLoopRampRate(0.1);
+  m_followMotor.SetClosedLoopRampRate(0.1);
+
+  // m_leadMotor.SetSmartCurrentLimit(5);
+  // m_followMotor.SetSmartCurrentLimit(5);
+
   m_goal = 0_deg;
 
-  m_map.insert(1.336_m, 43_deg);
-  m_map.insert(2.439_m, 21.477_deg);
-  m_map.insert(3.3_m, 18_deg);
+  // m_map.insert(3.408470_m, 21.534357_deg);
+  // m_map.insert(3.949039_m, 12.174549_deg);
+  m_map.insert(3.231028_m, 20.455068_deg);
+  m_map.insert(1.424465_m, 41.296232_deg);
+  m_map.insert(2.388467_m, 27.834950_deg);
+  m_map.insert(2.438238_m, 25.355256_deg);
+  m_map.insert(3.141301_m, 23.401145_deg);
+  m_map.insert(2.640507_m, 25.355256_deg);
+  m_map.insert(3.047757_m, 23.894969_deg);
+  m_map.insert(4.079345_m, 14.305907_deg);
+  m_map.insert(4.397344_m, 16.375658_deg);
+  m_map.insert(3.872459_m, 18.299923_deg);
+  m_map.insert(7.050149_m, 10_deg);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));
@@ -218,6 +236,88 @@ units::degree_t Shooter::DistanceToAngle(units::foot_t distance) {
   return (std::atan(5.55 / distance.value()) - .15) * 1_rad;
 }
 
+units::degree_t Shooter::DistanceToAngleError(units::foot_t distance,
+                                              units::radian_t angle) {
+  return units::degree_t{
+      distance.value() * (units::math::tan(angle).value()) -
+      ((16.1 * std::pow(distance.value() - 0.77 * std::cos(angle.value()), 2)) /
+       (std::pow((ShooterConstants::kNoteVelocity / 1_fps).value(), 2) *
+        std::pow(std::cos(angle.value()), 2))) -
+      5.55};
+}
+units::degree_t Shooter::DistanceToAngleBinarySearch(units::foot_t distance) {
+
+  auto min = ShooterConstants::kMinAngle;
+  auto max = ShooterConstants::kMaxAngle;
+  auto pivot = max + min / 2;
+  auto x = DistanceToAngleError(distance, pivot);
+
+  for (int i = 0; i <= 10; i++) {
+
+    if (x.value() < 0) {
+      min = pivot;
+    } else {
+      max = pivot;
+    }
+    pivot = max + min / 2;
+
+    x = DistanceToAngleError(distance, pivot);
+  }
+
+  return pivot;
+}
+
+double Shooter::distance_adjustment(units::feet_per_second_t robot_velocity,
+                                    units::foot_t distance,
+                                    units::radian_t thetaf) {
+  constexpr units::feet_per_second_t note_velocity =
+      ShooterConstants::kNoteVelocity; // not correct, also move to constant
+
+  auto t = (robot_velocity.value() +
+            (note_velocity.value() * std::cos(thetaf.value()))) /
+           (distance.value() - 0.77 * (std::cos(thetaf.value())));
+
+  return note_velocity.value() * t * std::sin(thetaf.value()) -
+         ((0.5) * (32.15) * (t * t)) - 5.55 - 0.77 * (std::sin(thetaf.value()));
+}
+
+units::foot_t Shooter::DistanceAdjustmentBinarySearch(
+    units::feet_per_second_t robot_velocity, units::foot_t distance,
+    units::feet_per_second_t perp_velocity) {
+  auto min = ShooterConstants::kMinAngle;
+  auto max = ShooterConstants::kMaxAngle;
+  units::radian_t pivot = max + min / 2;
+  auto x = distance_adjustment(robot_velocity, distance, pivot);
+
+  for (int i = 0; i <= 10; i++) {
+
+    if (x < 0) {
+      min = pivot;
+    } else {
+      max = pivot;
+    }
+    pivot = max + min / 2;
+
+    x = distance_adjustment(robot_velocity, distance, pivot);
+  }
+  return 0_m;
+
+  double t = (robot_velocity.value() +
+              ((ShooterConstants::kNoteVelocity / 1_fps).value() *
+               std::cos(pivot.value()))) /
+             (distance.value() - 0.77 * (std::cos(pivot.value())));
+
+  units::foot_t df =
+      units::foot_t{robot_velocity.value() * t * std::cos(pivot.value())};
+
+  // Should be using perpendicular velocity to complement zTargeting.
+  auto dAdjust =
+      df / std::cos(std::asin(
+               (perp_velocity / ShooterConstants::kNoteVelocity).value()));
+
+  return units::foot_t{robot_velocity.value() * t * std::cos(pivot.value())};
+}
+
 double Shooter::ToTalonUnits(const frc::Rotation2d &rotation) {
   units::radian_t currentHeading =
       m_pivot.GetSelectedSensorPosition() / ShooterConstants::kAngleToSensor;
@@ -298,6 +398,27 @@ Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
         frc::SmartDashboard::PutNumber(
             "Shooter/Pivot Encoder Goal",
             ToTalonUnits(DistanceToAngle(distance())));
+      },
+      {this});
+}
+
+frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
+    std::function<units::foot_t()> distance,
+    std::function<units::feet_per_second_t()> fwd_velocity,
+    std::function<units::feet_per_second_t()> strafe_velocity) {
+  return frc2::cmd::Run(
+      [this, distance, fwd_velocity, strafe_velocity]() {
+        // auto angle =
+        // DistanceToAngleBinarySearch(DistanceAdjustmentBinarySearch(
+        //         fwd_velocity(), distance(), strafe_velocity()));
+        auto angle = DistanceToAngleBinarySearch(distance());
+        SetPivotMotor(ToTalonUnits(angle));
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.",
+                                       distance().value());
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal",
+                                       angle.value());
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal",
+                                       ToTalonUnits(angle));
       },
       {this});
 }

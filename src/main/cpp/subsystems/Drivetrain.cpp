@@ -240,9 +240,14 @@ void Drivetrain::UpdateDashboard() {
 
   frc::SmartDashboard::PutNumber("Swerve/Gyro", m_gyro.GetAngle());
 
-  frc::SmartDashboard::PutNumber("PDH/Voltage", m_pdh.GetVoltage());
+  frc::SmartDashboard::PutData("PDH", &m_pdh);
 
-  frc::SmartDashboard::PutNumber("PDH/Total Current", m_pdh.GetTotalCurrent());
+  frc::SmartDashboard::PutData("Swerve/TurnPIDController", &m_turnPID);
+
+  // frc::SmartDashboard::PutNumber("PDH/Voltage", m_pdh.GetVoltage());
+
+  // frc::SmartDashboard::PutNumber("PDH/Total Current",
+  // m_pdh.GetTotalCurrent());
 }
 
 void Drivetrain::SimulationPeriodic() {
@@ -405,10 +410,10 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(
     std::function<units::meters_per_second_t()> strafe, bool shooterSide,
     std::function<bool()> isRed) {
 
-  auto angle = [this, pose, shooterSide]() -> units::radian_t {
+  auto angle = [this, pose, shooterSide, strafe]() -> units::radian_t {
     auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>(
         pose().Y() - GetPose().Y(), pose().X() - GetPose().X());
-    return shooterSide ? rawAngle + std::numbers::pi * 1_rad : rawAngle;
+    return shooterSide ? (rawAngle + std::numbers::pi * 1_rad + units::math::asin(strafe() / DriveConstants::kNoteVelocity)): rawAngle;
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(

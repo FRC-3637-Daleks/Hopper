@@ -100,7 +100,6 @@
     "xmemory": "cpp",
     "xstddef": "cpp",
     "xtr1common": "cpp",
-    "xutility": "cpp",
-    "charconv": "cpp"
+    "xutility": "cpp"
   }
 }

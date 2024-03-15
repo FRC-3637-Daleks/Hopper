@@ -21,17 +21,17 @@
 #include "SwerveModule.h"
 
 namespace DriveConstants {
-constexpr auto kMaxSpeed = 5_mps;
-constexpr auto kMaxTeleopSpeed = 5_mps;
+constexpr auto kMaxSpeed = 15.7_fps;
+constexpr auto kMaxTeleopSpeed = 15.7_fps;
 
 constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 // NOTE: Guess value!
 
-constexpr double kPTurn = 0.061; // 0.0605
-constexpr double kITurn = 0.00;  // 0.001
-constexpr double kDTurn = 0.0;   // 0.03
+constexpr double kPTurn = 0.071; // 0.061
+constexpr double kITurn = 0.00;  // 0.00
+constexpr double kDTurn = 0.00; // 0.0
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -89,6 +89,9 @@ constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
 constexpr frc::Pose2d kStagePose{4.869_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
+
+// estimation
+constexpr auto kNoteVelocity = 50_fps;
 
 } // namespace DriveConstants
 
