@@ -343,7 +343,7 @@ void RobotContainer::ConfigureBindings() {
   m_centerSourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("Center-SourceSide 3 Note Mid Only").ToPtr();
   m_centerAmpSideMidOnlyAuto =
-      pathplanner::PathPlannerAuto("Mid-AmpSide 3 Note Mid Only").ToPtr();
+      pathplanner::PathPlannerAuto("Center-AmpSide 3 Note Mid Only").ToPtr();
 
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();

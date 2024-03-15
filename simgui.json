@@ -32,17 +32,6 @@
           "length": 0.6859999895095825,
           "style": "Line"
         },
-        "Notes": {
-          "arrows": false,
-          "color": [
-            0.9535865187644958,
-            0.4104043245315552,
-            0.0,
-            255.0
-          ],
-          "length": 0.33000001311302185,
-          "width": 0.33000001311302185
-        },
         "RL": {
           "arrows": false,
           "style": "Hidden"
@@ -51,10 +40,18 @@
           "arrows": false,
           "style": "Hidden"
         },
+        "Robot": {
+          "length": 0.9100000262260437,
+          "width": 0.9100000262260437
+        },
         "bottom": 1476,
         "height": 8.210550308227539,
         "left": 150,
         "right": 2961,
+        "simulation": {
+          "length": 0.9100000262260437,
+          "width": 0.9100000262260437
+        },
         "top": 79,
         "width": 16.541748046875,
         "window": {
