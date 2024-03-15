@@ -8,24 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2228859892777972,
-        "y": 0.32790342327574235
+        "x": 0.6043303678736167,
+        "y": 2.5699944065362192
       },
       "isLocked": false,
       "linkedName": "RightSub"
     },
     {
       "anchor": {
-        "x": 7.4,
-        "y": 6.007659147979775
+        "x": 4.437293454193349,
+        "y": 3.2895928403663612
       },
       "prevControl": {
-        "x": 7.12259455902304,
-        "y": 5.527514849602734
+        "x": 4.2904366309627076,
+        "y": 2.3790805363363865
       },
       "nextControl": {
-        "x": 7.508455635257458,
-        "y": 6.195378446895954
+        "x": 4.568766863261275,
+        "y": 4.104727976587501
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.803061910238311,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 5.4415853276570765,
+        "y": 4.1
+      },
+      "nextControl": {
+        "x": 6.1645384928195455,
+        "y": 4.1
       },
       "isLocked": false,
       "linkedName": null
@@ -36,15 +52,26 @@
         "y": 7.43
       },
       "prevControl": {
-        "x": 7.127076309213358,
-        "y": 7.0616344371001105
+        "x": 7.462544012744556,
+        "y": 4.508504473180682
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarL"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {

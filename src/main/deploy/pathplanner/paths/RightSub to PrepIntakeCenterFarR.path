@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3023087957730821,
-        "y": 3.4803593291922668
+        "x": 1.5588997188727838,
+        "y": 2.7021655474437964
       },
       "isLocked": false,
       "linkedName": "RightSub"
+    },
+    {
+      "anchor": {
+        "x": 3.5708381971325664,
+        "y": 1.7035391494754373
+      },
+      "prevControl": {
+        "x": 2.498783387548886,
+        "y": 2.305652124721065
+      },
+      "nextControl": {
+        "x": 4.434159974682551,
+        "y": 1.218659794961064
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,15 +36,21 @@
         "y": 0.77
       },
       "prevControl": {
-        "x": 6.1,
-        "y": 0.7700000000000005
+        "x": 5.171577570346555,
+        "y": 0.8077125277685265
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarR"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {

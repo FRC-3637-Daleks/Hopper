@@ -65,19 +65,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarL to ShootCloseL"
+            "pathName": "IntakeCenterFarL to ShootMidC"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         },
         {
@@ -97,7 +91,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseL to PrepIntakeCenterL"
+                        "pathName": "ShootMidAmpSide to PrepIntakeCenterL"
                       }
                     },
                     {
@@ -110,6 +104,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterL to ShootMidC"
           }
         },
         {

@@ -5,16 +5,17 @@
   "pathFolders": [
     "CenterSub to PrepIntakeCenter",
     "CenterSub to PrepIntakeClose",
-    "IntakeCenter to ShootMidC",
-    "IntakeClose to CenterSub",
+    "IntakeCenter to ShootMidR",
+    "IntakeCloseC to PrepIntakeCenter",
+    "IntakeCloseL to PrepIntakeCenter",
+    "IntakeCloseR to PrepIntakeCenter",
     "LeftSub to PrepIntakeCenter",
     "LeftSub to PrepIntakeClose",
+    "IntakeCenter to ShootMidL",
     "PrepIntakeCenter to IntakeCenter",
     "PrepIntakeClose to IntakeClose",
     "RightSub to PrepIntakeCenter",
-    "RightSub to PrepIntakeClose",
-    "ShootCloseL to PrepIntakeCenter",
-    "ShootCloseR to PrepIntakeCenter"
+    "RightSub to PrepIntakeClose"
   ],
   "autoFolders": [
     "AmpSide Autons",

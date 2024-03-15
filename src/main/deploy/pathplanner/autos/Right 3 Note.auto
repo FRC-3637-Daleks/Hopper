@@ -18,7 +18,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -71,13 +71,7 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         },
         {
@@ -101,12 +95,6 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
@@ -121,19 +109,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootCloseR"
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         }
       ]

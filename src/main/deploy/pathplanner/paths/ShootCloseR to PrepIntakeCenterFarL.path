@@ -8,24 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.077808171000959,
-        "y": 5.61429045935015
+        "x": 2.0288415532108353,
+        "y": 5.551187918118234
       },
       "isLocked": false,
       "linkedName": "IntakeCloseR"
     },
     {
       "anchor": {
-        "x": 2.4783611105683763,
-        "y": 6.265508684863524
+        "x": 2.234441105733733,
+        "y": 6.29
       },
       "prevControl": {
-        "x": 1.3337957445145674,
-        "y": 6.058302885836541
+        "x": 1.8379276830110018,
+        "y": 6.2707863519483755
       },
       "nextControl": {
-        "x": 2.760093070951658,
-        "y": 6.316511884588083
+        "x": 2.520416973122575,
+        "y": 6.303857386288558
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.422607771870285,
+        "y": 6.29
+      },
+      "prevControl": {
+        "x": 3.4413210342881344,
+        "y": 6.29
+      },
+      "nextControl": {
+        "x": 4.819586434610169,
+        "y": 6.29
       },
       "isLocked": false,
       "linkedName": null
@@ -36,15 +52,26 @@
         "y": 7.43
       },
       "prevControl": {
-        "x": 6.31660186397296,
-        "y": 6.186573142377054
+        "x": 5.670890769330734,
+        "y": 7.57781207870108
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarL"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -56,10 +83,10 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "ShootCloseR to PrepIntakeCenter",
+  "folder": "IntakeCloseR to PrepIntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

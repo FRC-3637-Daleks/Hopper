@@ -44,7 +44,7 @@ constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 120_rpm;
+constexpr auto kMaxAngularSpeed = 180_rpm;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -55,11 +55,6 @@ constexpr double kPThetaController = 0.5;
 // Trapezoidal motion profile for the robot heading.
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
-
-constexpr pathplanner::PathConstraints DefaultConstraints(
-    AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
-    AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
-
 } // namespace AutoConstants
 
 namespace OperatorConstants {

@@ -65,13 +65,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterL to ShootCloseC"
+            "pathName": "IntakeCenterL to ShootMidC"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         },
         {
@@ -91,7 +91,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseC to PrepIntakeCenterC"
+                        "pathName": "ShootMidAmpSide to PrepIntakeCenterC"
                       }
                     },
                     {
@@ -109,13 +109,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "IntakeCenterC to ShootMidC"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         }
       ]
