@@ -39,11 +39,7 @@
 
 namespace AutoConstants {
 
-<<<<<<< HEAD
 constexpr auto kMaxSpeed = 3_mps;
-=======
-constexpr auto kMaxSpeed = 15.7_fps;
->>>>>>> visvam-wip
 constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
