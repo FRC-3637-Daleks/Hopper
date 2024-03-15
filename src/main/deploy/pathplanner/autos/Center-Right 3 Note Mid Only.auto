@@ -109,7 +109,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterC to ShootCloseC"
+            "pathName": null
           }
         },
         {
@@ -121,6 +121,6 @@
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": "Center Autons",
   "choreoAuto": false
 }

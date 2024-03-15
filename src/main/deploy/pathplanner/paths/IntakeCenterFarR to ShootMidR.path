@@ -8,27 +8,49 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.6996793470049125,
-        "y": 0.5972526638348568
+        "x": 5.4799768991309,
+        "y": 1.0720548095836802
       },
       "isLocked": false,
       "linkedName": "IntakeCenterFarR"
     },
     {
       "anchor": {
-        "x": 1.5950797094176201,
-        "y": 3.5366726368260153
+        "x": 4.40792208954722,
+        "y": 1.7475961964446294
       },
       "prevControl": {
-        "x": 1.6302122190549648,
-        "y": 3.5366726368260153
+        "x": 5.4799768991309,
+        "y": 1.0426834449375526
+      },
+      "nextControl": {
+        "x": 3.2489895856939457,
+        "y": 2.509634007197467
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.25,
+        "y": 3.35
+      },
+      "prevControl": {
+        "x": 2.285132509637345,
+        "y": 3.35
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "ShootMidR"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -44.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,11 +61,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.0,
+    "rotation": -44.0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to Shoot MidR",
+  "folder": "IntakeCenter to ShootMidC",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

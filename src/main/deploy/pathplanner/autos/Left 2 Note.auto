@@ -45,9 +45,21 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "LeftSub to PrepIntakeCloseL"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -65,12 +77,24 @@
         {
           "type": "named",
           "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": "AmpSide Autons",
   "choreoAuto": false
 }

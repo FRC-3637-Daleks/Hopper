@@ -77,6 +77,12 @@
         {
           "type": "named",
           "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutputToShooter"
           }
         },
@@ -127,12 +133,18 @@
         {
           "type": "named",
           "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": "SourceSide Autons",
   "choreoAuto": false
 }

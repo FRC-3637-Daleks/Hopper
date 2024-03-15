@@ -8,79 +8,68 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.291125164276005,
-        "y": 4.180768646843998
+        "x": 5.965612555168329,
+        "y": 4.1
       },
       "isLocked": false,
       "linkedName": "IntakeCenterC"
     },
     {
       "anchor": {
-        "x": 5.9868594045179115,
-        "y": 4.0434956988276145
-      },
-      "prevControl": {
-        "x": 6.068619269906157,
-        "y": 4.04023860829462
-      },
-      "nextControl": {
-        "x": 5.820092375343203,
-        "y": 4.050139243424481
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.002933144240039,
+        "x": 5.826125106795668,
         "y": 4.1
       },
       "prevControl": {
-        "x": 5.35618886635841,
-        "y": 3.868553216696308
+        "x": 5.995652148622984,
+        "y": 4.1
       },
       "nextControl": {
-        "x": 4.5579213555003415,
-        "y": 4.391563704668065
+        "x": 5.391259099523186,
+        "y": 4.1
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.2768612784015865,
-        "y": 4.930262185774015
+        "x": 4.39882697947214,
+        "y": 3.35
       },
       "prevControl": {
-        "x": 4.478748847648797,
-        "y": 4.696497631908824
+        "x": 5.075801922231231,
+        "y": 3.8784137912986654
       },
       "nextControl": {
-        "x": 4.054355384031737,
-        "y": 5.187900589781208
+        "x": 3.298034959706283,
+        "y": 2.4907751633685096
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.55
+        "x": 2.25,
+        "y": 3.35
       },
       "prevControl": {
-        "x": 3.913825345482359,
-        "y": 5.492382339971527
+        "x": 2.206571685870644,
+        "y": 2.509432655228947
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeCloseC"
+      "linkedName": "ShootMidR"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 3.0,
-      "rotationDegrees": -58.781597235653585,
-      "rotateFast": false
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
@@ -94,10 +83,10 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenterC to ShootClose",
+  "folder": "IntakeCenter to ShootMidC",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

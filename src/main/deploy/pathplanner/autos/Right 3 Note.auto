@@ -51,6 +51,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseR to IntakeCloseR"
@@ -60,6 +66,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -89,6 +101,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
@@ -109,12 +127,18 @@
         {
           "type": "named",
           "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": "SourceSide Autons",
   "choreoAuto": false
 }

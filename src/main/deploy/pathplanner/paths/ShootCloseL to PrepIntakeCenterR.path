@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 7.0
+        "y": 6.99655944766435
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.612618136505887,
-        "y": 6.90939356201109
+        "x": 8.612618136505889,
+        "y": 6.905953009675439
       },
       "isLocked": false,
       "linkedName": "IntakeCloseL"

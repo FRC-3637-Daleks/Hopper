@@ -51,6 +51,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCloseL to IntakeCloseL"
@@ -60,6 +66,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zTargetingSpeaker"
           }
         },
         {
@@ -109,12 +121,18 @@
         {
           "type": "named",
           "data": {
+            "name": "zTargetingSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutputToShooter"
           }
         }
       ]
     }
   },
-  "folder": "Cool Fun Autons",
+  "folder": "AmpSide Autons",
   "choreoAuto": false
 }
