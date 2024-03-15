@@ -350,11 +350,12 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
-  SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  // SourcePathTrigger.WhileTrue(m_SourcePath.get());
 
-  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
+  // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());   Not reliable enough to
+  // risk this
 
-  SubPathTrigger.WhileTrue(m_CenterSubPath.get());
+  // SubPathTrigger.WhileTrue(m_CenterSubPath.get());
 
   m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
                              m_AmpSide3NoteAuto.get());

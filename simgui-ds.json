@@ -1,4 +1,9 @@
 {
+  "Keyboard 0 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -11,13 +16,15 @@
           "incKey": 83
         },
         {
-          "decayRate": 0.0,
+          "decayRate": 0.009999999776482582,
           "keyRate": 0.009999999776482582
         },
         {},
         {
           "decKey": 81,
-          "incKey": 69
+          "decayRate": 0.20000000298023224,
+          "incKey": 69,
+          "maxAbsValue": 0.75
         }
       ],
       "axisCount": 5,
@@ -34,14 +41,14 @@
       ],
       "povConfig": [
         {
-          "key0": 328,
+          "key0": 39,
           "key135": 323,
           "key180": 50,
           "key225": 49,
-          "key270": 324,
+          "key270": 76,
           "key315": 322,
           "key45": 329,
-          "key90": 54
+          "key90": 59
         }
       ],
       "povCount": 1
@@ -81,8 +88,6 @@
       "povConfig": [
         {
           "key0": 57,
-          "key135": 59,
-          "key180": 76,
           "key225": 75,
           "key270": 73,
           "key315": 56,
@@ -115,6 +120,10 @@
     {
       "guid": "Keyboard0"
     },
+    {},
+    {},
+    {},
+    {},
     {
       "guid": "Keyboard1"
     }

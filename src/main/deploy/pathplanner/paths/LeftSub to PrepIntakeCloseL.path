@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8455861704876034,
-        "y": 7.492694514205006
+        "x": 0.8924295166707293,
+        "y": 7.389537860388131
       },
       "isLocked": false,
       "linkedName": "LeftSub"
@@ -20,22 +20,28 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 1.0288871226815193,
-        "y": 7.553489572029072
+        "x": 1.20862210340683,
+        "y": 7.366116187296568
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCloseL"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.7,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 120.0,
-    "maxAngularAcceleration": 180.0
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 240.0
   },
   "goalEndState": {
     "velocity": 0,

@@ -93,14 +93,14 @@ constexpr frc::Pose2d kMidCNote{8.3_m, 4.1_m, 0_deg};
 constexpr frc::Pose2d kMidLNote{8.3_m, 5.78_m, 0_deg};
 constexpr frc::Pose2d kMidFarLNote{8.3_m, 7.43_m, 0_deg};
 
-constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.4_m, 90_deg};
-constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.4_m, 90_deg};
+constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.55_m, 90_deg};
+constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.55_m, 90_deg};
 
-constexpr frc::Pose2d kBlueSourcePickUp{15.4_m, 1_m, -60_deg};
-constexpr frc::Pose2d kRedSourcePickUp{1.2_m, 1_m, -120_deg};
+constexpr frc::Pose2d kBlueSourcePickUp{15.3_m, 1.1_m, -60_deg};
+constexpr frc::Pose2d kRedSourcePickUp{1.3_m, 1.1_m, -120_deg};
 
-constexpr frc::Pose2d kBlueCenterSub{1.45_m, 5.55_m, 0_deg};
-constexpr frc::Pose2d kRedCenterSub{15.3_m, 5.55_m, 180_deg};
+constexpr frc::Pose2d kBlueCenterSub{1.55_m, 5.55_m, 0_deg};
+constexpr frc::Pose2d kRedCenterSub{15_m, 5.55_m, 180_deg};
 
 } // namespace OperatorConstants
 

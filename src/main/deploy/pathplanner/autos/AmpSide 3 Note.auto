@@ -91,13 +91,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseL to PrepIntakeCenterFarL"
+                        "pathName": "ShootCloseL to PrepIntakeCenterL"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarL to IntakeCenterFarL"
+                        "pathName": "PrepIntakeCenterL to IntakeCenterL"
                       }
                     }
                   ]
@@ -109,7 +109,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarL to ShootMidC"
+            "pathName": "IntakeCenterL to ShootMidC"
           }
         },
         {

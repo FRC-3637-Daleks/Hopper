@@ -42,7 +42,9 @@
           "style": "Hidden"
         },
         "Robot": {
-          "style": "Box/Image"
+          "length": 0.9100000262260437,
+          "style": "Box/Image",
+          "width": 0.9100000262260437
         },
         "bottom": 1476,
         "height": 8.210550308227539,
