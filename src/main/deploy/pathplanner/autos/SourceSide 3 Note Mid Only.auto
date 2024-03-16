@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooter"
+                  "name": "OutputToShooterZTarget"
                 }
               }
             ]
@@ -51,12 +51,6 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "zTargetingCenterNoteR"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterR to IntakeCenterR"
@@ -77,13 +71,7 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         },
         {
@@ -103,13 +91,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "zTargetingCenterNoteFarR"
+                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
                       }
                     },
                     {
@@ -133,13 +115,7 @@
         {
           "type": "named",
           "data": {
-            "name": "zTargetingSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooter"
+            "name": "OutputToShooterZTarget"
           }
         }
       ]

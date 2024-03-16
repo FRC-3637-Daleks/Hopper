@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooter"
+                  "name": "OutputToShooterZTarget"
                 }
               }
             ]

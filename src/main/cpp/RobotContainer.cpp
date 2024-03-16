@@ -263,7 +263,7 @@ void RobotContainer::ConfigureBindings() {
       frc2::cmd::Sequence(
           m_swerve
               .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
-              .WithTimeout(1_s),
+              .WithTimeout(.5_s),
           m_intake.OutputToShooter().WithName("OutputToShooterZTarget")));
 
   pathplanner::NamedCommands::registerCommand(

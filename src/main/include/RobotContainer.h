@@ -80,7 +80,7 @@ constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.523_m, 0_deg};
 constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kBlueSourcePose{15.743_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.473_m, 0_deg};
 constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
