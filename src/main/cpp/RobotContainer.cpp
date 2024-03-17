@@ -153,7 +153,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMP());
 
-  m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
+  m_copilotController.LeftBumper().OnTrue(m_intake.OutputToShooter());
 
   // Configure Shooter Bindings.
   auto flywheel = [this]() -> double {
@@ -246,7 +246,7 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, true, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
@@ -263,8 +263,9 @@ void RobotContainer::ConfigureBindings() {
       frc2::cmd::Sequence(
           m_swerve
               .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
-              .WithTimeout(.5_s),
-          m_intake.OutputToShooter().WithName("OutputToShooterZTarget")));
+              .WithTimeout(1_s),
+          m_intake.OutputToShooter().WithTimeout(1_s).WithName(
+              "OutputToShooterZTarget")));
 
   pathplanner::NamedCommands::registerCommand(
       "OutputToShooter",

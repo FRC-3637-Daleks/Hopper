@@ -44,8 +44,8 @@ constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 180_rpm;
-constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kMaxAngularSpeed = 240_rpm;
+constexpr auto kMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
 constexpr double kPXController = 0.5;
@@ -76,11 +76,11 @@ constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 constexpr int kAutoIntake = 180;
 
-constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.523_m, 0_deg};
+constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.493_m, 0_deg};
 constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kBlueSourcePose{15.743_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.473_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.486_m, 0_deg};
 constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};

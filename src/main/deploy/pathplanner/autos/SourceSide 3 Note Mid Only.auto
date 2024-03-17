@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.75,
-      "y": 4.35
-    },
-    "rotation": -60.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -15,12 +9,6 @@
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -47,13 +35,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterR"
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
                       }
                     }
                   ]
@@ -65,7 +53,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterR to ShootMidR"
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {
@@ -91,13 +79,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -109,7 +97,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
+            "pathName": "IntakeCenterR to ShootMidR"
           }
         },
         {
