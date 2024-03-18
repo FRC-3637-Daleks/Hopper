@@ -153,7 +153,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMP());
 
-  m_copilotController.LeftBumper().OnTrue(m_intake.OutputToShooter());
+  m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
 
   // Configure Shooter Bindings.
   auto flywheel = [this]() -> double {
@@ -246,7 +246,7 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, true, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder

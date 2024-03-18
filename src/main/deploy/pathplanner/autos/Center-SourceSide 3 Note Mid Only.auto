@@ -109,7 +109,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeMidC to ShootMidR"
+            "pathName": "IntakeCenterC to ShootMidC"
           }
         },
         {

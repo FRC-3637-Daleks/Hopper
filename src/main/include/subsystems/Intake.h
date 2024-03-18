@@ -71,7 +71,7 @@ constexpr float kD = 0.0;
 constexpr int totalEncoders = 4096;
 
 // margin of error for detecting if arm is in specific spot
-constexpr int kAllowableMarginOfError = 15;
+constexpr int kAllowableMarginOfError = 25;
 
 // voltage for funtions (i dide't even have to use auto)
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;

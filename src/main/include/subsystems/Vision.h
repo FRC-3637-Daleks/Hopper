@@ -30,7 +30,7 @@ constexpr std::string_view kPhotonCameraName =
                                  // probably between auton and teleop
 
 const frc::Transform3d kCameraToRobot{
-    {-4_in, -6_in, 25_in},
+    {-4_in, -5.5_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     0_deg, 0_deg,

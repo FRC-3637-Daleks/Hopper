@@ -31,7 +31,7 @@ Vision::Vision(
   m_addVisionMeasurement =
       addVisionMeasurement; // Call the addVisionMeasurement function
   m_estimator.SetMultiTagFallbackStrategy(
-      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+      photon::PoseStrategy::CLOSEST_TO_LAST_POSE);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing vision subsystem."));
