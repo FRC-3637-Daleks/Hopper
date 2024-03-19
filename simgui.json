@@ -15,7 +15,7 @@
       "/SmartDashboard/Mechanisms": "Mechanism2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
-      "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Vision/simulated apriltags": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
@@ -35,6 +35,21 @@
         },
         "RL": {
           "arrows": false,
+          "style": "Line"
+        },
+        "Notes": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.38235294818878174,
+            0.0,
+            255.0
+          ],
+          "length": 0.33000001311302185,
+          "width": 0.33000001311302185
+        },
+        "RL": {
+          "arrows": false,
           "style": "Hidden"
         },
         "RR": {
@@ -51,10 +66,29 @@
         "left": 150,
         "right": 2961,
         "simulation": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            172.5000457763672,
+            0.0,
+            255.0,
+            255.0
+          ],
+          "color": [
+            232.49998474121094,
+            0.0,
+            255.0,
+            255.0
+          ]
         },
         "top": 79,
+        "vision estimate": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            0.0,
+            255.0
+          ]
+        },
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -67,37 +101,14 @@
       },
       "/SmartDashboard/SendableChooser[0]": {
         "window": {
-          "name": "AutoChooser",
+          "name": "Select Auton",
           "visible": true
         }
       },
-      "/SmartDashboard/zeroEncodersCommand": {
+      "/SmartDashboard/Shooter": {
         "window": {
           "visible": true
         }
-      }
-    }
-  },
-  "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
-    "retained": {
-      "SmartDashboard": {
-        "open": true
-      }
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "Shooter": {
-          "open": true
-        },
-        "Swerve": {
-          "TurnPIDController": {
-            "open": true
-          }
-        },
-        "open": true
       }
     }
   },

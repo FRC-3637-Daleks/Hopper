@@ -29,9 +29,9 @@ constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 // NOTE: Guess value!
 
-constexpr double kPTurn = 0.071; // 0.061
-constexpr double kITurn = 0.00;  // 0.00
-constexpr double kDTurn = 0.00; // 0.0
+constexpr double kPTurn = 0.061; // 0.0605
+constexpr double kITurn = 0.00;  // 0.001
+constexpr double kDTurn = 0.0;   // 0.03
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -153,6 +153,9 @@ public:
 
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
+
+  // Simulation only. Returns the simulated ground truth position of the robot
+  frc::Pose2d GetSimulatedGroundTruth();
 
   // Returns Current Chassis Speed
   frc::ChassisSpeeds GetSpeed();
