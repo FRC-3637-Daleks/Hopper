@@ -25,16 +25,27 @@
 
 namespace VisionConstants {
 
-constexpr std::string_view kPhotonCameraName =
+constexpr std::string_view kShooterPhotonCameraName =
     "Arducam_OV2311_USB_Camera"; // Note, we need an in-built pipeline changer,
                                  // probably between auton and teleop
 
-const frc::Transform3d kCameraToRobot{
-    {-5.125_in, -6_in, 25_in},
+const frc::Transform3d kShooterCameraToRobot{
+    {-4_in, -5.5_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     0_deg, 0_deg,
                     180_deg}}; // The camera location relative to the robot's
+                               // center. Need to change for actual robot
+constexpr std::string_view kIntakePhotonCameraName =
+    "Arducam_OV9281_USB_Camera"; // Note, we need an in-built pipeline changer,
+                                 // probably between auton and teleop
+
+const frc::Transform3d kIntakeCameraToRobot{
+    {-0_in, -0_in, 23_in},
+    frc::Rotation3d{// transform3d can be constructed with a variety of
+                    // variables, so this should be fine
+                    0.5_deg, 0_deg,
+                    0_deg}}; // The camera location relative to the robot's
                                // center. Need to change for actual robot
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
@@ -71,8 +82,12 @@ public:
   // ...
 
 private:
-  photon::PhotonCamera m_camera{VisionConstants::kPhotonCameraName};
-  photon::PhotonPoseEstimator m_estimator;
+  photon::PhotonCamera m_shooterCamera{
+      VisionConstants::kShooterPhotonCameraName};
+  photon::PhotonPoseEstimator m_shooterEstimator;
+  photon::PhotonCamera m_intakeCamera{
+      VisionConstants::kShooterPhotonCameraName};
+  photon::PhotonPoseEstimator m_intakeEstimator;
 
   std::optional<photon::EstimatedRobotPose> m_apriltagEstimate{std::nullopt};
   // explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,

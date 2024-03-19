@@ -20,33 +20,45 @@ Vision::Vision(
         addVisionMeasurement,
     std::function<frc::Pose2d()> getRobotPose,
     const Eigen::Matrix<double, 3, 1> &initialStdDevs)
-    : m_estimator(
+    : m_shooterEstimator(
           frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
           photon::MULTI_TAG_PNP_ON_COPROCESSOR,
-          std::move(m_camera), // change to the multitag detection algorithm
-          VisionConstants::kCameraToRobot),
-      m_referencePose(getRobotPose) {
+          std::move(
+              m_shooterCamera), // change to the multitag detection algorithm
+          VisionConstants::kShooterCameraToRobot),
+      m_referencePose(getRobotPose),
+      m_intakeEstimator(
+          frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
+          photon::MULTI_TAG_PNP_ON_COPROCESSOR,
+          std::move(
+              m_intakeCamera), // change to the multitag detection algorithm
+          VisionConstants::kIntakeCameraToRobot) {
   // Inside the constructor body, you can perform additional operations if
   // needed
   m_addVisionMeasurement =
       addVisionMeasurement; // Call the addVisionMeasurement function
-  m_estimator.SetMultiTagFallbackStrategy(
-      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+  m_shooterEstimator.SetMultiTagFallbackStrategy(
+      photon::PoseStrategy::CLOSEST_TO_LAST_POSE);
+
+  m_intakeEstimator.SetMultiTagFallbackStrategy(
+      photon::PoseStrategy::CLOSEST_TO_LAST_POSE);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing vision subsystem."));
 }
 
 bool Vision::HasTargets() {
-  photon::PhotonPipelineResult result = m_camera.GetLatestResult();
+  photon::PhotonPipelineResult result = m_shooterCamera.GetLatestResult();
+  photon::PhotonPipelineResult intake_result = m_intakeCamera.GetLatestResult();
 
-  return result.HasTargets();
+  return result.HasTargets() || intake_result.HasTargets();
 }
 
 std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
-  m_estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
-  auto visionEst = m_estimator.Update();
-  auto camera = m_estimator.GetCamera();
+  m_shooterEstimator.SetReferencePose(frc::Pose3d{m_referencePose()});
+  m_intakeEstimator.SetReferencePose(frc::Pose3d{m_referencePose()});
+  auto visionEst = m_shooterEstimator.Update();
+  auto camera = m_shooterEstimator.GetCamera();
   units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
   bool newResult =
       units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
@@ -63,8 +75,17 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
 
   Eigen::Matrix<double, 3, 1> estStdDevs = VisionConstants::kSingleTagStdDevs;
   photon::PhotonPipelineResult latestResult =
-      m_estimator.GetCamera()
+      m_shooterEstimator.GetCamera()
           ->GetLatestResult(); // Add declaration for GetLatestResult function
+
+  photon::PhotonPipelineResult intakeLatestResult =
+      m_intakeEstimator.GetCamera()
+          ->GetLatestResult(); 
+
+  
+
+  // ADD the TWO SPANS
+  //std::span<const photon::PhotonTrackedTarget> targets = intakeLatestResult.GetTargets() + latestResult.GetTargets(); 
 
   int numTags = 0; // Declare the variable "numTags" and initialize it to 0
 
@@ -72,7 +93,8 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
   auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
 
   for (const auto &tgt : targets) {
-    auto tagPose = m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
+    auto tagPose =
+        m_shooterEstimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
       numTags++;
       avgDist += tagPose.value().ToPose2d().Translation().Distance(
