@@ -60,6 +60,20 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
+void RobotContainer::ControllerRumble1Sec() {
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+  frc::Wait(1_s);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+  frc::Wait(1_s);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+}
+
 void RobotContainer::ConfigureBindings() {
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
@@ -151,7 +165,7 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
-  m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMP());
+  m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
 
   m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
 
@@ -253,7 +267,7 @@ void RobotContainer::ConfigureBindings() {
       (&m_swerve));
 
   pathplanner::NamedCommands::registerCommand(
-      "ShootAmp", m_intake.ShootOnAMP().WithName("ShootAMP"));
+      "ShootAmp", m_intake.ShootOnAMPRetract().WithName("ShootAMP"));
 
   pathplanner::NamedCommands::registerCommand(
       "IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));

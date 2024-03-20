@@ -133,7 +133,31 @@ frc2::CommandPtr Intake::IntakeFromPlayerStation() {
   ;
 }
 
-frc2::CommandPtr Intake::ShootOnAMP() {
+frc2::CommandPtr Intake::ShootOnAMPCatch() {
+  return frc2::cmd::Either(
+      IntakeArmSpeakerCommand(true) // when ring
+          .AndThen(Run([this] { ShootOnAMPVoid(); }).WithTimeout(1.2_s))
+          .Until([this]() -> bool { // when we reach the AMP pos
+            return ((m_arm.GetSelectedSensorPosition() >=
+                         IntakeConstants::IntakeArmAMPPos - 10 &&
+                     m_arm.GetSelectedSensorPosition() <=
+                         IntakeConstants::IntakeArmAMPPos +
+                             30) && // when 10 before or 30 after AMP
+                    m_goal == IntakeConstants::IntakeArmAMPVelocityPos);
+          }) // And Goal is set to Velocity (only happen when AMP shot)
+          .AndThen(IntakeArmAMPCommand(false))
+          .AndThen(Run([this] {
+                     IntakeBackward();
+                   }).WithTimeout(0.6_s)) // Just so it runs for a little longer
+          .AndThen(IntakeOff())
+          .AndThen(IntakeOff().AndThen(IntakeArmSpeakerCommand(
+              true))) /*.AndThen(IntakeArmSpeakerCommand(true))*/,
+      frc2::cmd::None(),                             // no ring
+      [this]() { return IsIntakeBreakBeamBroken(); } // When broken = true
+  );
+}
+
+frc2::CommandPtr Intake::ShootOnAMPRetract() {
   return frc2::cmd::Either(
       IntakeArmSpeakerCommand(true) // when ring
           .AndThen(Run([this] { ShootOnAMPVoid(); }).WithTimeout(1.2_s))
@@ -160,7 +184,11 @@ frc2::CommandPtr Intake::ShootOnAMP() {
 
 frc2::CommandPtr Intake::OutputToShooter() {
   return frc2::cmd::Either(
-      IntakeArmSpeakerCommand(true) // when ring
+      IntakeArmSpeakerCommand(true)
+          .Until([this]() -> bool {
+            return m_arm.GetSelectedSensorPosition() <
+                   IntakeConstants::IntakeArmSpeakerPos;
+          }) // when ring
           .AndThen(IntakeOutSpeaker())
           .WithTimeout(1_s),
       frc2::cmd::None(),                             // no ring

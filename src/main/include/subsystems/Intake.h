@@ -147,8 +147,18 @@ public:
    * -Goes to speaker position
    * -Goes to AMP position
    * -When passes specfic encoder point on the way to AMP, outputs
+   * -Does auto-intake to try and catch it
    */
-  frc2::CommandPtr ShootOnAMP();
+  frc2::CommandPtr ShootOnAMPCatch();
+
+  /** Shoots on the AMP when lined up
+   * If has ring
+   * -Goes to speaker position
+   * -Goes to AMP position
+   * -When passes specfic encoder point on the way to AMP, outputs
+   * -Goes back to shooter position
+   */
+  frc2::CommandPtr ShootOnAMPRetract();
 
   /** Shoot to speaker
    * If has ring
