@@ -140,6 +140,8 @@ public:
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
 
+  void ControllerRumble1Sec();
+
 public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_copilotController{
@@ -175,6 +177,14 @@ public:
 
   frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
+  }};
+
+  frc2::Trigger RumbleForIntakeTrigger{[this]() -> bool {
+    return m_intake.IsIntakeBreakBeamBroken(); // when broken = true
+  }};
+
+  frc2::Trigger RumbleForOutakeTrigger{[this]() -> bool {
+    return !(m_intake.IsIntakeBreakBeamBroken()); // when broken = true
   }};
 
   Shooter m_shooter;

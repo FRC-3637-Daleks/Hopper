@@ -60,6 +60,20 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
+void RobotContainer::ControllerRumble1Sec() {
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+  frc::Wait(1_s);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+  frc::Wait(1_s);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+}
+
 void RobotContainer::ConfigureBindings() {
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
@@ -202,6 +216,12 @@ void RobotContainer::ConfigureBindings() {
   SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
 
   AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
+
+  RumbleForIntakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble1Sec(); }));
+
+  RumbleForOutakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble1Sec(); }));
 
   m_manualIntake.WhileTrue(frc2::cmd::Run(
       [this] {
