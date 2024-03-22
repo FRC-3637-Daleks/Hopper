@@ -3,7 +3,7 @@
 
 #include <frc/DataLogManager.h>
 
-// top do --> add the code from photonvsion example to both the cpp and h files
+// top do --> add the code from photonvision example to both the cpp and h files
 // copy std deviation formula, and potentially make a system where the code
 // resets to a set pose if no fiducials are found
 //   or I can have it reset to odometry if no fiducials are found
@@ -56,8 +56,6 @@ std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
   return visionEst;
 }
 
-// This is to create standard deviations for the vision system, which is used to
-// determine if a pose is acurate enough to be used
 Eigen::Matrix<double, 3, 1>
 Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
 

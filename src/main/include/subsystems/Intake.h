@@ -32,8 +32,6 @@ namespace IntakeConstants {
 constexpr int kIntakeMotorPort = 17;
 constexpr int kArmMotorPort = 15;
 
-// limit switch
-
 // breakbeam
 constexpr int kBreakbeamPort = 0;
 

@@ -157,7 +157,7 @@ public:
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
-  // The robot's subsystems are defined here...
+  // Button Triggers are defined here.
 
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
     return m_swerveController.GetLeftTriggerAxis() > 0.2;
@@ -208,11 +208,15 @@ public:
   frc2::Trigger SubPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
 
+  // The robot's subsystems are defined here...
+
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
+
+  // The autonomous commands are initialized here.
 
   frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};

@@ -108,14 +108,16 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_leadMotor.SetClosedLoopRampRate(0.1);
   m_followMotor.SetClosedLoopRampRate(0.1);
 
-  // m_leadMotor.SetSmartCurrentLimit(5);
-  // m_followMotor.SetSmartCurrentLimit(5);
+
+  // Need to empirically measure proper current limit.  
+  m_leadMotor.SetSmartCurrentLimit(
+      ShooterConstants::kFlywheelCurrentLimit.value());
+  m_followMotor.SetSmartCurrentLimit(
+      ShooterConstants::kFlywheelCurrentLimit.value());
 
   m_goal = 0_deg;
 
-  // m_map.insert(3.408470_m, 21.534357_deg);
-  // m_map.insert(3.949039_m, 12.174549_deg);
-
+  // Insert empirically measured data points into interpolation map.
   m_map.insert(1.424465_m, 41.296232_deg);
   m_map.insert(2.388467_m, 27.834950_deg);
   m_map.insert(2.438238_m, 25.355256_deg);
@@ -128,12 +130,6 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_map.insert(4.397344_m, 16.375658_deg);
   m_map.insert(7.050149_m, 10_deg);
 
-  // m_map.insert(3.2019_m, 16.6005_deg);
-  // m_map.insert(1.82325_m, 34.26_deg);
-  // m_map.insert(2.334_m, 27.335_deg);
-  // m_map.insert(2.8628_m, 21.984_deg);
-  // m_map.insert(3.002_m, 20.8_deg);
-  // m_map.insert(3.001_m, 20.8_deg);
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));
 }

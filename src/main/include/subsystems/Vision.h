@@ -54,16 +54,23 @@ public:
       std::function<frc::Pose2d()> getRobotPose,
       const Eigen::Matrix<double, 3, 1> &initialStdDevs);
 
-  // photon::PhotonPoseEstimator m_estimator;
-
   void Periodic() override;
 
   void GetBestPose();
 
   bool HasTargets();
 
+
+  /**
+   * Uses drivetrain reference pose and latest result from PhotonVision Camera
+   * Only returns a new result if the time since the last result is less than 1e-5 seconds.
+  */
   std::optional<photon::EstimatedRobotPose> CalculateRobotPoseEstimate();
 
+  /**
+   * This is to create standard deviations for the vision system, which is used to 
+   * determine if a pose is accurate enough to be used.
+  */
   Eigen::Matrix<double, 3, 1> GetEstimationStdDevs(frc::Pose2d estimatedPose);
   // ...
 public:
@@ -75,9 +82,7 @@ private:
   photon::PhotonPoseEstimator m_estimator;
 
   std::optional<photon::EstimatedRobotPose> m_apriltagEstimate{std::nullopt};
-  // explicit PhotonPoseEstimator(frc::AprilTagFieldLayout aprilTags,
-  //                          PoseStrategy strategy, PhotonCamera&& camera,
-  //                          frc::Transform3d robotToCamera);
+  
   Eigen::Matrix<double, 3, 1> m_estimatedStdDevs;
   units::time::second_t lastEstTimestamp;
   std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)>

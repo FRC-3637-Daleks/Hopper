@@ -87,6 +87,10 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
   // periodic, run Motion Magic with slot 0 configs
   m_arm.SelectProfileSlot(0, 0);
 
+  // TODO: Need to empirically test for current limit.
+  m_arm.ConfigSupplyCurrentLimit({true, IntakeConstants::kMaxCurrent.value(),
+                                  IntakeConstants::kMaxCurrent.value(), 0.1});
+
   frc::DataLogManager::Log(
       fmt::format("Finished initializing intake subsystem."));
 }

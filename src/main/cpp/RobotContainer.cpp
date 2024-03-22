@@ -217,8 +217,6 @@ void RobotContainer::ConfigureBindings() {
 
   AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
 
-  // SourceIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
-
   m_manualIntake.WhileTrue(frc2::cmd::Run(
       [this] {
         if (m_copilotController.GetXButton())
@@ -365,11 +363,12 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
+  /**
+   * Automatic pathfinding triggers. Still need to test.
+  */
   // SourcePathTrigger.WhileTrue(m_SourcePath.get());
-
   // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());   Not reliable enough to
   // risk this
-
   // SubPathTrigger.WhileTrue(m_CenterSubPath.get());
 
   m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",

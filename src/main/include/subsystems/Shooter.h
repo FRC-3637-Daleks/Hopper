@@ -73,6 +73,8 @@ constexpr auto kArmMass = 15_lb;
 constexpr auto kArmRadius = 10_in;
 constexpr auto kArmMoment = 0.5 * kArmMass * kArmRadius * kArmRadius;
 
+constexpr auto kFlywheelCurrentLimit = 40_A;
+
 constexpr auto kMinAngle = 0_deg;
 constexpr auto kMaxAngle = 80_deg;
 constexpr auto kMinAimSensor = 935;
@@ -136,8 +138,6 @@ public:
       std::function<double()> flywheelInput,
       std::function<units::angular_velocity::degrees_per_second_t()>
           pivotVelocity);
-  // frc2::CommandPtr ShooterCommand(std::function<double()> flywheelInput,
-  // std::function<units::degree_t()> pivotAngle);
 
   frc2::CommandPtr
   ShooterCommand(std::function<double()> flywheelInput,
