@@ -17,25 +17,47 @@
     {
       "anchor": {
         "x": 1.75,
+        "y": 4.520382906671662
+      },
+      "prevControl": {
+        "x": 1.7473205845127795,
+        "y": 4.35643119503072
+      },
+      "nextControl": {
+        "x": 1.7520325075325642,
+        "y": 4.644750736325689
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.75,
         "y": 5.55
       },
       "prevControl": {
-        "x": 1.6613006255868845,
-        "y": 4.461826414378382
+        "x": 1.7590314210585614,
+        "y": 5.094213897414956
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCloseC"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
-    "maxAngularVelocity": 120.0,
-    "maxAngularAcceleration": 180.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,

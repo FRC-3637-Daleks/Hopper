@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootCommand"
+                "name": null
               }
             },
             {
@@ -85,17 +85,57 @@
               "data": {
                 "name": "zTargetingStage"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteFarR"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteR"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteC"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteL"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "zTargetingCenterNoteFarL"
+              }
             }
           ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
-    "maxAngularVelocity": 120.0,
-    "maxAngularAcceleration": 180.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,

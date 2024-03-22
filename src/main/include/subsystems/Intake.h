@@ -27,11 +27,10 @@
 #include <frc2/command/ParallelCommandGroup.h>
 
 namespace IntakeConstants {
+
 // Moter IDs
 constexpr int kIntakeMotorPort = 17;
 constexpr int kArmMotorPort = 15;
-
-// limit switch
 
 // breakbeam
 constexpr int kBreakbeamPort = 0;
@@ -41,7 +40,10 @@ constexpr int kBreakbeamPort = 0;
 constexpr int IntakeArmIntakePos = 995; // -
 constexpr int IntakeArmAMPPos =
     660; // maybe make forward to catch the note if miss
-constexpr int IntakeArmSpeakerPos = 450;
+constexpr int IntakeArmAMPVelocityPos = IntakeArmAMPPos - 10;
+
+constexpr int IntakeArmSourceIntakePos = 625;
+constexpr int IntakeArmSpeakerPos = 441;
 // constexpr int IntakeArmPreAMPPos = 600;
 constexpr int IntakeArmLetGoPos = 560; // Maybe make later
 
@@ -54,31 +56,37 @@ constexpr int kPIDLoopIdx = 0;
 // timeout for the PID loop
 constexpr int kTimeoutMs = 30;
 
-// pid configurations
-constexpr int kF = 2.5;
-constexpr int kP = 20.0;
-constexpr int kI = 0.0;
-constexpr int kD = 0.0;
+constexpr double kNominalOutputFwd = 0.1;
+constexpr double kNominalOutputRev = 0;
+constexpr double kNeutralDeadband = 0.05;
 
-// consts for conversion
+// pid configurations
+constexpr float kF = 4.0;
+constexpr float kP = 3.0;
+constexpr float kI = 0.0;
+constexpr float kD = 0.0;
+
 constexpr int totalEncoders = 4096;
 
 // margin of error for detecting if arm is in specific spot
-constexpr int kAllowableMarginOfError = 15;
+constexpr int kAllowableMarginOfError = 25;
 
 // voltage for funtions (i dide't even have to use auto)
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
+constexpr units::current::ampere_t kMaxCurrent = 20_A;
 
 // physical characteristics
 constexpr auto kWheelMoment = 1.0_kg_sq_m;
-constexpr auto kWindowMotor = frc::DCMotor{12_V, 70_inlb, 24_A, 5_A, 100_rpm};
+// constexpr auto kWindowMotor =
+//    frc::DCMotor::Vex775Pro; // Hardcoded in m_armModel
 constexpr auto kArmMass = 12_lb;
 constexpr auto kArmRadius = 13_in;
 constexpr auto kWheelDiameter = 1.5_in; //< Verify this
 constexpr auto kWheelCircum = kWheelDiameter * std::numbers::pi / 1_tr;
-constexpr double kArmGearing = 4.0;
+
+constexpr double kArmGearing = 4.0 * 50;
 // you can play with the leading constant to get the dynamics you want
-constexpr auto kArmMoment = 0.5 * kArmMass * kArmRadius * kArmRadius;
+constexpr auto kArmMoment = 1.0 * kArmMass * kArmRadius * kArmRadius;
 constexpr bool kGravityCompensation = true; // true if there's a gas spring
 
 // modeling 0 as intake horizontal in front of robot, and positive angle is
@@ -117,6 +125,7 @@ public:
 
   void Emergency(double input);
 
+  int PreviousSensorPosition = 0;
   /** Automaticaly intakes ring and goes to speaker pos
    * If doesent have ring
    * -Goes to ground position
@@ -125,13 +134,29 @@ public:
    */
   frc2::CommandPtr IntakeRing();
 
+  /** Automatically intakes ring from player station
+   * Uses AMP pos as speaker pos (goes to pos)
+   * AutoIntakes, no waiting for arm to get to position
+   */
+  frc2::CommandPtr IntakeFromPlayerStation();
+
   /** Shoots on the AMP when lined up
    * If has ring
    * -Goes to speaker position
    * -Goes to AMP position
    * -When passes specfic encoder point on the way to AMP, outputs
+   * -Does auto-intake to try and catch it
    */
-  frc2::CommandPtr ShootOnAMP();
+  frc2::CommandPtr ShootOnAMPCatch();
+
+  /** Shoots on the AMP when lined up
+   * If has ring
+   * -Goes to speaker position
+   * -Goes to AMP position
+   * -When passes specfic encoder point on the way to AMP, outputs
+   * -Goes back to shooter position
+   */
+  frc2::CommandPtr ShootOnAMPRetract();
 
   /** Shoot to speaker
    * If has ring
@@ -203,6 +228,8 @@ public:
   // Moves arm to AMP using motion magic (also sets goal (for visualization))
   void IntakeArmAMP();
 
+  void IntakeArmAMPVelocity();
+
   // Moves arm to speaker using motion magic (also sets goal (for
   // visualization))
   void IntakeArmSpeaker();
@@ -210,12 +237,21 @@ public:
   // Moves arm to intake using motion magic (also sets goal (for visualization))
   void IntakeArmIntake();
 
+  // Moves arm to intake using motion magic (also sets goal (for visualization))
+  void IntakeArmSource();
+
   // Checks if arm is at passed in position (goal != m_goal)
   bool IsAtWantedPosition(int goal);
 
   // Uses corresponding void function to move to AMP position, if wait is true,
   // waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
+
+  // Uses corresponding void function to move to Source position, if wait is
+  // true, waits for cmd to finish, if false does not wait
+  frc2::CommandPtr IntakeArmSourceCommand(bool wait = false);
+
+  frc2::CommandPtr IntakeArmAMPVelocityCommand(bool wait = false);
   // waits for cmd to finish, if false does not wait
   frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
   // Uses corresponding void function to move to  ground, if wait is true,

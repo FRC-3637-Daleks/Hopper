@@ -8,50 +8,98 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.834123991324907,
-        "y": 0.1085363709188964
+        "x": 2.263812470379861,
+        "y": 2.4525089479517073
       },
       "isLocked": false,
       "linkedName": "IntakeCloseR"
     },
     {
       "anchor": {
-        "x": 4.945096813270551,
-        "y": 4.098792791023527
+        "x": 3.306495915317413,
+        "y": 2.511251677243963
       },
       "prevControl": {
-        "x": 4.254410816513942,
-        "y": 4.02571266680995
+        "x": 3.1198100164598332,
+        "y": 2.3906837008984425
       },
       "nextControl": {
-        "x": 5.946559092009672,
-        "y": 4.204755541201098
+        "x": 4.011408666824489,
+        "y": 2.9665078292589504
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.1,
+        "x": 4.422607771870285,
+        "y": 3.3630212519816816
+      },
+      "prevControl": {
+        "x": 4.278824900211886,
+        "y": 3.1606601733513413
+      },
+      "nextControl": {
+        "x": 4.8191211945930155,
+        "y": 3.9210771802581177
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.700262133976862,
         "y": 4.098792791023527
       },
       "prevControl": {
-        "x": 5.882456380297378,
-        "y": 4.301987065512593
+        "x": 5.245005981961875,
+        "y": 4.097305368134887
+      },
+      "nextControl": {
+        "x": 5.935690274856582,
+        "y": 4.099561987010938
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.3,
+        "y": 4.098792791023527
+      },
+      "prevControl": {
+        "x": 6.214261015284106,
+        "y": 4.141362415104079
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "PrepIntakeCenterC"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
-    "maxAngularVelocity": 120.0,
-    "maxAngularAcceleration": 180.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -59,7 +107,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootCloseR to PrepIntakeCenter",
+  "folder": "IntakeCloseR to PrepIntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

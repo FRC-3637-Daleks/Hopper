@@ -20,7 +20,6 @@
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
-#include <pathplanner/lib/path/PathPlannerPath.h>
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -40,13 +39,13 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 4_mps;
-constexpr auto kMaxAcceleration = 5_mps_sq;
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 120_rpm;
-constexpr auto kMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kMaxAngularSpeed = 240_rpm;
+constexpr auto kMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
 constexpr double kPXController = 0.5;
@@ -56,11 +55,6 @@ constexpr double kPThetaController = 0.5;
 // Trapezoidal motion profile for the robot heading.
 const frc::TrapezoidProfile<units::radians>::Constraints
     kThetaControllerConstraints{kMaxAngularSpeed, kMaxAngularAcceleration};
-
-constexpr pathplanner::PathConstraints DefaultConstraints(
-    AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
-    AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
-
 } // namespace AutoConstants
 
 namespace OperatorConstants {
@@ -69,31 +63,44 @@ constexpr int kCopilotControllerPort = 1;
 constexpr int kSwerveControllerPort = 0;
 
 constexpr double kDeadband = 0.08;
-constexpr double kClimbDeadband = 0.8;
+constexpr double kClimbDeadband = 0.08;
 
 constexpr int kStrafeAxis = frc::XboxController::Axis::kLeftX;
 constexpr int kForwardAxis = frc::XboxController::Axis::kLeftY;
 constexpr int kRotationAxis = frc::XboxController::Axis::kRightX;
 constexpr int kFieldRelativeButton = frc::XboxController::Button::kRightBumper;
 
+constexpr int kIntakeSourcePOV = 45;
 constexpr int kIntakeGroundPOV = 90;
 constexpr int kIntakeAMPPOV = 0;
 constexpr int kIntakeShooterPOV = 270;
 constexpr int kAutoIntake = 180;
 
-constexpr frc::Pose2d kBlueSpeakerPose{0.14_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSpeakerPose{0.112_m, 5.493_m, 0_deg};
+constexpr frc::Pose2d kBlueAMPPose{1.812_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kBlueStagePose{4.869_m, 4.144_m, 0_deg};
-constexpr frc::Pose2d kBlueSourcePose{15.733_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kRedSpeakerPose{16.336_m, 5.5222_m, 0_deg};
-constexpr frc::Pose2d kRedAMPPose{14.622_m, 8.239_m, 0_deg};
+constexpr frc::Pose2d kBlueSourcePose{15.743_m, 0.410_m, 0_deg};
+constexpr frc::Pose2d kRedSpeakerPose{16.362_m, 5.486_m, 0_deg};
+constexpr frc::Pose2d kRedAMPPose{14.699_m, 8.221_m, 0_deg};
 constexpr frc::Pose2d kRedStagePose{11.681_m, 4.144_m, 0_deg};
 constexpr frc::Pose2d kRedSourcePose{0.676_m, 0.410_m, 0_deg};
-constexpr frc::Pose2d kCenterFarRNote{8.3_m, .77_m, 0_deg};
-constexpr frc::Pose2d kCenterRNote{8.3_m, 2.44_m, 0_deg};
-constexpr frc::Pose2d kCenterCNote{8.3_m, 4.1_m, 0_deg};
-constexpr frc::Pose2d kCenterLNote{8.3_m, 5.78_m, 0_deg};
-constexpr frc::Pose2d kCenterFarLNote{8.3_m, 7.43_m, 0_deg};
+
+constexpr frc::Pose2d kMidFarRNote{8.3_m, .77_m, 0_deg};
+constexpr frc::Pose2d kMidRNote{8.3_m, 2.44_m, 0_deg};
+
+constexpr frc::Pose2d kMidCNote{8.3_m, 4.1_m, 0_deg};
+
+constexpr frc::Pose2d kMidLNote{8.3_m, 5.78_m, 0_deg};
+constexpr frc::Pose2d kMidFarLNote{8.3_m, 7.43_m, 0_deg};
+
+constexpr frc::Pose2d kBlueAmpShot{1.83_m, 7.55_m, 90_deg};
+constexpr frc::Pose2d kRedAmpShot{14.7_m, 7.55_m, 90_deg};
+
+constexpr frc::Pose2d kBlueSourcePickUp{15.3_m, 1.1_m, -60_deg};
+constexpr frc::Pose2d kRedSourcePickUp{1.3_m, 1.1_m, -120_deg};
+
+constexpr frc::Pose2d kBlueCenterSub{1.55_m, 5.55_m, 0_deg};
+constexpr frc::Pose2d kRedCenterSub{15_m, 5.55_m, 180_deg};
 
 } // namespace OperatorConstants
 
@@ -136,9 +143,11 @@ constexpr frc::Translation2d note_positions[] = {
 class RobotContainer {
 public:
   RobotContainer();
+
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
+  void ControllerRumble1Sec();
 
 public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -148,10 +157,14 @@ public:
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
-  // The robot's subsystems are defined here...
+  // Button Triggers are defined here.
 
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
     return m_swerveController.GetLeftTriggerAxis() > 0.2;
+  }};
+
+  frc2::Trigger m_autoAmpTrigger{[this]() -> bool {
+    return m_swerveController.GetRightTriggerAxis() > 0.2;
   }};
 
   frc2::Trigger m_manualIntake{[this]() -> bool {
@@ -177,23 +190,50 @@ public:
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
   }};
 
+  frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
+    return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
+  }};
+
+  frc2::Trigger RumbleForIntakeTrigger{[this]() -> bool {
+    return m_intake.IsIntakeBreakBeamBroken(); // when broken = true
+  }};
+
+  frc2::Trigger RumbleForOutakeTrigger{[this]() -> bool {
+    return !(m_intake.IsIntakeBreakBeamBroken()); // when broken = true
+  }};
+  frc2::Trigger SourcePathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+  frc2::Trigger AmpPathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
+  frc2::Trigger SubPathTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
+
+  // The robot's subsystems are defined here...
+
   Shooter m_shooter;
   Drivetrain m_swerve;
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
 
-  frc2::CommandPtr m_left3NoteAuto{frc2::cmd::None()};
+  // The autonomous commands are initialized here.
+
+  frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_right3NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_left2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSide3NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpSide2NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center2NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_right2NoteAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_leftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_rightCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerLeftCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_centerRightCenterOnlyAuto{frc2::cmd::None()};
-  frc2::CommandPtr m_getOutRight{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSide2NoteAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerAmpSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
+  frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
+  frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
+  frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
+  frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
+
+  frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
 

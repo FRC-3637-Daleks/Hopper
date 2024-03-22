@@ -1,0 +1,71 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.908608890563041,
+        "y": 5.551187918118234
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.642893006716247,
+        "y": 6.241414987302248
+      },
+      "isLocked": false,
+      "linkedName": "ShootMidL"
+    },
+    {
+      "anchor": {
+        "x": 5.316546894900587,
+        "y": 6.771457633487718
+      },
+      "prevControl": {
+        "x": 4.87505792496071,
+        "y": 6.512578990948063
+      },
+      "nextControl": {
+        "x": 5.714947816299927,
+        "y": 7.0050704681015805
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.1,
+        "y": 7.43
+      },
+      "prevControl": {
+        "x": 6.1,
+        "y": 7.43
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterFarL"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "IntakeCenter to ShootMidL",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
