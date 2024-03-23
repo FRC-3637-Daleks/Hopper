@@ -30,7 +30,10 @@ constexpr auto kCurrentLimitPeriod =
 // Best defense against current
 constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
-constexpr auto kWheelDiameter = 4_in;
+constexpr auto kWheelDiameterIdeal = 4_in;
+constexpr double kWheelAdjust = 1.0671;
+constexpr auto kWheelDiameter = kWheelDiameterIdeal * kWheelAdjust;
+
 constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
 constexpr auto kDriveEncoderDistancePerRevolution =
     kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
