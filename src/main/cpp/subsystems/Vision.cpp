@@ -97,6 +97,13 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
       estimator.GetCamera()
           ->GetLatestResult(); // Add declaration for GetLatestResult function
 
+  photon::PhotonPipelineResult intakeLatestResult =
+      m_intakeEstimator.GetCamera()->GetLatestResult();
+
+  // ADD the TWO SPANS
+  // std::span<const photon::PhotonTrackedTarget> targets =
+  // intakeLatestResult.GetTargets() + latestResult.GetTargets();
+
   int numTags = 0; // Declare the variable "numTags" and initialize it to 0
 
   auto targets = latestResult.GetTargets();

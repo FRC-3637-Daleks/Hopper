@@ -418,7 +418,7 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(
   auto angle = [this, pose, shooterSide, strafe]() -> units::radian_t {
     auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>(
         pose().Y() - GetPose().Y(), pose().X() - GetPose().X());
-    return shooterSide ? (rawAngle + std::numbers::pi * 1_rad + units::math::asin(strafe() / DriveConstants::kNoteVelocity)): rawAngle;
+    return shooterSide ? (rawAngle + std::numbers::pi * 1_rad + units::math::asin(GetSpeed().vx / DriveConstants::kNoteVelocity)): rawAngle;
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(
