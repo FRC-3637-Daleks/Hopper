@@ -31,8 +31,10 @@
 
 #include <numbers>
 
+#include "subsystems/Climb.h"
 #include "subsystems/Drivetrain.h"
-
+#include "subsystems/Intake.h"
+#include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
 
 namespace AutoConstants {
@@ -198,7 +200,10 @@ public:
   frc2::Trigger SubPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
 
+  Shooter m_shooter;
   Drivetrain m_swerve;
+  Intake m_intake;
+  Climb m_climb;
   Vision m_vision;
 
   frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};

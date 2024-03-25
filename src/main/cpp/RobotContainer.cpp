@@ -154,7 +154,20 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
 
+  m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMP());
+
+  m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
+
   // Configure Shooter Bindings.
+  auto flywheel = [this]() -> double {
+    return (1.0 - m_copilotController.GetRightTriggerAxis());
+  };
+
+  auto pivot = [this]() -> units::degrees_per_second_t {
+    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(),
+                                             OperatorConstants::kDeadband);
+  };
+
   auto calculateDistance = [this]() -> units::meter_t {
     frc::Pose2d RobotPose2d = m_swerve.GetPose();
 
@@ -172,9 +185,50 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
+  constexpr auto flywheelAutoSpeed = []() { return 0.5; };
+  m_shooter.SetDefaultCommand(
+      m_shooter.ShooterCommand(flywheel, calculateDistance));
+
+  m_copilotController.Back().WhileTrue(
+      m_shooter.ShooterVelocityCommand(flywheel, pivot));
+
+  m_copilotController.RightBumper().WhileTrue(frc2::cmd::Run(
+      [this] { m_shooter.SetPivotMotor(m_shooter.ToTalonUnits(43_deg)); },
+      {&m_shooter}));
+
   // Configure Intake Bindings.
 
+  GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
+
+  AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
+
+  SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+
+  AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
+
   // SourceIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
+
+  m_manualIntake.WhileTrue(frc2::cmd::Run(
+      [this] {
+        if (m_copilotController.GetXButton())
+          m_intake.Emergency(1.0);
+        else if (m_copilotController.GetYButton())
+          m_intake.Emergency(-1.0);
+        else
+          m_intake.Emergency(0.0);
+      },
+      {&m_intake}));
+
+  m_copilotController.A().WhileTrue(m_intake.IntakeIn());
+
+  m_copilotController.B().WhileTrue(m_intake.IntakeOut());
+
+  auto climb = [this]() -> double {
+    return -frc::ApplyDeadband(m_copilotController.GetRightY(),
+                               OperatorConstants::kClimbDeadband);
+  };
+
+  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
   pathplanner::ReplanningConfig replanningConfig =
       pathplanner::ReplanningConfig(true, true, 1_m, .25_m);
@@ -200,6 +254,25 @@ void RobotContainer::ConfigureBindings() {
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
+
+  pathplanner::NamedCommands::registerCommand(
+      "ShootAmp", m_intake.ShootOnAMP().WithName("ShootAMP"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "OutputToShooterZTarget",
+      frc2::cmd::Sequence(
+          m_swerve
+              .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
+              .WithTimeout(1_s),
+          m_intake.OutputToShooter().WithTimeout(1_s).WithName(
+              "OutputToShooterZTarget")));
+
+  pathplanner::NamedCommands::registerCommand(
+      "OutputToShooter",
+      m_intake.OutputToShooter().WithName("OutputToShooter"));
 
   pathplanner::NamedCommands::registerCommand(
       "zTargetingMidNoteFarR",
@@ -320,7 +393,15 @@ void RobotContainer::ConfigureBindings() {
   frc::SmartDashboard::PutData(&m_chooser);
 }
 
-void RobotContainer::ConfigureDashboard() {}
+void RobotContainer::ConfigureDashboard() {
+  m_intake.InitVisualization(&m_mech_sideview);
+  m_shooter.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  frc::SmartDashboard::PutData("Intake", &m_intake);
+  frc::SmartDashboard::PutData("Shooter", &m_shooter);
+  frc::SmartDashboard::PutData("Drivebase", &m_swerve);
+}
 
 void RobotContainer::ConfigureAuto() {
   pathplanner::PathPlannerLogging::setLogActivePathCallback(
