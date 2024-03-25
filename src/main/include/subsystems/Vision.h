@@ -48,7 +48,7 @@ const frc::Transform3d kIntakeCameraToRobot{
 
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
-inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{0.4, 0.4, 2};
+inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{0.2, 0.2, 1};
 inline const Eigen::Matrix<double, 3, 1> kMultiTagStdDevs{0.1, 0.1, 0.5};
 inline const Eigen::Matrix<double, 3, 1> kFailedTagStdDevs{
     std::numeric_limits<double>::max(), std::numeric_limits<double>::max(),
@@ -78,11 +78,11 @@ public:
   bool HasTargets();
 
   std::optional<photon::EstimatedRobotPose>
-  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator estimator);
+  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator);
 
   Eigen::Matrix<double, 3, 1>
   GetEstimationStdDevs(frc::Pose2d estimatedPose,
-                       photon::PhotonPoseEstimator estimator);
+                       photon::PhotonPoseEstimator &estimator);
   // ...
 public:
   bool IsPoseWithinStdDevs(const frc::Pose2d &incomingPose);
