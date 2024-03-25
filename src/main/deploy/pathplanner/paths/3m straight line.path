@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
+        "x": 0.9999999999999984,
         "y": 0.0
       },
       "isLocked": false,
@@ -16,12 +16,92 @@
     },
     {
       "anchor": {
-        "x": 5.0,
+        "x": 4.6984513940497195,
+        "y": 2.037685558965979
+      },
+      "prevControl": {
+        "x": 5.042706043208142,
+        "y": 1.0988092430793737
+      },
+      "nextControl": {
+        "x": 4.054355384031736,
+        "y": 3.7943110408332044
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4194171612314885,
+        "y": 4.333009521939015
+      },
+      "prevControl": {
+        "x": 2.684187508175893,
+        "y": 4.028527771748696
+      },
+      "nextControl": {
+        "x": -0.814732320498391,
+        "y": 4.870860323096209
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.183174586035924,
+        "y": 1.5106979144056714
+      },
+      "prevControl": {
+        "x": 3.8904036723919777,
+        "y": 0.538698481105806
+      },
+      "nextControl": {
+        "x": 4.650048865557819,
+        "y": 3.0607205224214953
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.5996586030267829,
+        "y": 2.705203242075386
+      },
+      "prevControl": {
+        "x": 0.763610314667724,
+        "y": 3.688913511921032
+      },
+      "nextControl": {
+        "x": 0.2732450267058568,
+        "y": 0.746721784149831
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.6984513940497195,
+        "y": 1.1242403083948824
+      },
+      "prevControl": {
+        "x": 4.792138086415973,
+        "y": 2.2250589436983423
+      },
+      "nextControl": {
+        "x": 4.626420790477375,
+        "y": 0.2778807164198227
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.0,
         "y": 0.0
       },
       "prevControl": {
-        "x": 4.0,
-        "y": 0.0
+        "x": -0.6821562287917731,
+        "y": 0.8329332493187094
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,14 +119,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -179.9999999996225,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+    "rotation": 180.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": false
 }

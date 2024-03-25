@@ -31,7 +31,7 @@ constexpr auto kCurrentLimitPeriod =
 constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
 constexpr auto kWheelDiameterIdeal = 4_in;
-constexpr double kWheelAdjust = 1.0671;
+constexpr double kWheelAdjust = 1.0671 * 0.923;
 constexpr auto kWheelDiameter = kWheelDiameterIdeal * kWheelAdjust;
 
 constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor

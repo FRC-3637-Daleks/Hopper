@@ -246,8 +246,8 @@ void RobotContainer::ConfigureBindings() {
 
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
-          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
+          pathplanner::PIDConstants(10.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
@@ -282,6 +282,9 @@ void RobotContainer::ConfigureBindings() {
   pathplanner::NamedCommands::registerCommand(
       "OutputToShooter",
       m_intake.OutputToShooter().WithName("OutputToShooter"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "ShootAmp", frc2::cmd::None().WithName("ShootAmp"));
 
   pathplanner::NamedCommands::registerCommand(
       "zTargetingMidNoteFarR",
@@ -363,9 +366,12 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
+  m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
+  m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
+
   /**
    * Automatic pathfinding triggers. Still need to test.
-  */
+   */
   // SourcePathTrigger.WhileTrue(m_SourcePath.get());
   // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());   Not reliable enough to
   // risk this
@@ -399,6 +405,10 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Source Path", m_SourcePath.get());
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
+
+  m_chooser.AddOption("square path test", m_squarePath.get());
+
+  m_chooser.AddOption("5m straight line test", m_straightLine.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
 }

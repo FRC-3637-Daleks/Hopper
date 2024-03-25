@@ -233,6 +233,9 @@ public:
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
   frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
 
+  frc2::CommandPtr m_straightLine{frc2::cmd::None()};
+  frc2::CommandPtr m_squarePath{frc2::cmd::None()};
+
   frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
