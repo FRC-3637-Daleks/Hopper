@@ -71,16 +71,17 @@ bool Vision::HasTargets() {
 }
 
 std::optional<photon::EstimatedRobotPose>
-Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
+Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator estimator) {
   estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
-  auto visionEst = estimator.Update();
-  auto camera = estimator.GetCamera();
-  units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
+  auto visionEst = m_shooterEstimator.Update();
+  auto camera = m_shooterEstimator.GetCamera();
+  units::second_t latestShooterTimestamp =
+      camera->GetLatestResult().GetTimestamp();
 
   bool newResult =
-      units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
+      units::math::abs(latestShooterTimestamp - lastEstTimestamp) > 1e-5_s;
   if (newResult) {
-    lastEstTimestamp = latestTimestamp;
+    lastEstTimestamp = latestShooterTimestamp;
   }
   return visionEst;
 }
@@ -89,7 +90,7 @@ Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
 // determine if a pose is acurate enough to be used
 Eigen::Matrix<double, 3, 1>
 Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
-                             photon::PhotonPoseEstimator &estimator) {
+                             photon::PhotonPoseEstimator estimator) {
 
   Eigen::Matrix<double, 3, 1> estStdDevs = VisionConstants::kSingleTagStdDevs;
   photon::PhotonPipelineResult latestResult =
@@ -183,13 +184,10 @@ VisionSim::VisionSim(Vision &vision,
       frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo));
   m_vision_sim.AddCamera(&m_shooter_cam_sim,
                          VisionConstants::kShooterCameraToRobot);
-  m_vision_sim.AddCamera(&m_intake_cam_sim,
-                         VisionConstants::kIntakeCameraToRobot);
-
-  m_intake_cam_sim.EnableDrawWireframe(true);
-  m_intake_cam_sim.EnabledProcessedStream(true);
-  m_intake_cam_sim.EnableRawStream(true);
-  m_intake_cam_sim.SetMaxSightRange(6_m);
+  m_shooter_cam_sim.EnableDrawWireframe(true);
+  m_shooter_cam_sim.EnabledProcessedStream(true);
+  m_shooter_cam_sim.EnableRawStream(true);
+  m_shooter_cam_sim.SetMaxSightRange(6_m);
 
   frc::SmartDashboard::PutData("Vision/simulated apriltags",
                                &m_vision_sim.GetDebugField());
@@ -205,12 +203,19 @@ void Vision::SimulationPeriodic() {
       ->SetPose(m_referencePose());
 
   if (m_intakeApriltagEstimate) {
-    auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
+    auto robot_pose = m_shooterApriltagEstimate.value().estimatedPose;
     m_sim_state->m_vision_sim.GetDebugField()
         .GetObject("photon pose est")
         ->SetPose(robot_pose.ToPose2d());
 
     std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
     for (const auto &tag :
          m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
       auto tag_pose =
@@ -224,10 +229,3 @@ void Vision::SimulationPeriodic() {
         ->SetPoses(reprojected_tags);
   }
 }
-//  for (const auto &tag :
-//        m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
-//     auto tag_pose =
-//         robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
-//             .TransformBy(tag.GetBestCameraToTarget());
-//     reprojected_tags.push_back(tag_pose.ToPose2d());
-//   }
