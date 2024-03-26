@@ -395,8 +395,6 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Source Path", m_SourcePath.get());
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
-
-  frc::SmartDashboard::PutData(&m_chooser);
 }
 
 void RobotContainer::ConfigureDashboard() {
@@ -407,6 +405,7 @@ void RobotContainer::ConfigureDashboard() {
   frc::SmartDashboard::PutData("Intake", &m_intake);
   frc::SmartDashboard::PutData("Shooter", &m_shooter);
   frc::SmartDashboard::PutData("Drivebase", &m_swerve);
+  frc::SmartDashboard::PutData(&m_chooser);
 }
 
 void RobotContainer::ConfigureAuto() {
