@@ -28,7 +28,7 @@
 
 namespace IntakeConstants {
 
-// Moter IDs
+// Motor IDs
 constexpr int kIntakeMotorPort = 17;
 constexpr int kArmMotorPort = 15;
 
@@ -125,7 +125,7 @@ public:
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  void Emergency(double input);
+  void Emergency(double input); // Manual override
 
   int PreviousSensorPosition = 0;
   /** Automaticaly intakes ring and goes to speaker pos
@@ -200,57 +200,71 @@ public:
    */
   void ShootOnAMPVoid();
 
-  // Keep intake Idle if no buttons are pressed
+  /** Keep intake Idle if no buttons are pressed*/
   frc2::CommandPtr IdleIntakeCommand();
+  /** Initializes the visualization in sim*/
   void InitVisualization(frc::Mechanism2d *mech);
+  /**Updates the visualization in sim*/
   void UpdateVisualization();
 
-  // (voltage) Intake ring in
+  /**Intake ring in (slow)
+   * -Sets Intake to 3.00_volts
+   */
   void IntakeForward();
 
-  // (voltage) Intake ring out (AMP Speed)
+  /**Intake ring out (AMP Speed)
+   * -Sets Intake to -1.75_volts
+   */
   void IntakeBackward();
-
-  // (voltage) Intake ring out (Speaker Speed)
+  /**Intake ring out (Speaker Speed)
+   * -Sets Intake to -12_volts
+   */
   void IntakeBackwardSpeaker();
 
-  // (voltage) Stops intake
+  /**Stops Intake*/
   void OffIntake();
 
-  // Moves arm to AMP using motion magic (also sets goal (for visualization))
+  /**Moves arm to AMP using motion magic
+   * (also sets goal (for visualization))
+   */
   void IntakeArmAMP();
-
+  /**Swings Intake Arm forward for shooting on amp*/
   void IntakeArmAMPVelocity();
-
-  // Moves arm to speaker using motion magic (also sets goal (for
-  // visualization))
+  /**Sets Intake to the retracted position
+   * -Preset position used to output to Shooter
+   */
   void IntakeArmSpeaker();
 
-  // Moves arm to intake using motion magic (also sets goal (for visualization))
+  /**Moves arm to intake (on the ground) using motion magic
+   * (also sets goal (for visualization))
+   */
   void IntakeArmIntake();
 
-  // Moves arm to intake using motion magic (also sets goal (for visualization))
+  /**Moves arm to position used for Intaking from human player station using
+   *motion magic (also sets goal (for visualization))
+   */
   void IntakeArmSource();
 
-  // Checks if arm is at passed in position (goal != m_goal)
+  /**Checks if arm is at passed in position (goal != m_goal) */
   bool IsAtWantedPosition(int goal);
 
-  // Uses corresponding void function to move to AMP position, if wait is true,
-  // waits for cmd to finish, if false does not wait
+  /**Uses corresponding void function to move to AMP position, if wait is true,
+   * waits for cmd to finish, if false does not wait
+   */
   frc2::CommandPtr IntakeArmAMPCommand(bool wait = false);
 
-  // Uses corresponding void function to move to Source position, if wait is
-  // true, waits for cmd to finish, if false does not wait
+  /**Uses corresponding void function to move to Source position, if wait is
+   * true, waits for cmd to finish, if false does not wait*/
   frc2::CommandPtr IntakeArmSourceCommand(bool wait = false);
-
+  /**Swings Intake Arm forward for shooting on amp, just a cmd ptr version*/
   frc2::CommandPtr IntakeArmAMPVelocityCommand(bool wait = false);
-  // waits for cmd to finish, if false does not wait
+  /**waits for cmd to finish, if false does not wait*/
   frc2::CommandPtr IntakeArmSpeakerCommand(bool wait = false);
-  // Uses corresponding void function to move to  ground, if wait is true,
-  // waits for cmd to finish, if false does not wait
+  /**Uses corresponding void function to move to  ground, if wait is true,
+   *waits for cmd to finish, if false does not wait*/
   frc2::CommandPtr IntakeArmIntakeCommand(bool wait = false);
 
-  // If the break beam is broken then it return true
+  /*If the break beam is broken then it return true*/
   bool IsIntakeBreakBeamBroken();
 
   /** Gets diffrence between goal and current position
@@ -262,14 +276,20 @@ public:
    * DEPRICATED: Use IsAtWantedPosition
    */
   bool IsAtAMP();
+  /** Sees if were at the named position
+   * DEPRICATED: Use IsAtWantedPosition
+   */
   bool IsAtSpeaker();
+  /** Sees if were at the named position
+   * DEPRICATED: Use IsAtWantedPosition
+   */
   bool IsAtIntake();
 
-  // Moter for spinning the intake
+  // Motor for spinning the intake
   rev::CANSparkFlex m_intake{IntakeConstants::kIntakeMotorPort,
                              rev::CANSparkFlex::MotorType::kBrushless};
 
-  // Moter for moving the arm
+  // Motor for moving the arm
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{
       IntakeConstants::kArmMotorPort};
 

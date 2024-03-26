@@ -54,10 +54,14 @@ public:
   ~Climb();
 
   void SimulationPeriodic() override;
-
+  /**Extend Climb to its max height.*/
   frc2::CommandPtr ExtendClimb();
+  /** Retract Climb to its minimum height*/
   frc2::CommandPtr RetractClimb();
+  /**Stop climb where it is.*/
   frc2::CommandPtr StopClimb();
+  /**Used to controll climb with joystick
+   *  -Move climb to preset height(double in encoder ticks).*/
   frc2::CommandPtr ClimbCommand(std::function<double()> input);
 
   WPI_TalonSRX m_climbMotor{ClimbConstants::kClimbMotorPort};

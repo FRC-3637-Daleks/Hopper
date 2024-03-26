@@ -223,6 +223,12 @@ void RobotContainer::ConfigureBindings() {
 
   m_copilotController.B().WhileTrue(m_intake.IntakeOut());
 
+  PitReset.OnTrue(
+      frc2::cmd::Parallel(m_shooter.PivotAngleCommand([]() { return 80_deg; }),
+                          m_climb.RetractClimb(),
+                          m_intake.IntakeArmSpeakerCommand())
+          .WithTimeout(10_s));
+
   auto climb = [this]() -> double {
     return -frc::ApplyDeadband(m_copilotController.GetRightY(),
                                OperatorConstants::kClimbDeadband);

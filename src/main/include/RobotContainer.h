@@ -156,8 +156,6 @@ public:
   frc2::CommandXboxController m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
-  // The robot's subsystems are defined here...
-
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
     return m_swerveController.GetLeftTriggerAxis() > 0.2;
   }};
@@ -172,33 +170,40 @@ public:
 
   frc2::Trigger IdleIntakeTrigger{
       [this]() -> bool { return m_copilotController.GetPOV() == -1; }};
-
+  /** Ground Intake Trigger, right on the Co-Pilot dpad*/
   frc2::Trigger GroundIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV;
   }};
-
+  /** Amp Intake Trigger, up on the Co-Pilot dpad*/
   frc2::Trigger AMPIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV;
   }};
-
+  /** Speaker Intake Trigger, left on the Co-Pilot dpad*/
   frc2::Trigger SpeakerIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV;
   }};
-
+  /** Auto Intake Trigger, down on the Co-Pilot dpad*/
   frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
   }};
-
+  /** Source Intake Trigger, up & right on the Co-Pilot dpad*/
   frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
   }};
-
+  /**Pit Reset Trigger, Start Button on Co-Pilot controller*/
+  frc2::Trigger PitReset{
+      [this]() -> bool { return m_copilotController.GetStartButton(); }};
+  /** Source Path Trigger, right on the Pilot dpad*/
   frc2::Trigger SourcePathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+  /** Amp Path Trigger, left on the Pilot dpad*/
   frc2::Trigger AmpPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
+  /** Sub Path Trigger, up on the Pilot dpad*/
   frc2::Trigger SubPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
+
+  // The robot's subsystems are defined here...
 
   Shooter m_shooter;
   Drivetrain m_swerve;
@@ -224,7 +229,7 @@ public:
   frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
-
+  /** Checks if FRC driverstation is configured for red or blue side*/
   bool m_isRed;
 
   // AprilTag

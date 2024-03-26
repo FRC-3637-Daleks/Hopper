@@ -32,7 +32,8 @@ constexpr std::string_view kPhotonShooterCameraName =
                                  // probably between auton and teleop
 constexpr std::string_view kPhotonIntakeCameraName =
     "Arducam_OV9281_USB_Camera";
-
+/**A Transform3d that defines the Shooter camera offset from the zero (center of
+ * robot, between all 4 swerve modules)*/
 const frc::Transform3d kShooterCameraToRobot{
     {-4_in, -5.5_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
@@ -40,6 +41,8 @@ const frc::Transform3d kShooterCameraToRobot{
                     0_deg, 0_deg,
                     180_deg}}; // The camera location relative to the robot's
                                // center. Need to change for actual robot
+/**A Transform3d that defines the Intake camera offset from the zero (center of
+ * robot, between all 4 swerve modules)*/
 const frc::Transform3d kIntakeCameraToRobot{
     {-4_in, 0_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
@@ -72,19 +75,21 @@ public:
 
   void Periodic() override;
   void SimulationPeriodic() override;
-
+  /** Gets best pose from pipeline*/
   void GetBestPose();
-
+  /**Boolean that returns true if the camera has targets*/
   bool HasTargets();
-
+  /**Calculates the estimated pose using PhotonPoseEstimator and Apriltags*/
   std::optional<photon::EstimatedRobotPose>
   CalculateRobotPoseEstimate(photon::PhotonPoseEstimator estimator);
-
+  /**Gets the standard deviation of the pose returned by
+   * CalculateRobotPoseEstimate*/
   Eigen::Matrix<double, 3, 1>
   GetEstimationStdDevs(frc::Pose2d estimatedPose,
                        photon::PhotonPoseEstimator estimator);
   // ...
 public:
+  /**Checks if pose is within standard deviation*/
   bool IsPoseWithinStdDevs(const frc::Pose2d &incomingPose);
   // ...
 

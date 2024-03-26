@@ -201,7 +201,7 @@ void Shooter::StopShootMotor() {
 }
 
 // Runs pivoting motor
-void Shooter::RunTalonMotor() {
+void Shooter::RunPivotMotor() {
   // Runs
   m_pivot.SetVoltage(1.0_V);
 }
@@ -215,7 +215,7 @@ float pow(float d, int power) {
 }
 
 // Stop pivoting motor
-void Shooter::StopTalonMotor() {
+void Shooter::StopPivotMotor() {
   // Stops
   m_pivot.StopMotor();
 }
