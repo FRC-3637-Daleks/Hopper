@@ -21,12 +21,31 @@
     "windows": {
       "/SmartDashboard/Field": {
         "FL": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "FR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            255.0,
+            240.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Hopper": {
           "arrows": false,
@@ -34,12 +53,37 @@
           "style": "Line"
         },
         "RL": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "RR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            240.00001525878906,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "color": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Robot": {
           "length": 0.9100000262260437,
@@ -51,8 +95,21 @@
         "left": 150,
         "right": 2961,
         "simulation": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            0.8529410362243652,
+            0.0,
+            1.0,
+            255.0
+          ],
+          "color": [
+            0.8823528289794922,
+            0.0,
+            1.0,
+            255.0
+          ],
+          "length": 0.9100000262260437,
+          "style": "Box/Image",
+          "width": 0.9100000262260437
         },
         "top": 79,
         "width": 16.541748046875,
