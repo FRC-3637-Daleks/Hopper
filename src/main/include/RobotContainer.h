@@ -190,9 +190,14 @@ public:
   frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
   }};
+
   /**Pit Reset Trigger, Start Button on Co-Pilot controller*/
   frc2::Trigger PitReset{
       [this]() -> bool { return m_copilotController.GetStartButton(); }};
+  /**Flywheel off Trigger, back Button on Co-Pilot controller*/
+  frc2::Trigger flywheelOffTrigger{
+      [this]() -> bool { return m_copilotController.GetBackButton(); }};
+
   /** Source Path Trigger, right on the Pilot dpad*/
   frc2::Trigger SourcePathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 90; }};

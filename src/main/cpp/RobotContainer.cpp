@@ -186,6 +186,7 @@ void RobotContainer::ConfigureBindings() {
   };
 
   constexpr auto flywheelAutoSpeed = []() { return 0.5; };
+  constexpr auto flywheelOff = []() { return 0.0; };
   m_shooter.SetDefaultCommand(
       m_shooter.ShooterCommand(flywheel, calculateDistance));
 
@@ -222,12 +223,10 @@ void RobotContainer::ConfigureBindings() {
   m_copilotController.A().WhileTrue(m_intake.IntakeIn());
 
   m_copilotController.B().WhileTrue(m_intake.IntakeOut());
-
-  PitReset.OnTrue(
-      frc2::cmd::Parallel(m_shooter.PivotAngleCommand([]() { return 80_deg; }),
-                          m_climb.RetractClimb(),
-                          m_intake.IntakeArmSpeakerCommand())
-          .WithTimeout(10_s));
+  flywheelOffTrigger.OnTrue(m_shooter.FlywheelCommand(flywheelOff));
+  PitReset.OnTrue(frc2::cmd::Parallel(
+      m_shooter.PivotAngleCommand([]() { return 80_deg; }),
+      m_climb.RetractClimb(), m_intake.IntakeArmSpeakerCommand()));
 
   auto climb = [this]() -> double {
     return -frc::ApplyDeadband(m_copilotController.GetRightY(),

@@ -1,3 +1,4 @@
+
 #include "subsystems/Drivetrain.h"
 
 #include <cmath> // Make sure to include cmath for std::fmod
@@ -78,9 +79,25 @@ void Drivetrain::Periodic() {
                                   m_rearRight);
 
   // Update the odometry with the current gyro angle and module states.
-  m_poseEstimator.Update(GetGyroHeading(),
-                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                          m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
+  auto fl_pos = m_frontLeft.GetPosition();
+  auto fr_pos = m_frontRight.GetPosition();
+  auto rl_pos = m_rearLeft.GetPosition();
+  auto rr_pos = m_rearRight.GetPosition();
+
+  auto prev_pose = m_poseEstimator.GetEstimatedPosition();
+  m_poseEstimator.Update(GetGyroHeading(), {fl_pos, fr_pos, rl_pos, rr_pos});
+  auto new_pose = m_poseEstimator.GetEstimatedPosition();
+
+  auto rel_transform = new_pose - prev_pose;
+  auto dist = rel_transform.Translation().Norm();
+
+  auto corrected_pose = new_pose.TransformBy({0_m, -dist / 10, 0_deg});
+
+  // Forgive me God for I have sinned
+  // -- Eric
+  m_poseEstimator.AddVisionMeasurement(
+      corrected_pose, wpi::math::MathSharedStore::GetTimestamp(),
+      {0.0, 0.0, 0.0});
 
   this->UpdateDashboard();
 }
@@ -271,16 +288,20 @@ void Drivetrain::SimulationPeriodic() {
   m_sim_state->m_gyroYaw.Set(-new_theta.Degrees().value());
 
   // Feed this simulated gyro angle into the odometry to get simulated position
-  m_sim_state->m_poseSim.Update(
-      new_theta, {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                  m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
+  auto fl_pos = m_frontLeft.GetPosition();
+  auto fr_pos = m_frontRight.GetPosition();
+  auto rl_pos = m_rearLeft.GetPosition();
+  auto rr_pos = m_rearRight.GetPosition();
+
+  // Modify this to simulate different kinds of odom error
+  fl_pos.angle = fl_pos.angle.Degrees() * 1.02;
+  fr_pos.angle = fr_pos.angle.Degrees() * 0.99;
+  rl_pos.angle = rl_pos.angle.Degrees();
+  rr_pos.angle = rr_pos.angle.Degrees() * 1.01;
+
+  m_sim_state->m_poseSim.Update(new_theta, {fl_pos, fr_pos, rl_pos, rr_pos});
 
   m_field.GetObject("simulation")->SetPose(m_sim_state->m_poseSim.GetPose());
-}
-
-frc::Pose2d Drivetrain::GetSimulatedGroundTruth()
-{
-  return m_sim_state->m_poseSim.GetPose();
 }
 
 frc2::CommandPtr Drivetrain::SwerveCommand(
@@ -418,7 +439,10 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(
   auto angle = [this, pose, shooterSide, strafe]() -> units::radian_t {
     auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>(
         pose().Y() - GetPose().Y(), pose().X() - GetPose().X());
-    return shooterSide ? (rawAngle + std::numbers::pi * 1_rad + units::math::asin(GetSpeed().vx / DriveConstants::kNoteVelocity)): rawAngle;
+    return shooterSide
+               ? (rawAngle + std::numbers::pi * 1_rad +
+                  units::math::asin(strafe() / DriveConstants::kNoteVelocity))
+               : rawAngle;
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(
