@@ -6,6 +6,7 @@
 
 #include "frc2/command/ConditionalCommand.h"
 #include <frc/DigitalInput.h>
+#include <frc/controller/ArmFeedforward.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/MechanismLigament2d.h>
@@ -61,10 +62,11 @@ constexpr double kNominalOutputRev = 0;
 constexpr double kNeutralDeadband = 0.05;
 
 // pid configurations
-constexpr float kF = 4.0;
+constexpr float kF = 5.0;
 constexpr float kP = 3.0;
 constexpr float kI = 0.0;
 constexpr float kD = 0.0;
+constexpr float kG = -0.15;
 
 constexpr int totalEncoders = 4096;
 
@@ -73,7 +75,7 @@ constexpr int kAllowableMarginOfError = 25;
 
 // voltage for funtions (i dide't even have to use auto)
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
-constexpr units::current::ampere_t kMaxCurrent = 20_A;
+constexpr units::current::ampere_t kMaxCurrent = 50_A;
 
 // physical characteristics
 constexpr auto kWheelMoment = 1.0_kg_sq_m;
@@ -84,10 +86,10 @@ constexpr auto kArmRadius = 13_in;
 constexpr auto kWheelDiameter = 1.5_in; //< Verify this
 constexpr auto kWheelCircum = kWheelDiameter * std::numbers::pi / 1_tr;
 
-constexpr double kArmGearing = 4.0 * 50;
+constexpr double kArmGearing = 3.5 * 70;
 // you can play with the leading constant to get the dynamics you want
 constexpr auto kArmMoment = 1.0 * kArmMass * kArmRadius * kArmRadius;
-constexpr bool kGravityCompensation = true; // true if there's a gas spring
+constexpr bool kGravityCompensation = false; // true if there's a gas spring
 
 // modeling 0 as intake horizontal in front of robot, and positive angle is
 // counterclockwise
@@ -266,6 +268,11 @@ public:
    */
   int GetArmDiffrence();
 
+  /** Gets the angle of the arm's setpoint relative to the floor
+   * Used for gravity feed forward
+   */
+  units::degree_t GetSetpointAngle();
+
   /** Sees if were at the named position
    * DEPRICATED: Use IsAtWantedPosition
    */
@@ -280,6 +287,8 @@ public:
   // Moter for moving the arm
   ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_arm{
       IntakeConstants::kArmMotorPort};
+
+  // frc::ArmFeedforward m_armFeedForward{0_V, 0.15 * 12_V, 0_V};
 
   // Goal for the arm, display only (sim/drive station)
   int m_goal;

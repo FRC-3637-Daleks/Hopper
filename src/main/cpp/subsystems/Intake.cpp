@@ -10,6 +10,8 @@
 #include <frc/simulation/SimDeviceSim.h>
 #include <frc/simulation/SingleJointedArmSim.h>
 
+#include <units/math.h>
+
 class IntakeSimulation {
 public:
   IntakeSimulation(Intake &intake)
@@ -88,8 +90,15 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
   m_arm.SelectProfileSlot(0, 0);
 
   // TODO: Need to empirically test for current limit.
-  m_arm.ConfigSupplyCurrentLimit({true, IntakeConstants::kMaxCurrent.value(),
-                                  IntakeConstants::kMaxCurrent.value(), 0.1});
+  ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration current_limits;
+  current_limits.enable = true;
+  current_limits.triggerThresholdCurrent = IntakeConstants::kMaxCurrent.value();
+  current_limits.currentLimit = IntakeConstants::kMaxCurrent.value();
+  current_limits.triggerThresholdTime = 0.5;
+  m_arm.ConfigSupplyCurrentLimit(current_limits);
+
+  m_arm.SetStatusFramePeriod(
+      ctre::phoenix::motorcontrol::StatusFrame::Status_10_Targets_, 20);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing intake subsystem."));
@@ -332,6 +341,10 @@ void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (12_V)); }
 
 void Intake::OffIntake() { m_intake.SetVoltage(0_V); }
 
+units::degree_t Intake::GetSetpointAngle() {
+  return IntakeConstants::sensorToAngle(m_arm.GetActiveTrajectoryPosition());
+}
+
 void Intake::IntakeArmAMP() {
   m_goal = IntakeConstants::IntakeArmAMPPos;
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
@@ -340,14 +353,20 @@ void Intake::IntakeArmAMP() {
 
 void Intake::IntakeArmSpeaker() {
   m_goal = IntakeConstants::IntakeArmSpeakerPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
-            IntakeConstants::IntakeArmSpeakerPos);
+  m_arm.Set(
+      ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
+      IntakeConstants::IntakeArmSpeakerPos,
+      ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward,
+      IntakeConstants::kG * units::math::cos(GetSetpointAngle()));
 }
 
 void Intake::IntakeArmIntake() {
   m_goal = IntakeConstants::IntakeArmIntakePos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
-            IntakeConstants::IntakeArmIntakePos);
+  m_arm.Set(
+      ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
+      IntakeConstants::IntakeArmIntakePos,
+      ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward,
+      IntakeConstants::kG * units::math::cos(GetSetpointAngle()));
 }
 
 void Intake::IntakeArmSource() {
