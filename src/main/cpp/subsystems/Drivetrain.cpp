@@ -77,10 +77,41 @@ void Drivetrain::Periodic() {
   SwerveModule::RefreshAllSignals(m_frontLeft, m_frontRight, m_rearLeft,
                                   m_rearRight);
 
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
+
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
+
+  const auto fr_pos = m_frontRight.GetPosition();
+  const auto fl_pos = m_frontLeft.GetPosition();
+  const auto rr_pos = m_rearRight.GetPosition();
+  const auto rl_pos = m_rearLeft.GetPosition();
+
   // Update the odometry with the current gyro angle and module states.
-  m_poseEstimator.Update(GetGyroHeading(),
-                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                          m_rearLeft.GetPosition(), m_rearRight.GetPosition()});
+  auto prev_pose = m_poseEstimator.GetEstimatedPosition();
+  m_poseEstimator.Update(GetGyroHeading(), {fl_pos, fr_pos, rl_pos, rr_pos});
+  auto new_pose = m_poseEstimator.GetEstimatedPosition();
+
+  auto rel_transform = new_pose - prev_pose;
+  auto dist = rel_transform.Translation().Norm();
+
+  frc::Pose2d comp_vector = {0_m, -dist / 10, 0_deg};
+
+  auto comp_vector_field = comp_vector.RotateBy(new_pose.Rotation());
+
+  m_odometryCompensation =
+      m_odometryCompensation +
+      (frc::Transform2d{comp_vector_field.Translation(), 0_deg});
 
   this->UpdateDashboard();
 }
@@ -174,7 +205,10 @@ units::degrees_per_second_t Drivetrain::GetTurnRate() {
 }
 
 frc::Pose2d Drivetrain::GetPose() {
-  return m_poseEstimator.GetEstimatedPosition();
+  auto translation = m_poseEstimator.GetEstimatedPosition();
+  auto new_translation = (translation + m_odometryCompensation).Translation();
+  return frc::Pose2d{new_translation,
+                     m_poseEstimator.GetEstimatedPosition().Rotation()};
 }
 
 frc::ChassisSpeeds Drivetrain::GetSpeed() {
@@ -192,8 +226,8 @@ void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
 }
 
 void Drivetrain::UpdateDashboard() {
-  const auto robot_center = m_poseEstimator.GetEstimatedPosition();
-  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  const auto robot_center = this->GetPose();
+  m_field.SetRobotPose(this->GetPose());
 
   const auto fl_pose = robot_center.TransformBy(
       {kWheelBase / 2, kTrackWidth / 2, m_frontLeft.GetState().angle});
@@ -413,7 +447,10 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(
   auto angle = [this, pose, shooterSide, strafe]() -> units::radian_t {
     auto rawAngle = units::math::atan2<units::meter_t, units::meter_t>(
         pose().Y() - GetPose().Y(), pose().X() - GetPose().X());
-    return shooterSide ? (rawAngle + std::numbers::pi * 1_rad + units::math::asin(strafe() / DriveConstants::kNoteVelocity)): rawAngle;
+    return shooterSide
+               ? (rawAngle + std::numbers::pi * 1_rad +
+                  units::math::asin(strafe() / DriveConstants::kNoteVelocity))
+               : rawAngle;
   };
 
   return frc2::ProfiledPIDCommand<units::degree>(

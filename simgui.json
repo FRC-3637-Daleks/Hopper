@@ -51,8 +51,7 @@
         "left": 150,
         "right": 2961,
         "simulation": {
-          "arrows": false,
-          "style": "Hidden"
+          "style": "Box/Image"
         },
         "top": 79,
         "width": 16.541748046875,

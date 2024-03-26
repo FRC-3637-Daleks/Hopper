@@ -2,6 +2,7 @@
 // Please look at intake.h for documentation
 
 #include <frc/DataLogManager.h>
+#include <frc/controller/ArmFeedforward.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 
@@ -335,6 +336,7 @@ void Intake::IntakeArmAMP() {
   m_goal = IntakeConstants::IntakeArmAMPPos;
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
             IntakeConstants::IntakeArmAMPPos);
+  // frc::ArmFeedforward ff{0.01V, }
 }
 
 void Intake::IntakeArmSpeaker() {

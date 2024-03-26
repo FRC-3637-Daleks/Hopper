@@ -155,10 +155,10 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
-  //ctre::phoenix6::configs::TorqueCurrentConfigs torqueCurrentConfig;
-  //torqueCurrentConfig.PeakForwardTorqueCurrent = 80;
-  //torqueCurrentConfig.PeakReverseTorqueCurrent = -80;
-  //driveConfig.WithTorqueCurrent(torqueCurrentConfig);
+  // ctre::phoenix6::configs::TorqueCurrentConfigs torqueCurrentConfig;
+  // torqueCurrentConfig.PeakForwardTorqueCurrent = 80;
+  // torqueCurrentConfig.PeakReverseTorqueCurrent = -80;
+  // driveConfig.WithTorqueCurrent(torqueCurrentConfig);
 
   int retries = 4;
   while (auto ret = m_driveMotor.GetConfigurator().Apply(driveConfig, 500_ms)) {
