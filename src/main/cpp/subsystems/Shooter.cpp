@@ -431,7 +431,7 @@ frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
 }
 
 frc2::CommandPtr Shooter::AmpShot() {
-  return frc2::cmd::Run([this] {
+  return this->Run([this] {
     SetPivotMotor(ShooterConstants::kAmpShotAngle);
     m_leadMotor.SetVoltage(12_V * ShooterConstants::kAmpShotPower);
   });
