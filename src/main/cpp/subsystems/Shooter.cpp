@@ -431,9 +431,10 @@ frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
 }
 
 frc2::CommandPtr Shooter::AmpShot() {
-  auto kapow = []() { return ShooterConstants::kAmpShotPower; };
-  SetPivotMotor(ShooterConstants::kAmpShotAngle);
-  FlywheelCommand(kapow);
+  return frc2::cmd::Run([this] {
+    SetPivotMotor(ShooterConstants::kAmpShotAngle);
+    m_leadMotor.SetVoltage(12_V * ShooterConstants::kAmpShotPower);
+  });
 }
 
 // frc2::CommandPtr
