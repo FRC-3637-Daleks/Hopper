@@ -32,26 +32,23 @@ constexpr std::string_view kPhotonShooterCameraName =
                                  // probably between auton and teleop
 constexpr std::string_view kPhotonIntakeCameraName =
     "Arducam_OV9281_USB_Camera";
-/**A Transform3d that defines the Shooter camera offset from the zero (center of
- * robot, between all 4 swerve modules)*/
+
 const frc::Transform3d kShooterCameraToRobot{
-    {-2.5_in, -4.75_in, 22.5625_in},
+    {-4_in, -5.5_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     0_deg, 0_deg,
-                    90_deg}}; // The camera location relative to the robot's
-                              // center. Need to change for actual robot
-/**A Transform3d that defines the Intake camera offset from the zero (center of
- * robot, between all 4 swerve modules)*/
+                    180_deg}}; // The camera location relative to the robot's
+                               // center. Need to change for actual robot
 const frc::Transform3d kIntakeCameraToRobot{
-    frc::Translation3d{-0.75_in, 2.5_in, 22.125_in},
+    {-4_in, 0_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     0_deg, 0_deg, 0_deg}};
 
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
-inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{0.4, 0.4, 2};
+inline const Eigen::Matrix<double, 3, 1> kSingleTagStdDevs{0.2, 0.2, 1};
 inline const Eigen::Matrix<double, 3, 1> kMultiTagStdDevs{0.1, 0.1, 0.5};
 inline const Eigen::Matrix<double, 3, 1> kFailedTagStdDevs{
     std::numeric_limits<double>::max(), std::numeric_limits<double>::max(),
@@ -75,21 +72,19 @@ public:
 
   void Periodic() override;
   void SimulationPeriodic() override;
-  /** Gets best pose from pipeline*/
+
   void GetBestPose();
-  /**Boolean that returns true if the camera has targets*/
+
   bool HasTargets();
-  /**Calculates the estimated pose using PhotonPoseEstimator and Apriltags*/
+
   std::optional<photon::EstimatedRobotPose>
-  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator estimator);
-  /**Gets the standard deviation of the pose returned by
-   * CalculateRobotPoseEstimate*/
+  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator);
+
   Eigen::Matrix<double, 3, 1>
   GetEstimationStdDevs(frc::Pose2d estimatedPose,
-                       photon::PhotonPoseEstimator estimator);
+                       photon::PhotonPoseEstimator &estimator);
   // ...
 public:
-  /**Checks if pose is within standard deviation*/
   bool IsPoseWithinStdDevs(const frc::Pose2d &incomingPose);
   // ...
 
