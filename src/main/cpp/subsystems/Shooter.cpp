@@ -108,8 +108,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_leadMotor.SetClosedLoopRampRate(0.1);
   m_followMotor.SetClosedLoopRampRate(0.1);
 
-
-  // Need to empirically measure proper current limit.  
+  // Need to empirically measure proper current limit.
   m_leadMotor.SetSmartCurrentLimit(
       ShooterConstants::kFlywheelCurrentLimit.value());
   m_followMotor.SetSmartCurrentLimit(
@@ -248,26 +247,52 @@ units::degree_t Shooter::DistanceToAngleError(units::foot_t distance,
         std::pow(std::cos(angle.value()), 2))) -
       5.55};
 }
-units::degree_t Shooter::DistanceToAngleBinarySearch(units::foot_t distance) {
 
-  auto min = ShooterConstants::kMinAngle;
-  auto max = ShooterConstants::kMaxAngle;
-  auto pivot = max + min / 2;
-  auto x = DistanceToAngleError(distance, pivot);
+units::meter_t PredictShotError(
+    units::radian_t shot_angle, units::foot_t distance_to_speaker,
+    units::feet_per_second_t shot_speed,   // note velocity from shooter
+    units::feet_per_second_t radial_speed) // robot velocity toward speaker
+{
+  constexpr auto gravity = 9.8_mps_sq;
+  constexpr auto shooter_height = 0.4_m;
+  constexpr auto speaker_height = 2.04_m;
 
-  for (int i = 0; i <= 10; i++) {
+  const auto radial_note_speed =
+      radial_speed + shot_speed * units::math::cos(shot_angle);
+  const auto airtime = distance_to_speaker / radial_note_speed;
 
-    if (x.value() < 0) {
-      min = pivot;
-    } else {
-      max = pivot;
-    }
-    pivot = max + min / 2;
+  const auto linear_height =
+      airtime * shot_speed * units::math::sin(shot_angle);
+  const auto gravity_drop = 0.5 * gravity * airtime * airtime;
+  const auto predicted_height = linear_height - gravity_drop + shooter_height;
 
-    x = DistanceToAngleError(distance, pivot);
+  const auto error = predicted_height - speaker_height;
+
+  return error;
+}
+
+template <typename Domain, typename F>
+Domain BinarySearchFunction(const F &f, Domain lower_bound, Domain upper_bound,
+                            int iterations = 10) {
+  for (int i = 0; i < iterations; i++) {
+    const auto pivot = lower_bound / 2 + upper_bound / 2;
+    const auto result = f(pivot);
+    if (result < decltype(result){})
+      lower_bound = pivot;
+    else
+      upper_bound = pivot;
   }
 
-  return pivot;
+  return lower_bound / 2 + upper_bound / 2;
+}
+
+units::degree_t Shooter::DistanceToAngleBinarySearch(units::foot_t distance) {
+  return BinarySearchFunction(
+      [this, distance](const auto &angle) {
+        return PredictShotError(angle, distance,
+                                ShooterConstants::kNoteVelocity, 0_mps);
+      },
+      ShooterConstants::kMinAngle, ShooterConstants::kMaxAngle);
 }
 
 double Shooter::distance_adjustment(units::feet_per_second_t robot_velocity,
@@ -393,14 +418,15 @@ frc2::CommandPtr
 Shooter::PivotAngleDistanceCommand(std::function<units::meter_t()> distance) {
   return frc2::cmd::Run(
       [this, distance]() {
-        SetPivotMotor(ToTalonUnits(m_map[distance()]));
+        // const auto goal_angle = m_map[distance()];
+        const auto goal_angle = DistanceToAngleBinarySearch(distance());
+        SetPivotMotor(ToTalonUnits(goal_angle));
         frc::SmartDashboard::PutNumber("Shooter/Pivot Input Dist.",
                                        distance().value());
         frc::SmartDashboard::PutNumber("Shooter/Pivot Angle Goal",
-                                       DistanceToAngle(distance()).value());
-        frc::SmartDashboard::PutNumber(
-            "Shooter/Pivot Encoder Goal",
-            ToTalonUnits(DistanceToAngle(distance())));
+                                       goal_angle.value());
+        frc::SmartDashboard::PutNumber("Shooter/Pivot Encoder Goal",
+                                       ToTalonUnits(goal_angle));
       },
       {this});
 }
