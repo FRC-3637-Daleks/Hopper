@@ -214,6 +214,8 @@ void RobotContainer::ConfigureBindings() {
       [this] { m_shooter.SetPivotMotor(m_shooter.ToTalonUnits(43_deg)); },
       {&m_shooter}));
 
+  m_copilotController.LeftBumper().WhileTrue(m_shooter.AmpShot());
+
   // Configure Intake Bindings.
 
   GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
