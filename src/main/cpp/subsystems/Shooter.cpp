@@ -430,6 +430,15 @@ frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
       {this});
 }
 
+frc2::CommandPtr Shooter::AmpShot() {
+  auto kapow = []() { return ShooterConstants::kAmpShotPower; };
+  SetPivotMotor(ShooterConstants::kAmpShotAngle);
+  FlywheelCommand(kapow);
+}
+
+frc2::CommandPtr
+Shooter::AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance) {}
+
 // ************************ SIMULATION *****************************
 void Shooter::SimulationPeriodic() {
   using namespace ShooterConstants;

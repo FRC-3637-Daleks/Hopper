@@ -35,12 +35,12 @@ constexpr std::string_view kPhotonIntakeCameraName =
 /**A Transform3d that defines the Shooter camera offset from the zero (center of
  * robot, between all 4 swerve modules)*/
 const frc::Transform3d kShooterCameraToRobot{
-    {-2.5_in, -4.625_in, 22.5625_in},
+    {-2.5_in, -4.75_in, 22.5625_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     0_deg, 0_deg,
-                    180_deg}}; // The camera location relative to the robot's
-                               // center. Need to change for actual robot
+                    90_deg}}; // The camera location relative to the robot's
+                              // center. Need to change for actual robot
 /**A Transform3d that defines the Intake camera offset from the zero (center of
  * robot, between all 4 swerve modules)*/
 const frc::Transform3d kIntakeCameraToRobot{

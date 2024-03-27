@@ -84,6 +84,8 @@ constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);
 /**Note speed when exiting shooter (approximate)*/
 constexpr auto kNoteVelocity = 15.7_mps;
+constexpr auto kAmpShotAngle = 537;
+constexpr auto kAmpShotPower = 0.21;
 } // namespace ShooterConstants
 
 // forward declaration
@@ -172,6 +174,10 @@ public:
   /**Finds the pivot angle needed to shoot on speaker by passing a distance in*/
   frc2::CommandPtr
   PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
+
+  frc2::CommandPtr AmpShot();
+  frc2::CommandPtr
+  AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance);
   /**Finds the pivot angle needed to shoot on speaker by passing a distance in
    *
    * Also accounts for the forward and strafe velocity of the robot,

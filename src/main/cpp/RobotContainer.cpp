@@ -168,14 +168,15 @@ void RobotContainer::ConfigureBindings() {
                                              OperatorConstants::kDeadband);
   };
 
-  auto calculateDistance = [this]() -> units::meter_t {
+  auto calculateSpeakerDistance = [this]() -> units::meter_t {
     frc::Pose2d RobotPose2d = m_swerve.GetPose();
 
     // Determine the IDs of the speaker AprilTags based on the alliance color
-    int id = m_isRed ? 4 : 7;
+    int speakerID = m_isRed ? 4 : 7;
 
     // Get the pose of the speaker AprilTag based on its ID
-    frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
+    frc::Pose3d SpeakerPose =
+        m_aprilTagFieldLayout.GetTagPose(speakerID).value();
     frc::Pose2d SpeakerPose2d = frc::Pose2d{SpeakerPose.X(), SpeakerPose.Y(),
                                             SpeakerPose.Rotation().Angle()};
 
@@ -185,10 +186,26 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
+  auto calculateAmpDistance = [this]() -> units::meter_t {
+    frc::Pose2d RobotPose2d = m_swerve.GetPose();
+
+    // Determine the IDs of the speaker AprilTags based on the alliance color
+    int ampID = m_isRed ? 5 : 6;
+
+    // Get the pose of the speaker AprilTag based on its ID
+    frc::Pose3d AmpPose = m_aprilTagFieldLayout.GetTagPose(ampID).value();
+    frc::Pose2d AmpPose2d =
+        frc::Pose2d{AmpPose.X(), AmpPose.Y(), AmpPose.Rotation().Angle()};
+
+    // Calculate the horizontal distance between RobotPose and SpeakerPose
+    units::meter_t offset =
+        RobotPose2d.Translation().Distance(AmpPose2d.Translation());
+    return offset; // Return the horizontal distance as units::meter_t
+  };
   constexpr auto flywheelAutoSpeed = []() { return 0.5; };
   constexpr auto flywheelOff = []() { return 0.0; };
   m_shooter.SetDefaultCommand(
-      m_shooter.ShooterCommand(flywheel, calculateDistance));
+      m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
 
   m_copilotController.Back().WhileTrue(
       m_shooter.ShooterVelocityCommand(flywheel, pivot));
@@ -359,12 +376,11 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
-  // SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  SourcePathTrigger.WhileTrue(m_SourcePath.get());
 
-  // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());   Not reliable enough to
-  // risk this
+  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
 
-  // SubPathTrigger.WhileTrue(m_CenterSubPath.get());
+  SubPathTrigger.WhileTrue(m_CenterSubPath.get());
 
   m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
                              m_AmpSide3NoteAuto.get());

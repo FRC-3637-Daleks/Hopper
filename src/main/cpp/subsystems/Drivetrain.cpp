@@ -1,4 +1,3 @@
-
 #include "subsystems/Drivetrain.h"
 
 #include <cmath> // Make sure to include cmath for std::fmod
@@ -71,12 +70,29 @@ Drivetrain::Drivetrain()
   frc::DataLogManager::Log(
       fmt::format("Finished initializing drivetrain subsystem."));
 }
-
+frc::Pose2d Drivetrain::GetSimulatedGroundTruth() {
+  return m_sim_state->m_poseSim.GetPose();
+}
 void Drivetrain::Periodic() {
 
   // Do this once per loop
   SwerveModule::RefreshAllSignals(m_frontLeft, m_frontRight, m_rearLeft,
                                   m_rearRight);
+
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
+
+  // const auto fr_pos = m_frontRight.GetPosition();
+  // const auto fl_pos = m_frontLeft.GetPosition();
+  // const auto rl_pos = m_rearLeft.GetPosition();
+  // const auto rr_pos = m_rearRight.GetPosition();
 
   // Update the odometry with the current gyro angle and module states.
   auto fl_pos = m_frontLeft.GetPosition();
@@ -191,7 +207,10 @@ units::degrees_per_second_t Drivetrain::GetTurnRate() {
 }
 
 frc::Pose2d Drivetrain::GetPose() {
-  return m_poseEstimator.GetEstimatedPosition();
+  auto translation = m_poseEstimator.GetEstimatedPosition();
+  auto new_translation = (translation + m_odometryCompensation).Translation();
+  return frc::Pose2d{new_translation,
+                     m_poseEstimator.GetEstimatedPosition().Rotation()};
 }
 
 frc::ChassisSpeeds Drivetrain::GetSpeed() {
@@ -209,8 +228,8 @@ void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
 }
 
 void Drivetrain::UpdateDashboard() {
-  const auto robot_center = m_poseEstimator.GetEstimatedPosition();
-  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+  const auto robot_center = this->GetPose();
+  m_field.SetRobotPose(this->GetPose());
 
   const auto fl_pose = robot_center.TransformBy(
       {kWheelBase / 2, kTrackWidth / 2, m_frontLeft.GetState().angle});
