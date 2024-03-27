@@ -176,8 +176,8 @@ public:
   PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
 
   frc2::CommandPtr AmpShot();
-  frc2::CommandPtr
-  AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance);
+  //   frc2::CommandPtr
+  //   AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance);
   /**Finds the pivot angle needed to shoot on speaker by passing a distance in
    *
    * Also accounts for the forward and strafe velocity of the robot,

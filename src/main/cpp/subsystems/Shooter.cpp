@@ -436,8 +436,9 @@ frc2::CommandPtr Shooter::AmpShot() {
   FlywheelCommand(kapow);
 }
 
-frc2::CommandPtr
-Shooter::AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance) {}
+// frc2::CommandPtr
+// Shooter::AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance)
+// {}
 
 // ************************ SIMULATION *****************************
 void Shooter::SimulationPeriodic() {
