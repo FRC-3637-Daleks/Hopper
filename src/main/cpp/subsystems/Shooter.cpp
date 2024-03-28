@@ -108,8 +108,7 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_leadMotor.SetClosedLoopRampRate(0.1);
   m_followMotor.SetClosedLoopRampRate(0.1);
 
-
-  // Need to empirically measure proper current limit.  
+  // Need to empirically measure proper current limit.
   m_leadMotor.SetSmartCurrentLimit(
       ShooterConstants::kFlywheelCurrentLimit.value());
   m_followMotor.SetSmartCurrentLimit(
@@ -197,7 +196,7 @@ void Shooter::StopShootMotor() {
 }
 
 // Runs pivoting motor
-void Shooter::RunTalonMotor() {
+void Shooter::RunPivotMotor() {
   // Runs
   m_pivot.SetVoltage(1.0_V);
 }
@@ -211,7 +210,7 @@ float pow(float d, int power) {
 }
 
 // Stop pivoting motor
-void Shooter::StopTalonMotor() {
+void Shooter::StopPivotMotor() {
   // Stops
   m_pivot.StopMotor();
 }
@@ -338,6 +337,20 @@ units::radian_t Shooter::GetAnglePivot() {
           ShooterConstants::kOffset);
 }
 
+frc2::CommandPtr Shooter::PassModeCommand() {
+  return this->Run([this]() {
+    m_leadMotor.SetVoltage(12_V * ShooterConstants::kPassModeSpeed);
+    SetPivotMotor(ShooterConstants::kPassModeAngle);
+  });
+}
+
+frc2::CommandPtr Shooter::SubwooferCommand() {
+  return this->Run([this]() {
+    m_leadMotor.SetVoltage(12_V * 0.5);
+    SetPivotMotor(ToTalonUnits(43_deg));
+  });
+}
+
 frc2::CommandPtr Shooter::ShooterVelocityCommand(
     std::function<double()> flywheelInput,
     std::function<units::angular_velocity::degrees_per_second_t()>
@@ -425,6 +438,17 @@ frc2::CommandPtr Shooter::PivotAngleVelocityDistanceCommand(
       },
       {this});
 }
+
+frc2::CommandPtr Shooter::AmpShot() {
+  return this->Run([this] {
+    SetPivotMotor(ShooterConstants::kAmpShotAngle);
+    m_leadMotor.SetVoltage(12_V * ShooterConstants::kAmpShotPower);
+  });
+}
+
+// frc2::CommandPtr
+// Shooter::AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance)
+// {}
 
 // ************************ SIMULATION *****************************
 void Shooter::SimulationPeriodic() {

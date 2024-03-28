@@ -2,6 +2,20 @@
 #include "subsystems/Drivetrain.h"
 
 #include <frc/DataLogManager.h>
+#include <photon/simulation/SimCameraProperties.h>
+#include <photon/simulation/VisionSystemSim.h>
+
+#include <frc/RobotBase.h>
+
+class VisionSim {
+public:
+  VisionSim(Vision &vision, std::function<frc::Pose2d()> getSimulatedPose);
+
+  std::function<frc::Pose2d()> m_simulatedPose;
+  photon::VisionSystemSim m_vision_sim;
+  photon::PhotonCameraSim m_shooter_cam_sim;
+  photon::PhotonCameraSim m_intake_cam_sim;
+};
 
 // top do --> add the code from photonvision example to both the cpp and h files
 // copy std deviation formula, and potentially make a system where the code
@@ -19,35 +33,53 @@ Vision::Vision(
     std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)>
         addVisionMeasurement,
     std::function<frc::Pose2d()> getRobotPose,
-    const Eigen::Matrix<double, 3, 1> &initialStdDevs)
-    : m_estimator(
+    const Eigen::Matrix<double, 3, 1> &initialStdDevs,
+    std::function<frc::Pose2d()> getSimulatedPose)
+    : m_shooterEstimator(
           frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
           photon::MULTI_TAG_PNP_ON_COPROCESSOR,
-          std::move(m_camera), // change to the multitag detection algorithm
-          VisionConstants::kCameraToRobot),
+          std::move(
+              m_shooterCamera), // change to the multitag detection algorithm
+          VisionConstants::kShooterCameraToRobot),
+      m_intakeEstimator(
+          frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
+          photon::MULTI_TAG_PNP_ON_COPROCESSOR,
+          std::move(
+              m_intakeCamera), // change to the multitag detection algorithm
+          VisionConstants::kIntakeCameraToRobot),
       m_referencePose(getRobotPose) {
+  if constexpr (frc::RobotBase::IsSimulation()) {
+    m_sim_state.reset(new VisionSim(*this, std::move(getSimulatedPose)));
+  }
   // Inside the constructor body, you can perform additional operations if
   // needed
   m_addVisionMeasurement =
       addVisionMeasurement; // Call the addVisionMeasurement function
-  m_estimator.SetMultiTagFallbackStrategy(
-      photon::PoseStrategy::CLOSEST_TO_LAST_POSE);
+  m_shooterEstimator.SetMultiTagFallbackStrategy(
+      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+  m_intakeEstimator.SetMultiTagFallbackStrategy(
+      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
 
-  frc::DataLogManager::Log(
-      fmt::format("Finished initializing vision subsystem."));
+  frc::DataLogManager::Log("finished initializing vision.");
 }
+
+Vision::~Vision() {}
 
 bool Vision::HasTargets() {
-  photon::PhotonPipelineResult result = m_camera.GetLatestResult();
+  photon::PhotonPipelineResult shooterResult =
+      m_shooterCamera.GetLatestResult();
+  photon::PhotonPipelineResult intakeResult = m_intakeCamera.GetLatestResult();
 
-  return result.HasTargets();
+  return shooterResult.HasTargets() || intakeResult.HasTargets();
 }
 
-std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
-  m_estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
-  auto visionEst = m_estimator.Update();
-  auto camera = m_estimator.GetCamera();
+std::optional<photon::EstimatedRobotPose>
+Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
+  estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
+  auto visionEst = estimator.Update();
+  auto camera = estimator.GetCamera();
   units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
+
   bool newResult =
       units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
   if (newResult) {
@@ -57,11 +89,12 @@ std::optional<photon::EstimatedRobotPose> Vision::CalculateRobotPoseEstimate() {
 }
 
 Eigen::Matrix<double, 3, 1>
-Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
+Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
+                             photon::PhotonPoseEstimator &estimator) {
 
   Eigen::Matrix<double, 3, 1> estStdDevs = VisionConstants::kSingleTagStdDevs;
   photon::PhotonPipelineResult latestResult =
-      m_estimator.GetCamera()
+      estimator.GetCamera()
           ->GetLatestResult(); // Add declaration for GetLatestResult function
 
   int numTags = 0; // Declare the variable "numTags" and initialize it to 0
@@ -70,7 +103,7 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
   auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
 
   for (const auto &tgt : targets) {
-    auto tagPose = m_estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
+    auto tagPose = estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
       numTags++;
       avgDist += tagPose.value().ToPose2d().Translation().Distance(
@@ -78,14 +111,13 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
     }
   }
   if (numTags == 0) {
-    fmt::println("0 tags!?! avg dist {}", avgDist);
     return VisionConstants::kFailedTagStdDevs;
   }
   avgDist /= numTags;
   if (numTags > 1) {
     estStdDevs = VisionConstants::kMultiTagStdDevs;
   }
-  if (numTags == 1 && avgDist > 1_m || avgDist > 4_m) {
+  if (avgDist > 4_m) {
     estStdDevs =
         (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
          std::numeric_limits<double>::max(), std::numeric_limits<double>::max())
@@ -96,15 +128,107 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose) {
 
   frc::SmartDashboard::PutNumber("Vision/average vision distance",
                                  avgDist.value());
+  frc::SmartDashboard::PutNumber("Vision/num tags", numTags);
   return estStdDevs;
 }
 
 void Vision::Periodic() {
-  auto PoseEst = CalculateRobotPoseEstimate();
-  if (PoseEst.has_value()) {
-    auto EstPose2d = PoseEst.value().estimatedPose.ToPose2d();
-    auto StdDev = GetEstimationStdDevs(EstPose2d);
+  m_intakeApriltagEstimate = CalculateRobotPoseEstimate(m_intakeEstimator);
+  m_shooterApriltagEstimate = CalculateRobotPoseEstimate(m_shooterEstimator);
+  if (m_intakeApriltagEstimate.has_value()) {
+    auto EstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
+    auto StdDev = GetEstimationStdDevs(EstPose2d, m_intakeEstimator);
+    wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
+    m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+  }
+  if (m_shooterApriltagEstimate.has_value()) {
+    auto EstPose2d = m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
+    auto StdDev = GetEstimationStdDevs(EstPose2d, m_shooterEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
     m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
   }
 }
+
+/*****************************SIMULATION*****************************/
+
+photon::SimCameraProperties getShooterCameraProperties() {
+  photon::SimCameraProperties ret;
+  ret.SetCalibration(1600, 1200, 95_deg);
+  ret.SetCalibError(0.15, 0.04);
+  ret.SetFPS(24_Hz);
+  ret.SetAvgLatency(0.04_s);
+  ret.SetLatencyStdDev(0.01_s);
+
+  return ret;
+}
+photon::SimCameraProperties getIntakeCameraProperties() {
+  photon::SimCameraProperties ret;
+  ret.SetCalibration(1600, 1200, 95_deg);
+  ret.SetCalibError(0.15, 0.04);
+  ret.SetFPS(24_Hz);
+  ret.SetAvgLatency(0.04_s);
+  ret.SetLatencyStdDev(0.01_s);
+
+  return ret;
+}
+
+VisionSim::VisionSim(Vision &vision,
+                     std::function<frc::Pose2d()> getSimulatedPose)
+    : m_simulatedPose(std::move(getSimulatedPose)),
+      m_vision_sim("april_tag_sim"),
+      m_shooter_cam_sim(vision.m_shooterEstimator.GetCamera().get(),
+                        getShooterCameraProperties()),
+      m_intake_cam_sim(vision.m_intakeEstimator.GetCamera().get(),
+                       getIntakeCameraProperties()) {
+  m_vision_sim.AddAprilTags(
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo));
+  m_vision_sim.AddCamera(&m_shooter_cam_sim,
+                         VisionConstants::kShooterCameraToRobot);
+  m_vision_sim.AddCamera(&m_intake_cam_sim,
+                         VisionConstants::kIntakeCameraToRobot);
+
+  m_intake_cam_sim.EnableDrawWireframe(true);
+  m_intake_cam_sim.EnabledProcessedStream(true);
+  m_intake_cam_sim.EnableRawStream(true);
+  m_intake_cam_sim.SetMaxSightRange(6_m);
+
+  frc::SmartDashboard::PutData("Vision/simulated apriltags",
+                               &m_vision_sim.GetDebugField());
+}
+
+void Vision::SimulationPeriodic() {
+  if (!m_sim_state)
+    return;
+
+  m_sim_state->m_vision_sim.Update(m_sim_state->m_simulatedPose());
+  m_sim_state->m_vision_sim.GetDebugField()
+      .GetObject("fused pose")
+      ->SetPose(m_referencePose());
+
+  if (m_intakeApriltagEstimate) {
+    auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
+    m_sim_state->m_vision_sim.GetDebugField()
+        .GetObject("photon pose est")
+        ->SetPose(robot_pose.ToPose2d());
+
+    std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kIntakeCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
+
+    m_sim_state->m_vision_sim.GetDebugField()
+        .GetObject("tag poses")
+        ->SetPoses(reprojected_tags);
+  }
+}
+//  for (const auto &tag :
+//        m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+//     auto tag_pose =
+//         robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
+//             .TransformBy(tag.GetBestCameraToTarget());
+//     reprojected_tags.push_back(tag_pose.ToPose2d());
+//   }

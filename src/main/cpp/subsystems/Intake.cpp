@@ -2,6 +2,7 @@
 // Please look at intake.h for documentation
 
 #include <frc/DataLogManager.h>
+#include <frc/controller/ArmFeedforward.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 
@@ -87,7 +88,6 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
   // periodic, run Motion Magic with slot 0 configs
   m_arm.SelectProfileSlot(0, 0);
 
-  // TODO: Need to empirically test for current limit.
   m_arm.ConfigSupplyCurrentLimit({true, IntakeConstants::kMaxCurrent.value(),
                                   IntakeConstants::kMaxCurrent.value(), 0.1});
 
@@ -194,7 +194,7 @@ frc2::CommandPtr Intake::OutputToShooter() {
                    IntakeConstants::IntakeArmSpeakerPos;
           }) // when ring
           .AndThen(IntakeOutSpeaker())
-          .WithTimeout(1_s),
+          .WithTimeout(0.5_s),
       frc2::cmd::None(),                             // no ring
       [this]() { return IsIntakeBreakBeamBroken(); } // When broken = true
   );
@@ -336,6 +336,7 @@ void Intake::IntakeArmAMP() {
   m_goal = IntakeConstants::IntakeArmAMPPos;
   m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic /*Position*/,
             IntakeConstants::IntakeArmAMPPos);
+  // frc::ArmFeedforward ff{0.01V, }
 }
 
 void Intake::IntakeArmSpeaker() {

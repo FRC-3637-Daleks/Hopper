@@ -155,10 +155,10 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
   steerConfig.WithFeedback(steerFeedbackConfigs);
 
-  //ctre::phoenix6::configs::TorqueCurrentConfigs torqueCurrentConfig;
-  //torqueCurrentConfig.PeakForwardTorqueCurrent = 80;
-  //torqueCurrentConfig.PeakReverseTorqueCurrent = -80;
-  //driveConfig.WithTorqueCurrent(torqueCurrentConfig);
+  // ctre::phoenix6::configs::TorqueCurrentConfigs torqueCurrentConfig;
+  // torqueCurrentConfig.PeakForwardTorqueCurrent = 80;
+  // torqueCurrentConfig.PeakReverseTorqueCurrent = -80;
+  // driveConfig.WithTorqueCurrent(torqueCurrentConfig);
 
   int retries = 4;
   while (auto ret = m_driveMotor.GetConfigurator().Apply(driveConfig, 500_ms)) {
@@ -319,6 +319,7 @@ void SwerveModuleSim::update() {
       (prev_velocity + m_swivelModel.GetAngularVelocity()) / 2;
   // cancoder is on mechanism and is inverted from the falcon's rotor
   m_encoderSim.AddPosition(-average_velocity * 20_ms);
+  m_encoderSim.SetVelocity(-average_velocity);
   m_steerSim.AddRotorPosition(average_velocity * kSteerGearReduction * 20_ms);
   m_steerSim.SetRotorVelocity(average_velocity * kSteerGearReduction);
 

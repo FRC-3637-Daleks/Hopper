@@ -16,30 +16,86 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Vision/simulated apriltags": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
         "FL": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "FR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            255.0,
+            240.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Hopper": {
           "arrows": false,
           "length": 0.6859999895095825,
           "style": "Line"
         },
-        "RL": {
+        "Notes": {
           "arrows": false,
-          "style": "Hidden"
+          "color": [
+            1.0,
+            0.38235294818878174,
+            0.0,
+            255.0
+          ],
+          "length": 0.33000001311302185,
+          "width": 0.33000001311302185
+        },
+        "RL": {
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "RR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            240.00001525878906,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "color": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Robot": {
           "length": 0.9100000262260437,
@@ -51,10 +107,18 @@
         "left": 150,
         "right": 2961,
         "simulation": {
-          "arrows": false,
-          "style": "Hidden"
+          "style": "Box/Image"
         },
         "top": 79,
+        "vision estimate": {
+          "arrows": false,
+          "color": [
+            0.0,
+            255.0,
+            0.0,
+            255.0
+          ]
+        },
         "width": 16.541748046875,
         "window": {
           "visible": true
@@ -67,37 +131,14 @@
       },
       "/SmartDashboard/SendableChooser[0]": {
         "window": {
-          "name": "AutoChooser",
+          "name": "Select Auton",
           "visible": true
         }
       },
-      "/SmartDashboard/zeroEncodersCommand": {
+      "/SmartDashboard/Shooter": {
         "window": {
           "visible": true
         }
-      }
-    }
-  },
-  "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
-    "retained": {
-      "SmartDashboard": {
-        "open": true
-      }
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "Shooter": {
-          "open": true
-        },
-        "Swerve": {
-          "TurnPIDController": {
-            "open": true
-          }
-        },
-        "open": true
       }
     }
   },

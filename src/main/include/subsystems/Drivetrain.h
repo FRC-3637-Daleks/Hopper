@@ -31,7 +31,7 @@ constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
 
 constexpr double kPTurn = 0.071; // 0.061
 constexpr double kITurn = 0.00;  // 0.00
-constexpr double kDTurn = 0.00; // 0.0
+constexpr double kDTurn = 0.00;  // 0.0
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -84,6 +84,8 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
 };
 
 constexpr double kS = 0.0545;
+
+constexpr double kOdometryCompensationFactor = 0.05;
 
 constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
@@ -153,6 +155,8 @@ public:
 
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
+
+  frc::Pose2d GetSimulatedGroundTruth();
 
   // Returns Current Chassis Speed
   frc::ChassisSpeeds GetSpeed();
@@ -252,6 +256,8 @@ private:
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
 
   frc::Pose2d m_zTarget;
+
+  frc::Transform2d m_odometryCompensation{0_m, 0_m, 0_deg};
 
 private:
   friend class DrivetrainSimulation;

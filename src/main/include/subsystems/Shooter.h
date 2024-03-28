@@ -48,6 +48,9 @@ constexpr int kPIDLoopIdx = 0;
 
 constexpr int kTimeoutMs = 20; // in ms.
 
+constexpr double kPassModeSpeed = 0.5;
+constexpr int kPassModeAngle = 634;
+
 // Guess values. Need accurate measurements
 
 constexpr double kPivotEncoderReduction = (double)1 / 4;
@@ -75,7 +78,9 @@ constexpr auto kArmMoment = 0.5 * kArmMass * kArmRadius * kArmRadius;
 
 constexpr auto kFlywheelCurrentLimit = 40_A;
 
+/**Minimum angle(retracted)*/
 constexpr auto kMinAngle = 0_deg;
+/**Maximum angle(extended)*/
 constexpr auto kMaxAngle = 80_deg;
 constexpr auto kMinAimSensor = 935;
 constexpr auto kMaxAimSensor = 51;
@@ -83,8 +88,10 @@ constexpr auto kMinIdeal = 920;
 constexpr auto kMaxIdeal = 388;
 constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);
-
+/**Note speed when exiting shooter (approximate)*/
 constexpr auto kNoteVelocity = 15.7_mps;
+constexpr auto kAmpShotAngle = 525;
+constexpr auto kAmpShotPower = 0.21;
 } // namespace ShooterConstants
 
 // forward declaration
@@ -96,29 +103,35 @@ public:
   ~Shooter();
 
   void Periodic() override;
-
+  /** Initializes the visualization in sim*/
   void InitVisualization(frc::Mechanism2d *mech);
+  /** Updates the visualization in sim*/
   void UpdateVisualization();
 
   void SimulationPeriodic() override;
 
   // const PIDCoefficients m_pivotPIDCoefficients;
 
-  // Runs and Stops Motors - basic voids
+  /**Shoots ring
+   * -Sets Shooter wheel motors to 1.00_volts
+   */
   void RunShootMotor();
-
+  /**Stops Shooter wheels*/
   void StopShootMotor();
-
-  void RunTalonMotor();
-
-  void StopTalonMotor();
-
+  /** Runs Pivot motor at 1.00_volts*/
+  void RunPivotMotor();
+  /** Stops Pivot Motor*/
+  void StopPivotMotor();
+  /**Used to controll Shooter angle with joystick
+   *  -Move Shooter angle to preset height(double in encoder ticks).*/
   void SetPivotMotor(double encoderPosition);
-
+  /** Gets the current angle Shooter Pivot is at*/
   units::radian_t GetAnglePivot();
-
+  /** Passes a distance (found using Apriltags & odometry),
+   *  returns the angle needed to score into speaker from said distance
+   */
   units::degree_t DistanceToAngle(units::foot_t distance);
-
+  /** Finds the error in value returned by DistanceToAngle*/
   units::degree_t DistanceToAngleError(units::foot_t distance,
                                        units::radian_t angle);
 
@@ -134,28 +147,52 @@ public:
 
   double ToTalonUnits(const frc::Rotation2d &rotation);
 
+  frc2::CommandPtr PassModeCommand();
+
+  frc2::CommandPtr SubwooferCommand();
+
+  /**Passes the speed for the flywheels (const double encoder ticks) and
+   * the velocity the pivot motor should move at.
+   */
   frc2::CommandPtr ShooterVelocityCommand(
       std::function<double()> flywheelInput,
       std::function<units::angular_velocity::degrees_per_second_t()>
           pivotVelocity);
-
+          
+  /**Passes the speed for the flywheel (const double encoder ticks) and
+   * then uses the calculateDistance function to return the pivot angle
+   */
   frc2::CommandPtr
   ShooterCommand(std::function<double()> flywheelInput,
                  std::function<units::meter_t()> calculateDistance);
-
+  /**Passes the speed for the flywheel (const double encoder ticks) and
+   * then uses the calculateDistance function to return the pivot angle.
+   *
+   * Also accounts for the forward and strafe velocity of the robot,
+   * compensating for it.
+   */
   frc2::CommandPtr ShooterVelocityDistanceCommand(
       std::function<double()> flywheelInput,
       std::function<units::meter_t()> calculateDistance,
       std::function<units::feet_per_second_t()> fwd_velocity,
       std::function<units::feet_per_second_t()> strafe_velocity);
-
+  /** Sets the flywheel to speed determined by controller input*/
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
-
+  /**Sets Shooter pivot angle to the value returned by a command*/
   frc2::CommandPtr
   PivotAngleCommand(std::function<units::degree_t()> pivotAngle);
-
+  /**Finds the pivot angle needed to shoot on speaker by passing a distance in*/
   frc2::CommandPtr
   PivotAngleDistanceCommand(std::function<units::meter_t()> distance);
+
+  frc2::CommandPtr AmpShot();
+  //   frc2::CommandPtr
+  //   AutoSpeakerFlywheelSpeed(std::function<units::meter_t()> distance);
+  /**Finds the pivot angle needed to shoot on speaker by passing a distance in
+   *
+   * Also accounts for the forward and strafe velocity of the robot,
+   * compensating for it.
+   */
 
   frc2::CommandPtr PivotAngleVelocityDistanceCommand(
       std::function<units::foot_t()> distance,

@@ -44,7 +44,7 @@ constexpr auto kMaxAcceleration = 8_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 240_rpm;
+constexpr auto kMaxAngularSpeed = std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -167,29 +167,29 @@ public:
     return m_swerveController.GetRightTriggerAxis() > 0.2;
   }};
 
-  frc2::Trigger m_manualIntake{[this]() -> bool {
+  frc2::Trigger m_passMode{[this]() -> bool {
     return m_copilotController.GetLeftTriggerAxis() > 0.2;
   }};
 
   frc2::Trigger IdleIntakeTrigger{
       [this]() -> bool { return m_copilotController.GetPOV() == -1; }};
-
+  /** Ground Intake Trigger, right on the Co-Pilot dpad*/
   frc2::Trigger GroundIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeGroundPOV;
   }};
-
+  /** Amp Intake Trigger, up on the Co-Pilot dpad*/
   frc2::Trigger AMPIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV;
   }};
-
+  /** Speaker Intake Trigger, left on the Co-Pilot dpad*/
   frc2::Trigger SpeakerIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV;
   }};
-
+  /** Auto Intake Trigger, down on the Co-Pilot dpad*/
   frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
   }};
-
+  /** Source Intake Trigger, up & right on the Co-Pilot dpad*/
   frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
   }};
@@ -201,12 +201,37 @@ public:
   frc2::Trigger RumbleForOutakeTrigger{[this]() -> bool {
     return !(m_intake.IsIntakeBreakBeamBroken()); // when broken = true
   }};
+
+  /**Pit Reset Trigger, Start Button on Co-Pilot controller*/
+  frc2::Trigger PitReset{
+      [this]() -> bool { return m_copilotController.GetStartButton(); }};
+
+  /**Flywheel off Trigger, back Button on Co-Pilot controller*/
+  // DEPRICATED
+  frc2::Trigger flywheelOffTrigger{
+      [this]() -> bool { return m_copilotController.GetBackButton(); }};
+
+  /** Source Path Trigger, right on the Pilot dpad*/
   frc2::Trigger SourcePathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+  /** Amp Path Trigger, left on the Pilot dpad*/
   frc2::Trigger AmpPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
+  /** Sub Path Trigger, up on the Pilot dpad*/
   frc2::Trigger SubPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
+
+  frc2::Trigger DriveFwdTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
+
+  frc2::Trigger DriveStrafeLeftTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
+
+  frc2::Trigger DriveStrafeRightTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
+
+  frc2::Trigger DriveRevTrigger{
+      [this]() -> bool { return m_swerveController.GetPOV() == 180; }};
 
   // The robot's subsystems are defined here...
 
@@ -233,10 +258,15 @@ public:
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
   frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
 
+  // Odometry Testing Paths
+  frc2::CommandPtr m_straightLine{frc2::cmd::None()};
+  frc2::CommandPtr m_squarePath{frc2::cmd::None()};
+  frc2::CommandPtr m_nonoPath{frc2::cmd::None()};
+
   frc2::CommandPtr m_ampLineUp{frc2::cmd::None()};
 
   frc::SendableChooser<frc2::Command *> m_chooser;
-
+  /** Checks if FRC driverstation is configured for red or blue side*/
   bool m_isRed;
 
   // AprilTag
