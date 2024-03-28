@@ -314,7 +314,7 @@ void RobotContainer::ConfigureBindings() {
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
           pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(50.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(25.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
@@ -445,7 +445,8 @@ void RobotContainer::ConfigureBindings() {
 
   /**
    * Automatic pathfinding triggers. Still need to test.
-   * IF I SEE THESE ENABLED DURING A MATCH I WILL BAN YOU FROM THE GITHUB ORGANISATION >:(
+   * IF I SEE THESE ENABLED DURING A MATCH I WILL BAN YOU FROM THE GITHUB
+   * ORGANISATION >:(
    *                  -- Visvam.
    */
   // SourcePathTrigger.WhileTrue(m_SourcePath.get());
