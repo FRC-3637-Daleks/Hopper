@@ -27,14 +27,14 @@
 
 namespace VisionConstants {
 
-constexpr std::string_view kPhotonShooterCameraName =
+constexpr std::string_view kPhotonIntakeCameraName =
     "ArduCam_OV2310_Usb_Camera"; // Note, we need an in-built pipeline changer,
                                  // probably between auton and teleop
-constexpr std::string_view kPhotonIntakeCameraName =
+constexpr std::string_view kPhotonShooterCameraName =
     "Arducam_OV9281_USB_Camera";
 
-const frc::Transform3d kShooterCameraToRobot{
-    {-4_in, -5.5_in, 23_in},
+const frc::Transform3d kIntakeCameraToRobot{
+    {-4_in, -3.5_in, 21_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     90_deg, 0_deg,
@@ -44,8 +44,8 @@ const frc::Transform3d kShooterCameraToRobot{
 /**A Transform3d that defines the Intake camera offset from the zero (center of
  * robot, between all 4 swerve modules)*/
 
-const frc::Transform3d kIntakeCameraToRobot{
-    {-4_in, 0_in, 23_in},
+const frc::Transform3d kShooterCameraToRobot{
+    {-4_in, 1.75_in, 21_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
                     180_deg, 0_deg, 0_deg}};
