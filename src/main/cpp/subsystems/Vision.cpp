@@ -1,6 +1,7 @@
 #include "subsystems/Vision.h"
 #include "subsystems/Drivetrain.h"
 
+#include <frc/DataLogManager.h>
 #include <photon/simulation/SimCameraProperties.h>
 #include <photon/simulation/VisionSystemSim.h>
 
@@ -58,6 +59,8 @@ Vision::Vision(
       photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
   m_intakeEstimator.SetMultiTagFallbackStrategy(
       photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+
+  frc::DataLogManager::Log("finished initializing vision.");
 }
 
 Vision::~Vision() {}
@@ -134,13 +137,13 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
 void Vision::Periodic() {
   m_intakeApriltagEstimate = CalculateRobotPoseEstimate(m_intakeEstimator);
   m_shooterApriltagEstimate = CalculateRobotPoseEstimate(m_shooterEstimator);
-  if (m_intakeApriltagEstimate) {
+  if (m_intakeApriltagEstimate.has_value()) {
     auto EstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_intakeEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
     m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
   }
-  if (m_shooterApriltagEstimate) {
+  if (m_shooterApriltagEstimate.has_value()) {
     auto EstPose2d = m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_shooterEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};

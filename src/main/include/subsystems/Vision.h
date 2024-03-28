@@ -28,7 +28,7 @@
 namespace VisionConstants {
 
 constexpr std::string_view kPhotonShooterCameraName =
-    "Arducam_OV2311_USB_Camera"; // Note, we need an in-built pipeline changer,
+    "ArduCam_OV2310_Usb_Camera"; // Note, we need an in-built pipeline changer,
                                  // probably between auton and teleop
 constexpr std::string_view kPhotonIntakeCameraName =
     "Arducam_OV9281_USB_Camera";
@@ -37,14 +37,18 @@ const frc::Transform3d kShooterCameraToRobot{
     {-4_in, -5.5_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
-                    0_deg, 0_deg,
+                    90_deg, 0_deg,
                     180_deg}}; // The camera location relative to the robot's
                                // center. Need to change for actual robot
+
+/**A Transform3d that defines the Intake camera offset from the zero (center of
+ * robot, between all 4 swerve modules)*/
+
 const frc::Transform3d kIntakeCameraToRobot{
     {-4_in, 0_in, 23_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
-                    0_deg, 0_deg, 0_deg}};
+                    180_deg, 0_deg, 0_deg}};
 
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
@@ -79,7 +83,8 @@ public:
 
   std::optional<photon::EstimatedRobotPose>
   CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator);
-
+  /**Gets the standard deviation of the pose returned by
+   * CalculateRobotPoseEstimate*/
   Eigen::Matrix<double, 3, 1>
   GetEstimationStdDevs(frc::Pose2d estimatedPose,
                        photon::PhotonPoseEstimator &estimator);
