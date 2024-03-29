@@ -185,24 +185,6 @@ void RobotContainer::ConfigureBindings() {
         RobotPose2d.Translation().Distance(SpeakerPose2d.Translation());
     return offset; // Return the horizontal distance as units::meter_t
   };
-
-  auto calculateAmpDistance = [this]() -> units::meter_t {
-    frc::Pose2d RobotPose2d = m_swerve.GetPose();
-
-    // Determine the IDs of the speaker AprilTags based on the alliance color
-    int ampID = m_isRed ? 5 : 6;
-
-    // Get the pose of the speaker AprilTag based on its ID
-    frc::Pose3d AmpPose = m_aprilTagFieldLayout.GetTagPose(ampID).value();
-    frc::Pose2d AmpPose2d =
-        frc::Pose2d{AmpPose.X(), AmpPose.Y(), AmpPose.Rotation().Angle()};
-
-    // Calculate the horizontal distance between RobotPose and SpeakerPose
-    units::meter_t offset =
-        RobotPose2d.Translation().Distance(AmpPose2d.Translation());
-    return offset; // Return the horizontal distance as units::meter_t
-  };
-  constexpr auto flywheelAutoSpeed = []() { return 0.5; };
   constexpr auto flywheelOff = []() { return 0.0; };
   m_shooter.SetDefaultCommand(
       m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
@@ -374,6 +356,7 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::PathPlannerAuto("Center-SourceSide 3 Note Mid Only").ToPtr();
   m_centerAmpSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("Center-AmpSide 3 Note Mid Only").ToPtr();
+  m_defaultAuto = pathplanner::PathPlannerAuto("Default Auto").ToPtr();
 
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
@@ -384,8 +367,9 @@ void RobotContainer::ConfigureBindings() {
 
   SubPathTrigger.WhileTrue(m_CenterSubPath.get());
 
-  m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
-                             m_AmpSide3NoteAuto.get());
+  m_chooser.SetDefaultOption("1 Note Shoot", m_defaultAuto.get());
+  m_chooser.AddOption("AmpSide Subwoofer 3 Note Auto",
+                      m_AmpSide3NoteAuto.get());
   m_chooser.AddOption("SourceSide Subwoofer 3 Note Auto",
                       m_SourceSide3NoteAuto.get());
   m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());

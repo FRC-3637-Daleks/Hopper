@@ -39,12 +39,13 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 3_mps;
-constexpr auto kMaxAcceleration = 8_mps_sq;
+constexpr auto kMaxSpeed = 4_mps;
+constexpr auto kMaxAcceleration = 10_mps_sq;
+constexpr auto kMaxAutoModuleSpeed = 10_mps;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
-constexpr auto kMaxAngularSpeed = 240_rpm;
+constexpr auto kMaxAngularSpeed = 1.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s_sq;
 
 // XXX Very untrustworthy placeholder values.
@@ -227,6 +228,7 @@ public:
   frc2::CommandPtr m_centerAmpSideMidOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
+  frc2::CommandPtr m_defaultAuto{frc2::cmd::None()};
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
   frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};

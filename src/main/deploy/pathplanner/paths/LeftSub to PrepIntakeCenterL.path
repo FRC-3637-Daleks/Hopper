@@ -90,7 +90,7 @@
     {
       "waypointRelativePos": 3,
       "rotationDegrees": 0,
-      "rotateFast": false
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
