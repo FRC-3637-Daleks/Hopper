@@ -17,6 +17,7 @@
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
       "/SmartDashboard/Vision/simulated apriltags": "Field2d",
+      "/SmartDashboard/VisionSystemSim-april_tag_sim/Sim Field": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {

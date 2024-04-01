@@ -48,7 +48,7 @@ const frc::Transform3d kShooterCameraToRobot{
     {-4_in, 1.75_in, 21_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
-                    180_deg, 0_deg, 0_deg}};
+                    180_deg, 0_deg, 90_deg}};
 
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
@@ -62,7 +62,7 @@ inline const Eigen::Matrix<double, 3, 1> kFailedTagStdDevs{
 class VisionSim; // forward declaration
 
 class Vision : public frc2::SubsystemBase {
-
+ 
 public:
   Vision(
       std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)>
