@@ -257,7 +257,6 @@ public:
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};
   frc2::CommandPtr m_CenterSubPath{frc2::cmd::None()};
-  frc2::CommandPtr m_AllCloseToSourcePath{frc2::cmd::None()};
 
   // Odometry Testing Paths
   frc2::CommandPtr m_straightLine{frc2::cmd::None()};
