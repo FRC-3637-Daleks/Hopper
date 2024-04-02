@@ -17,6 +17,7 @@
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <Eigen/Core>
@@ -74,6 +75,7 @@ public:
 
   void Periodic() override;
   void SimulationPeriodic() override;
+  void UpdateDashboard();
 
   void GetBestPose();
 
@@ -111,6 +113,7 @@ private:
       m_addVisionMeasurement;
 
   std::function<frc::Pose2d()> m_referencePose;
+  frc::Field2d *m_field_viz;
 
 private:
   friend class VisionSim;

@@ -50,6 +50,11 @@ Vision::Vision(
       m_referencePose(getRobotPose) {
   if constexpr (frc::RobotBase::IsSimulation()) {
     m_sim_state.reset(new VisionSim(*this, std::move(getSimulatedPose)));
+    m_field_viz = &m_sim_state->m_vision_sim.GetDebugField();
+  } else {
+    // uh ohs, memory leak! (its a robot not a rack mounted server)
+    m_field_viz = new frc::Field2d{};
+    frc::SmartDashboard::PutData("Vision/field", m_field_viz);
   }
   // Inside the constructor body, you can perform additional operations if
   // needed
@@ -147,6 +152,46 @@ void Vision::Periodic() {
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
     m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
   }
+
+  UpdateDashboard();
+}
+
+void Vision::UpdateDashboard() {
+  m_field_viz->GetObject("Fused Pose")->SetPose(m_referencePose());
+
+  if (m_intakeApriltagEstimate) {
+    auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
+    m_field_viz->GetObject("Intake Cam Pose")->SetPose(robot_pose.ToPose2d());
+
+    std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kIntakeCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
+
+    m_field_viz->GetObject("Intake Reprojected Tags")
+        ->SetPoses(reprojected_tags);
+  }
+
+  if (m_shooterApriltagEstimate) {
+    auto robot_pose = m_shooterApriltagEstimate.value().estimatedPose;
+    m_field_viz->GetObject("Shooter Cam Pose")->SetPose(robot_pose.ToPose2d());
+
+    std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
+
+    m_field_viz->GetObject("Shooter Reprojected Tags")
+        ->SetPoses(reprojected_tags);
+  }
 }
 
 /*****************************SIMULATION*****************************/
@@ -201,29 +246,6 @@ void Vision::SimulationPeriodic() {
     return;
 
   m_sim_state->m_vision_sim.Update(m_sim_state->m_simulatedPose());
-  m_sim_state->m_vision_sim.GetDebugField()
-      .GetObject("fused pose")
-      ->SetPose(m_referencePose());
-
-  if (m_intakeApriltagEstimate) {
-    auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
-    m_sim_state->m_vision_sim.GetDebugField()
-        .GetObject("photon pose est")
-        ->SetPose(robot_pose.ToPose2d());
-
-    std::vector<frc::Pose2d> reprojected_tags;
-    for (const auto &tag :
-         m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
-      auto tag_pose =
-          robot_pose.TransformBy(VisionConstants::kIntakeCameraToRobot)
-              .TransformBy(tag.GetBestCameraToTarget());
-      reprojected_tags.push_back(tag_pose.ToPose2d());
-    }
-
-    m_sim_state->m_vision_sim.GetDebugField()
-        .GetObject("tag poses")
-        ->SetPoses(reprojected_tags);
-  }
 }
 //  for (const auto &tag :
 //        m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
