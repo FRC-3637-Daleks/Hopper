@@ -328,7 +328,7 @@ void Intake::IntakeBackward() { // out, (i was adjusting the voltage for amp)
   m_intake.SetVoltage(-1 * (1.75_V));
 }
 
-void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (12_V)); }
+void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (1.75_V)); }
 
 void Intake::OffIntake() { m_intake.SetVoltage(0_V); }
 

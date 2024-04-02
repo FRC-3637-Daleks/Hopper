@@ -314,7 +314,7 @@ void RobotContainer::ConfigureBindings() {
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
           pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(25.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(15.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)

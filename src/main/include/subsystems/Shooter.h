@@ -48,7 +48,7 @@ constexpr int kPIDLoopIdx = 0;
 
 constexpr int kTimeoutMs = 20; // in ms.
 
-constexpr double kPassModeSpeed = 0.5;
+constexpr double kPassModeSpeed = 0.45;
 constexpr int kPassModeAngle = 634;
 
 // Guess values. Need accurate measurements
@@ -158,7 +158,7 @@ public:
       std::function<double()> flywheelInput,
       std::function<units::angular_velocity::degrees_per_second_t()>
           pivotVelocity);
-          
+
   /**Passes the speed for the flywheel (const double encoder ticks) and
    * then uses the calculateDistance function to return the pivot angle
    */
