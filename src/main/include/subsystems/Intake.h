@@ -76,7 +76,7 @@ constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
 constexpr units::current::ampere_t kMaxCurrent = 50_A;
 
 // physical characteristics
-constexpr auto kWheelMoment = 1.0_kg_sq_m;
+constexpr auto kWheelMoment = 0.0001_kg_sq_m;
 // constexpr auto kWindowMotor =
 //    frc::DCMotor::Vex775Pro; // Hardcoded in m_armModel
 constexpr auto kArmMass = 12_lb;
@@ -84,7 +84,7 @@ constexpr auto kArmRadius = 13_in;
 constexpr auto kWheelDiameter = 1.5_in; //< Verify this
 constexpr auto kWheelCircum = kWheelDiameter * std::numbers::pi / 1_tr;
 
-constexpr double kArmGearing = 4.0 * 50;
+constexpr double kArmGearing = 3.5 * 70;
 // you can play with the leading constant to get the dynamics you want
 constexpr auto kArmMoment = 1.0 * kArmMass * kArmRadius * kArmRadius;
 constexpr bool kGravityCompensation = true; // true if there's a gas spring
@@ -100,7 +100,7 @@ constexpr int kArmSensorFullExtend =
 constexpr int kArmSensorFullRetract = 400; // corresponds to kMaxAngle
 constexpr auto kAngleToSensor =
     (kArmSensorFullRetract - kArmSensorFullExtend) / (kMaxAngle - kMinAngle);
-constexpr auto kIntakeLength = 13.0_in;
+constexpr auto kIntakeLength = 10.0_in;
 constexpr auto kIntakeSensorPosition = 0.5_in;
 
 constexpr auto sensorToAngle(int sensor) {
@@ -255,6 +255,8 @@ public:
 
   /**Checks if arm is at passed in position (goal != m_goal) */
   bool IsAtWantedPosition(int goal);
+
+  bool IsIntaking();
 
   /**Uses corresponding void function to move to AMP position, if wait is true,
    * waits for cmd to finish, if false does not wait

@@ -11,6 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
 RobotContainer::RobotContainer()
@@ -331,6 +332,9 @@ void RobotContainer::ConfigureBindings() {
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
 
+  pathplanner::PPHolonomicDriveController::setRotationTargetOverride(
+      [this] { return GetRotationTargetOverride(); });
+
   pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
       AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
       AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
@@ -431,6 +435,9 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::PathPlannerAuto("AmpSide 3 Note Mid Only").ToPtr();
   m_SourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only").ToPtr();
+  m_SourceSideMidInnerOnlyAuto =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
+          .ToPtr();
   m_centerSourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("Center-SourceSide 3 Note Mid Only").ToPtr();
   m_centerAmpSideMidOnlyAuto =
@@ -479,6 +486,9 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("SourceSide Mid Only 3 Note Auto",
                       m_SourceSideMidOnlyAuto.get());
 
+  m_chooser.AddOption("SourceSide Mid Only Inner First 3 Note Auto",
+                      m_SourceSideMidInnerOnlyAuto.get());
+
   m_chooser.AddOption("AmpSide Mid Only 3 Note Auto",
                       m_AmpSideMidOnlyAuto.get());
 
@@ -513,6 +523,13 @@ void RobotContainer::ConfigureAuto() {
       [this](auto &&activePath) {
         m_swerve.GetField().GetObject("Hopper")->SetPoses(activePath);
       });
+}
+
+std::optional<frc::Rotation2d> RobotContainer::GetRotationTargetOverride() {
+  if (m_intake.IsIntaking())
+    return m_isRed ? 180_deg : 0_deg;
+  else
+    return std::nullopt;
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

@@ -48,7 +48,7 @@ Vision::Vision(
               m_intakeCamera), // change to the multitag detection algorithm
           VisionConstants::kIntakeCameraToRobot),
       m_referencePose(getRobotPose) {
-  if constexpr (frc::RobotBase::IsSimulation()) {
+  if constexpr (false) {
     m_sim_state.reset(new VisionSim(*this, std::move(getSimulatedPose)));
     m_field_viz = &m_sim_state->m_vision_sim.GetDebugField();
   } else {
@@ -111,9 +111,12 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
   for (const auto &tgt : targets) {
     auto tagPose = estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
-      numTags++;
-      avgDist += tagPose.value().ToPose2d().Translation().Distance(
-          estimatedPose.Translation());
+      auto [tag_x, tag_y] = tgt.GetDetectedCorners()[0];
+      if ((tag_x > 400 && tag_x < 1200) && (tag_y > 150 && tag_y < 750)) {
+        numTags++;
+        avgDist += tagPose.value().ToPose2d().Translation().Distance(
+            estimatedPose.Translation());
+      }
     }
   }
   if (numTags == 0) {
@@ -123,7 +126,7 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
   if (numTags > 1) {
     estStdDevs = VisionConstants::kMultiTagStdDevs;
   }
-  if (avgDist > 4_m) {
+  if (avgDist > 8_m) {
     estStdDevs =
         (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
          std::numeric_limits<double>::max(), std::numeric_limits<double>::max())

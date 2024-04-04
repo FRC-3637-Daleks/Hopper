@@ -1,11 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "window": {
-        "visible": false
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -16,6 +9,7 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Vision/field": "Field2d",
       "/SmartDashboard/Vision/simulated apriltags": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
@@ -240,8 +234,5 @@
         }
       }
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
   }
 }

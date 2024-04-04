@@ -22,9 +22,9 @@
     "Center Autons",
     "SourceSide Autons"
   ],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 8.0,
-  "defaultMaxAngVel": 240.0,
+  "defaultMaxVel": 3.5,
+  "defaultMaxAccel": 6.0,
+  "defaultMaxAngVel": 180.0,
   "defaultMaxAngAccel": 360.0,
   "maxModuleSpeed": 5.03
 }
