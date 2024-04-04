@@ -83,7 +83,8 @@ Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
   estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
   auto visionEst = estimator.Update();
   auto camera = estimator.GetCamera();
-  units::second_t latestTimestamp = camera->GetLatestResult().GetTimestamp();
+  units::second_t latestTimestamp =
+      frc::Timer::GetFPGATimestamp() - camera->GetLatestResult().GetLatency();
 
   bool newResult =
       units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
