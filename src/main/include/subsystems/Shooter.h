@@ -91,7 +91,7 @@ constexpr auto kAngleToSensor =
 /**Note speed when exiting shooter (approximate)*/
 constexpr auto kNoteVelocity = 15.7_mps;
 constexpr auto kAmpShotAngle = 470;
-constexpr auto kAmpShotPower = 0.18860438037948946;
+constexpr auto kAmpShotPower = 0.15;
 } // namespace ShooterConstants
 
 // forward declaration

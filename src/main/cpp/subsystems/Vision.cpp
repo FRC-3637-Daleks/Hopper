@@ -112,7 +112,7 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
     auto tagPose = estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
       auto [tag_x, tag_y] = tgt.GetDetectedCorners()[0];
-      if ((tag_x > 400 && tag_x < 1200) && (tag_y > 150 && tag_y < 750)) {
+      if ((tag_x > 200 && tag_x < 1400) && (tag_y > 100 && tag_y < 800)) {
         numTags++;
         avgDist += tagPose.value().ToPose2d().Translation().Distance(
             estimatedPose.Translation());
