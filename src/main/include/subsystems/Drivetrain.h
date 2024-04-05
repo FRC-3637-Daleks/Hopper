@@ -241,10 +241,8 @@ public:
    * @param strafe The commanded strafe velocity, robot relative
    * @param isRed Correctly orient robot if we are on the red alliance or not.
    */
-  void OverrideAngle(std::function<frc::Rotation2d()> angle,
-                     std::function<units::meters_per_second_t()> forward,
-                     std::function<units::meters_per_second_t()> strafe,
-                     std::function<bool()> isRed);
+  void OverrideAngle(frc::Rotation2d angle, units::meters_per_second_t forward,
+                     units::meters_per_second_t strafe, bool isRed);
 
 private:
   SwerveModule m_frontLeft;

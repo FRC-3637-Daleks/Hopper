@@ -501,35 +501,30 @@ frc2::CommandPtr Drivetrain::ZTargetPoseCommand(
       .ToPtr();
 }
 
-void
-Drivetrain::OverrideAngle(std::function<frc::Rotation2d()> angle,
-                          std::function<units::meters_per_second_t()> forward,
-                          std::function<units::meters_per_second_t()> strafe,
-                          std::function<bool()> isRed) {
-  auto errorAngle = [this, angle]() -> units::degree_t {
-    auto currentAngle =
-        frc::AngleModulus(GetPose().Rotation().Degrees() - angle().Degrees());
-    frc::SmartDashboard::PutNumber("TurnPID/Current Angle",
-                                   currentAngle.value()); // Debugging print
-    // return GetHeading().Degrees();
-    return currentAngle;
-  };
+void Drivetrain::OverrideAngle(frc::Rotation2d angle,
+                               units::meters_per_second_t forward,
+                               units::meters_per_second_t strafe, bool isRed) {
+  auto errorAngle =
+      frc::AngleModulus(GetPose().Rotation().Degrees() - angle.Degrees());
 
-  double output = m_turnPID.Calculate(errorAngle());
+  m_turnPID.SetGoal(0_deg);
+
+  double output = m_turnPID.Calculate(errorAngle);
 
   auto setpoint = m_turnPID.GetSetpoint();
 
-  Drive(forward(), strafe(),
+  Drive(forward, strafe,
         setpoint.velocity +
             units::angular_velocity::radians_per_second_t(output),
-        false, isRed());
+        false, isRed);
 
   // Debugging print
+  frc::SmartDashboard::PutNumber("TurnPID/Current Angle", errorAngle.value());
   frc::SmartDashboard::PutNumber("TurnPID/PID Output", output);
   frc::SmartDashboard::PutNumber("TurnPID/Setpoint Velocity",
-                                 setpoint.velocity.value()); // Debugging print
+                                 setpoint.velocity.value());
   frc::SmartDashboard::PutNumber("TurnPID/Setpoint Position",
-                                 setpoint.position.value()); // Debugging print
+                                 setpoint.position.value());
   double pidVal[] = {DriveConstants::kPTurn, DriveConstants::kITurn,
                      DriveConstants::kDTurn};
   frc::SmartDashboard::PutNumberArray("TurnPID/PID Val", pidVal);
