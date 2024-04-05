@@ -232,6 +232,20 @@ public:
                      std::function<units::meters_per_second_t()> strafe,
                      bool shooterSide, std::function<bool()> isRed);
 
+  /**
+   * Use robot relative speeds and a dedicated angle to properly control
+   * rotation in autonomous.
+   *
+   * @param angle The commanded angle
+   * @param forward The commanded forward velocity, robot relative
+   * @param strafe The commanded strafe velocity, robot relative
+   * @param isRed Correctly orient robot if we are on the red alliance or not.
+   */
+  void OverrideAngle(std::function<frc::Rotation2d()> angle,
+                     std::function<units::meters_per_second_t()> forward,
+                     std::function<units::meters_per_second_t()> strafe,
+                     std::function<bool()> isRed);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
