@@ -87,7 +87,7 @@ Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
       frc::Timer::GetFPGATimestamp() - camera->GetLatestResult().GetLatency();
 
   bool newResult =
-      units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
+      units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-7_s;
   if (newResult) {
     lastEstTimestamp = latestTimestamp;
   }
@@ -107,15 +107,18 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
 
   auto targets = latestResult.GetTargets();
   auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
+  auto minDist = 10.0_m;
 
   for (const auto &tgt : targets) {
     auto tagPose = estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
       auto [tag_x, tag_y] = tgt.GetDetectedCorners()[0];
-      if ((tag_x > 200 && tag_x < 1400) && (tag_y > 100 && tag_y < 800)) {
+      if ((tag_x > 100 && tag_x < 1400) && (tag_y > 200 && tag_y < 800)) {
         numTags++;
-        avgDist += tagPose.value().ToPose2d().Translation().Distance(
+        auto dist = tagPose.value().ToPose2d().Translation().Distance(
             estimatedPose.Translation());
+        avgDist += dist;
+        minDist = dist < minDist ? dist : minDist;
       }
     }
   }
@@ -126,17 +129,18 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
   if (numTags > 1) {
     estStdDevs = VisionConstants::kMultiTagStdDevs;
   }
-  if (avgDist > 8_m) {
+  if (minDist > 8_m) {
     estStdDevs =
         (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
          std::numeric_limits<double>::max(), std::numeric_limits<double>::max())
             .finished();
   } else {
-    estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 5));
+    estStdDevs = estStdDevs * (1 + (minDist.value() * minDist.value() / 2));
   }
 
   frc::SmartDashboard::PutNumber("Vision/average vision distance",
                                  avgDist.value());
+  frc::SmartDashboard::PutNumber("Vision/min vision distance", minDist.value());
   frc::SmartDashboard::PutNumber("Vision/num tags", numTags);
   return estStdDevs;
 }

@@ -390,6 +390,11 @@ void RobotContainer::ConfigureBindings() {
           .ZTargetPoseCommand(targetMidFarLNote, fwd, strafe, false, alliance)
           .WithTimeout(1_s));
 
+  pathplanner::NamedCommands::registerCommand(
+      "StraightenRobot",
+      frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
+                        m_swerve.TurnToAngleCommand(0_deg), checkRed));
+
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
