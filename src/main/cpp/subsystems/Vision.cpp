@@ -152,18 +152,65 @@ void Vision::Periodic() {
   m_shooterApriltagEstimate =
       CalculateRobotPoseEstimate(m_shooterEstimator, lastEstTimestampShooter);
 
+  // Intake pose estimation variables.
+  frc::Pose2d IntakeEstPose2d;
+  Eigen::Matrix<double, 3, 1> IntakeStdDev;
+
   if (m_intakeApriltagEstimate.has_value()) {
-    auto EstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
-    auto StdDev = GetEstimationStdDevs(EstPose2d, m_intakeEstimator);
-    wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestampIntake, StdDevArray);
+    IntakeEstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
+    IntakeStdDev = GetEstimationStdDevs(IntakeEstPose2d, m_intakeEstimator);
   }
+
+  // Shooter pose estimation variables.
+  frc::Pose2d ShooterEstPose2d;
+  Eigen::Matrix<double, 3, 1> ShooterStdDev;
+
   if (m_shooterApriltagEstimate.has_value()) {
-    auto EstPose2d = m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
-    auto StdDev = GetEstimationStdDevs(EstPose2d, m_shooterEstimator);
-    wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestampShooter, StdDevArray);
+    ShooterEstPose2d =
+        m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
+    ShooterStdDev = GetEstimationStdDevs(ShooterEstPose2d, m_shooterEstimator);
   }
+
+  if (m_intakeApriltagEstimate.has_value() &&
+      m_shooterApriltagEstimate.has_value()) {
+    auto shooter_det = ShooterStdDev.determinant();
+    auto intake_det = IntakeStdDev.determinant();
+
+    if (shooter_det > intake_det) {
+      m_addVisionMeasurement(
+          ShooterEstPose2d, lastEstTimestampShooter,
+          {ShooterStdDev[0], ShooterStdDev[1], ShooterStdDev[2]});
+    } else {
+      m_addVisionMeasurement(
+          IntakeEstPose2d, lastEstTimestampIntake,
+          {IntakeStdDev[0], IntakeStdDev[1], IntakeStdDev[2]});
+    }
+  } else if (m_shooterApriltagEstimate.has_value() &&
+             !m_intakeApriltagEstimate.has_value()) {
+    m_addVisionMeasurement(
+        ShooterEstPose2d, lastEstTimestampShooter,
+        {ShooterStdDev[0], ShooterStdDev[1], ShooterStdDev[2]});
+  } else if (m_intakeApriltagEstimate.has_value() &&
+             !m_shooterApriltagEstimate.has_value()) {
+    m_addVisionMeasurement(IntakeEstPose2d, lastEstTimestampIntake,
+                           {IntakeStdDev[0], IntakeStdDev[1], IntakeStdDev[2]});
+  }
+
+  // old code for reference
+  // if (m_intakeApriltagEstimate.has_value()) {
+  //   auto EstPose2d =
+  //   m_intakeApriltagEstimate.value().estimatedPose.ToPose2d(); auto StdDev =
+  //   GetEstimationStdDevs(EstPose2d, m_intakeEstimator); wpi::array<double,
+  //   3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
+  //   m_addVisionMeasurement(EstPose2d, lastEstTimestampIntake, StdDevArray);
+  // }
+  // if (m_shooterApriltagEstimate.has_value()) {
+  //   auto EstPose2d =
+  //   m_shooterApriltagEstimate.value().estimatedPose.ToPose2d(); auto StdDev =
+  //   GetEstimationStdDevs(EstPose2d, m_shooterEstimator); wpi::array<double,
+  //   3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
+  //   m_addVisionMeasurement(EstPose2d, lastEstTimestampShooter, StdDevArray);
+  // }
 
   UpdateDashboard();
 }
