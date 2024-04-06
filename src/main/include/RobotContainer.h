@@ -244,6 +244,8 @@ public:
 
   // The autonomous commands are initialized here.
 
+  frc2::CommandPtr m_defaultAuto{frc2::cmd::None()};
+
   frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_SourceSide3NoteAuto{frc2::cmd::None()};

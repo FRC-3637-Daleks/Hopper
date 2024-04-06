@@ -431,6 +431,8 @@ void RobotContainer::ConfigureBindings() {
 
   // Load autons.
 
+  m_defaultAuto = pathplanner::PathPlannerAuto("Default Auto").ToPtr();
+
   m_AmpSide3NoteAuto = pathplanner::PathPlannerAuto("AmpSide 3 Note").ToPtr();
   m_SourceSide3NoteAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note").ToPtr();
@@ -474,8 +476,11 @@ void RobotContainer::ConfigureBindings() {
 
   // Add loaded autons to the configurator.
 
-  m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
-                             m_AmpSide3NoteAuto.get());
+  m_chooser.SetDefaultOption("Default Auto: Shoot Preload",
+                             m_defaultAuto.get());
+
+  m_chooser.AddOption("AmpSide Subwoofer 3 Note Auto",
+                      m_AmpSide3NoteAuto.get());
   m_chooser.AddOption("SourceSide Subwoofer 3 Note Auto",
                       m_SourceSide3NoteAuto.get());
   m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());
