@@ -235,6 +235,22 @@
       }
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Swerve": {
+          "TurnPIDController": {
+            "open": true
+          },
+          "open": true
+        },
+        "TurnPID": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "visible": true
   }

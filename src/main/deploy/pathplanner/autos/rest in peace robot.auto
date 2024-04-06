@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "make the robot cry"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "make the robot cry"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeRing"
+                }
+              }
+            ]
           }
         }
       ]

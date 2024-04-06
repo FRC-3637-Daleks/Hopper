@@ -327,8 +327,9 @@ void RobotContainer::ConfigureBindings() {
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
         auto rotationOverride = GetRotationTargetOverride();
-        if(rotationOverride.has_value())
-          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx, speed.vy, m_isRed);
+        if (rotationOverride.has_value())
+          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx,
+                                       speed.vy, m_isRed);
         else
           this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
