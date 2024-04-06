@@ -79,7 +79,8 @@ bool Vision::HasTargets() {
 }
 
 std::optional<photon::EstimatedRobotPose>
-Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
+Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator,
+                                   units::second_t &lastEstTimestamp) {
   estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
   auto visionEst = estimator.Update();
   auto camera = estimator.GetCamera();
@@ -146,19 +147,22 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
 }
 
 void Vision::Periodic() {
-  m_intakeApriltagEstimate = CalculateRobotPoseEstimate(m_intakeEstimator);
-  m_shooterApriltagEstimate = CalculateRobotPoseEstimate(m_shooterEstimator);
+  m_intakeApriltagEstimate =
+      CalculateRobotPoseEstimate(m_intakeEstimator, lastEstTimestampIntake);
+  m_shooterApriltagEstimate =
+      CalculateRobotPoseEstimate(m_shooterEstimator, lastEstTimestampShooter);
+
   if (m_intakeApriltagEstimate.has_value()) {
     auto EstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_intakeEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+    m_addVisionMeasurement(EstPose2d, lastEstTimestampIntake, StdDevArray);
   }
   if (m_shooterApriltagEstimate.has_value()) {
     auto EstPose2d = m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_shooterEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+    m_addVisionMeasurement(EstPose2d, lastEstTimestampShooter, StdDevArray);
   }
 
   UpdateDashboard();
