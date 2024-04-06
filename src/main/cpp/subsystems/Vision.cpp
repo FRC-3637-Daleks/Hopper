@@ -173,8 +173,8 @@ void Vision::Periodic() {
 
   if (m_intakeApriltagEstimate.has_value() &&
       m_shooterApriltagEstimate.has_value()) {
-    auto shooter_det = ShooterStdDev.determinant();
-    auto intake_det = IntakeStdDev.determinant();
+    double shooter_det = ShooterStdDev.norm();
+    double intake_det = IntakeStdDev.norm();
 
     if (shooter_det > intake_det) {
       m_addVisionMeasurement(
