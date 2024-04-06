@@ -176,7 +176,7 @@ void Vision::Periodic() {
     double shooter_det = ShooterStdDev.norm();
     double intake_det = IntakeStdDev.norm();
 
-    if (shooter_det > intake_det) {
+    if (shooter_det < intake_det) {
       m_addVisionMeasurement(
           ShooterEstPose2d, lastEstTimestampShooter,
           {ShooterStdDev[0], ShooterStdDev[1], ShooterStdDev[2]});
