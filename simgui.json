@@ -1,4 +1,16 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -129,11 +141,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Shooter": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Vision/simulated apriltags": {
         "Intake Cam Pose": {
           "arrows": false,
@@ -252,6 +259,12 @@
     }
   },
   "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }
