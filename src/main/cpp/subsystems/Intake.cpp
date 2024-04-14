@@ -17,7 +17,7 @@ public:
       : m_intakeMotorSim{"SPARK MAX ", IntakeConstants::kIntakeMotorPort},
         m_armMotorSim{intake.m_arm.GetSimCollection()},
         m_breakBeamSim{intake.m_breakbeam},
-        m_intakeModel{frc::DCMotor::NeoVortex(1), 2,
+        m_intakeModel{frc::DCMotor::NeoVortex(1), 1,
                       IntakeConstants::kWheelMoment},
         m_armModel{frc::DCMotor::Vex775Pro(1),
                    IntakeConstants::kArmGearing,
@@ -108,6 +108,7 @@ void Intake::Periodic() {
                                  IsIntakeBreakBeamBroken());
   frc::SmartDashboard::PutNumber("Intake/Arm Position",
                                  m_arm.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutBoolean("Intake/Is Intaking?", IsIntaking());
   UpdateVisualization();
 }
 
@@ -328,7 +329,7 @@ void Intake::IntakeBackward() { // out, (i was adjusting the voltage for amp)
   m_intake.SetVoltage(-1 * (1.75_V));
 }
 
-void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (12_V)); }
+void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (1.75_V)); }
 
 void Intake::OffIntake() { m_intake.SetVoltage(0_V); }
 
@@ -362,9 +363,11 @@ bool Intake::IsAtWantedPosition(int goal) {
           IntakeConstants::kAllowableMarginOfError);
 }
 
+bool Intake::IsIntaking() { return m_intake.Get() > 0.0; }
+
 void Intake::IntakeArmAMPVelocity() {
   m_goal = IntakeConstants::IntakeArmAMPVelocityPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 55);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 70);
 }
 
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {
@@ -513,7 +516,7 @@ bool Intake::SimulateNotePickup() {
       m_sim_state->m_intakeModel.GetAngularVelocity() < 0_rad_per_s &&
       m_sim_state->m_armModel.GetAngle() <
           IntakeConstants::kMinAngle + 20_deg) {
-    m_sim_state->m_notePosition = 13_in;
+    m_sim_state->m_notePosition = IntakeConstants::kIntakeLength;
     return true;
   }
 

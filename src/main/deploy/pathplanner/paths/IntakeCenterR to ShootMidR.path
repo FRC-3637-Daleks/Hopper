@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.83380687691608,
-        "y": 1.336397091398835
+        "x": 5.190306528972544,
+        "y": 0.8548910678420494
       },
       "isLocked": false,
       "linkedName": "IntakeCenterR"
     },
     {
       "anchor": {
-        "x": 4.172951172378196,
-        "y": 1.7769675610907583
+        "x": 4.46423466313409,
+        "y": 1.9322880300539491
       },
       "prevControl": {
-        "x": 4.804435512269952,
-        "y": 1.3510827737218982
+        "x": 4.9443789615111315,
+        "y": 1.6278062798636284
       },
       "nextControl": {
-        "x": 3.4151724734129667,
-        "y": 2.2880276138812627
+        "x": 3.692346923102332,
+        "y": 2.421777816415555
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.25,
-        "y": 3.35
+        "x": 2.113284226568455,
+        "y": 2.8811473007561403
       },
       "prevControl": {
-        "x": 3.3946100092557976,
-        "y": 2.290966442398001
+        "x": 3.5625002491089135,
+        "y": 2.318745636064738
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,9 +54,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {

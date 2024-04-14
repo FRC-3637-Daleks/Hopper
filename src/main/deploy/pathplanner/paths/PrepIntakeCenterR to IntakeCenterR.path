@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1,
-        "y": 2.44
+        "x": 6.560474404828979,
+        "y": 2.318745636064738
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.199999999999999,
-        "y": 2.44
+        "x": 6.660474404828979,
+        "y": 2.318745636064738
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCenterR"
@@ -38,9 +38,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {

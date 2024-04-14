@@ -11,6 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
 RobotContainer::RobotContainer()
@@ -161,7 +162,7 @@ void RobotContainer::ConfigureBindings() {
       m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
   m_swerveController.B().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
+      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
   m_swerveController.Y().WhileTrue(
       m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
@@ -314,7 +315,7 @@ void RobotContainer::ConfigureBindings() {
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
           pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(50.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(15.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
@@ -325,11 +326,19 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        auto rotationOverride = GetRotationTargetOverride();
+        if (rotationOverride.has_value())
+          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx,
+                                       speed.vy, m_isRed);
+        else
+          this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
+
+  pathplanner::PPHolonomicDriveController::setRotationTargetOverride(
+      [this] { return GetRotationTargetOverride(); });
 
   pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
       AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
@@ -386,6 +395,11 @@ void RobotContainer::ConfigureBindings() {
           .ZTargetPoseCommand(targetMidFarLNote, fwd, strafe, false, alliance)
           .WithTimeout(1_s));
 
+  pathplanner::NamedCommands::registerCommand(
+      "StraightenRobot",
+      frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
+                        m_swerve.TurnToAngleCommand(0_deg), checkRed));
+
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
@@ -417,6 +431,8 @@ void RobotContainer::ConfigureBindings() {
 
   // Load autons.
 
+  m_defaultAuto = pathplanner::PathPlannerAuto("Default Auto").ToPtr();
+
   m_AmpSide3NoteAuto = pathplanner::PathPlannerAuto("AmpSide 3 Note").ToPtr();
   m_SourceSide3NoteAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note").ToPtr();
@@ -431,6 +447,9 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::PathPlannerAuto("AmpSide 3 Note Mid Only").ToPtr();
   m_SourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only").ToPtr();
+  m_SourceSideMidInnerOnlyAuto =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
+          .ToPtr();
   m_centerSourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("Center-SourceSide 3 Note Mid Only").ToPtr();
   m_centerAmpSideMidOnlyAuto =
@@ -445,7 +464,8 @@ void RobotContainer::ConfigureBindings() {
 
   /**
    * Automatic pathfinding triggers. Still need to test.
-   * IF I SEE THESE ENABLED DURING A MATCH I WILL BAN YOU FROM THE GITHUB ORGANISATION >:(
+   * IF I SEE THESE ENABLED DURING A MATCH I WILL BAN YOU FROM THE GITHUB
+   * ORGANISATION >:(
    *                  -- Visvam.
    */
   // SourcePathTrigger.WhileTrue(m_SourcePath.get());
@@ -456,8 +476,11 @@ void RobotContainer::ConfigureBindings() {
 
   // Add loaded autons to the configurator.
 
-  m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
-                             m_AmpSide3NoteAuto.get());
+  m_chooser.SetDefaultOption("Default Auto: Shoot Preload",
+                             m_defaultAuto.get());
+
+  m_chooser.AddOption("AmpSide Subwoofer 3 Note Auto",
+                      m_AmpSide3NoteAuto.get());
   m_chooser.AddOption("SourceSide Subwoofer 3 Note Auto",
                       m_SourceSide3NoteAuto.get());
   m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());
@@ -477,6 +500,9 @@ void RobotContainer::ConfigureBindings() {
 
   m_chooser.AddOption("SourceSide Mid Only 3 Note Auto",
                       m_SourceSideMidOnlyAuto.get());
+
+  m_chooser.AddOption("SourceSide Mid Only Inner First 3 Note Auto",
+                      m_SourceSideMidInnerOnlyAuto.get());
 
   m_chooser.AddOption("AmpSide Mid Only 3 Note Auto",
                       m_AmpSideMidOnlyAuto.get());
@@ -512,6 +538,13 @@ void RobotContainer::ConfigureAuto() {
       [this](auto &&activePath) {
         m_swerve.GetField().GetObject("Hopper")->SetPoses(activePath);
       });
+}
+
+std::optional<frc::Rotation2d> RobotContainer::GetRotationTargetOverride() {
+  if (m_intake.IsIntaking())
+    return m_isRed ? 180_deg : 0_deg;
+  else
+    return std::nullopt;
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

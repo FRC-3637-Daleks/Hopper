@@ -5,7 +5,7 @@
       "x": 0.75,
       "y": 4.35
     },
-    "rotation": -62.11870887186327
+    "rotation": -57.46979802813723
   },
   "command": {
     "type": "sequential",
@@ -15,12 +15,6 @@
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -47,19 +41,25 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCloseR"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
+                        "pathName": "RightSub to ShootMidR"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCloseR to IntakeCloseR"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -69,9 +69,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterR to ShootMidR"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "OutputToShooterZTarget"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {
@@ -91,7 +103,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootCloseR to PrepIntakeCenterFarR"
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
                       }
                     },
                     {
@@ -110,6 +128,12 @@
           "type": "path",
           "data": {
             "pathName": "IntakeCenterFarR to ShootMidR"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {

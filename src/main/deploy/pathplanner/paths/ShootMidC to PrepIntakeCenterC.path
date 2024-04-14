@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.25,
-        "y": 3.35
+        "x": 2.113284226568455,
+        "y": 2.8811473007561403
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0648163114508047,
-        "y": 2.0523241046482092
+        "x": 2.92810053801926,
+        "y": 1.5834714054043495
       },
       "isLocked": false,
       "linkedName": "ShootMidR"
@@ -75,9 +75,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {

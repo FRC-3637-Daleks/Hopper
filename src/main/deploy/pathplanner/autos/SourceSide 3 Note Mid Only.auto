@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.75,
+      "y": 4.35
+    },
+    "rotation": -57.46979802813723
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -35,7 +41,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                        "pathName": "RightSub to ShootMidR"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
                       }
                     },
                     {
@@ -48,6 +60,12 @@
                       "type": "path",
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.6
                       }
                     }
                   ]

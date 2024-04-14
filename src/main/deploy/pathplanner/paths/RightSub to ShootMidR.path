@@ -8,45 +8,29 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9932481519741916,
-        "y": 4.344720358484939
+        "x": 2.123151169379263,
+        "y": 3.394228326918193
       },
       "isLocked": false,
       "linkedName": "RightSub"
     },
     {
       "anchor": {
-        "x": 1.75,
-        "y": 5.328430628330586
+        "x": 2.113284226568455,
+        "y": 2.8811473007561403
       },
       "prevControl": {
-        "x": 1.735609747966998,
-        "y": 4.789732147224637
-      },
-      "nextControl": {
-        "x": 1.7542773350642267,
-        "y": 5.488552487002401
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.5013930170513679,
-        "y": 6.75
-      },
-      "prevControl": {
-        "x": 1.6626653132050884,
-        "y": 6.354911811820771
+        "x": 1.6770555652380903,
+        "y": 3.4429859444597626
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCloseL"
+      "linkedName": "ShootMidR"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -60,15 +44,15 @@
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0,
+    "velocity": 3.0,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "RightSub to PrepIntakeClose",
+  "folder": "RightSub to PrepIntakeCenter",
   "previewStartingState": {
     "rotation": -60.0,
-    "velocity": 0
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -17,6 +17,7 @@
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <Eigen/Core>
@@ -27,28 +28,29 @@
 
 namespace VisionConstants {
 
-constexpr std::string_view kPhotonShooterCameraName =
-    "ArduCam_OV2310_Usb_Camera"; // Note, we need an in-built pipeline changer,
-                                 // probably between auton and teleop
 constexpr std::string_view kPhotonIntakeCameraName =
-    "Arducam_OV9281_USB_Camera";
+    "Arducam_OV2311_USB_Camera"; // Note, we need an in-built pipeline
+                                 // changer, probably between auton and
+                                 // teleop
+constexpr std::string_view kPhotonShooterCameraName =
+    "Arducam_OV2310_USB_Camera";
 
-const frc::Transform3d kShooterCameraToRobot{
-    {-4_in, -5.5_in, 23_in},
+const frc::Transform3d kIntakeCameraToRobot{
+    {-0.5_in, 1.0_in, 22.5_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
-                    90_deg, 0_deg,
-                    180_deg}}; // The camera location relative to the robot's
-                               // center. Need to change for actual robot
+                    0_deg, 0_deg,
+                    0_deg}}; // The camera location relative to the robot's
+                             // center. Need to change for actual robot
 
 /**A Transform3d that defines the Intake camera offset from the zero (center of
  * robot, between all 4 swerve modules)*/
 
-const frc::Transform3d kIntakeCameraToRobot{
-    {-4_in, 0_in, 23_in},
+const frc::Transform3d kShooterCameraToRobot{
+    {-1.75_in, -2.5_in, 22.5_in},
     frc::Rotation3d{// transform3d can be constructed with a variety of
                     // variables, so this should be fine
-                    180_deg, 0_deg, 0_deg}};
+                    90_deg, 0_deg, 180_deg}};
 
 inline const frc::AprilTagFieldLayout kTagLayout{
     frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
@@ -74,13 +76,25 @@ public:
 
   void Periodic() override;
   void SimulationPeriodic() override;
+  void UpdateDashboard();
 
   void GetBestPose();
 
   bool HasTargets();
 
+  /**
+   * Calculate the robot pose estimate using the latest result from a camera.
+   *
+   * @param estimator The PhotonVision pose estimator that contains the camera
+   * and estimated pose.
+   * @param lastEstTimestamp The timestamp of the last pose estimated by the
+   * given pose estimator.
+   *
+   * @return A std::optional containing the robot's estimated pose.
+   */
   std::optional<photon::EstimatedRobotPose>
-  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator);
+  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator,
+                             units::second_t &lastEstTimestamp);
   /**Gets the standard deviation of the pose returned by
    * CalculateRobotPoseEstimate*/
   Eigen::Matrix<double, 3, 1>
@@ -106,11 +120,13 @@ private:
   //                          PoseStrategy strategy, PhotonCamera&& camera,
   //                          frc::Transform3d robotToCamera);
   Eigen::Matrix<double, 3, 1> m_estimatedStdDevs;
-  units::time::second_t lastEstTimestamp;
+  units::time::second_t lastEstTimestampIntake;
+  units::time::second_t lastEstTimestampShooter;
   std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)>
       m_addVisionMeasurement;
 
   std::function<frc::Pose2d()> m_referencePose;
+  frc::Field2d *m_field_viz;
 
 private:
   friend class VisionSim;
