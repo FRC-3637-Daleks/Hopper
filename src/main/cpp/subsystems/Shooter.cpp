@@ -108,6 +108,15 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_leadMotor.SetClosedLoopRampRate(0.1);
   m_followMotor.SetClosedLoopRampRate(0.1);
 
+  // m_leadMotor.SetSmartCurrentLimit(5);
+  // m_followMotor.SetSmartCurrentLimit(5);
+
+  m_leadMotor.SetOpenLoopRampRate(0.1);
+  m_followMotor.SetOpenLoopRampRate(0.1);
+
+  m_leadMotor.SetClosedLoopRampRate(0.1);
+  m_followMotor.SetClosedLoopRampRate(0.1);
+
   // Need to empirically measure proper current limit.
   m_leadMotor.SetSmartCurrentLimit(
       ShooterConstants::kFlywheelCurrentLimit.value());

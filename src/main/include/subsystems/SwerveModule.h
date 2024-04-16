@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ctre/phoenix6/CANcoder.hpp>
-#include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/AnalogInput.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/geometry/Rotation2d.h>
