@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 1.45,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.021549716623586,
-        "y": 1.337486226493026
+        "x": 1.5908744544761815,
+        "y": 3.1997598540651633
       },
       "isLocked": false,
-      "linkedName": "ShootMidR"
+      "linkedName": "CenterSub"
     },
     {
       "anchor": {
-        "x": 4.61647553822925,
-        "y": 1.4404328951311258
+        "x": 3.521924862031542,
+        "y": 2.44
       },
       "prevControl": {
-        "x": 4.158808253480646,
-        "y": 1.40774237479194
+        "x": 2.8489607431652093,
+        "y": 2.7764820594331665
       },
       "nextControl": {
-        "x": 4.9443789615111315,
-        "y": 1.4638545682226887
+        "x": 4.06299212598425,
+        "y": 2.169466368023645
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.499618999237998,
+        "y": 1.5579005703465956
+      },
+      "prevControl": {
+        "x": 4.044334634123814,
+        "y": 2.16426905581084
+      },
+      "nextControl": {
+        "x": 5.9745612037581495,
+        "y": 1.3600079851298652
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +52,8 @@
         "y": 2.318745636064738
       },
       "prevControl": {
-        "x": 5.764137519715837,
-        "y": 1.7683363184130072
+        "x": 5.454516938368592,
+        "y": 1.2407425418767322
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,6 +63,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -65,7 +86,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to ShootMidR",
+  "folder": "CenterSub to PrepIntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 3.0,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.021549716623586,
-        "y": 1.337486226493026
+        "x": 3.703009338040144,
+        "y": 5.53650223579517
       },
       "isLocked": false,
-      "linkedName": "ShootMidR"
+      "linkedName": "IntakeCloseC"
     },
     {
       "anchor": {
-        "x": 4.61647553822925,
-        "y": 1.4404328951311258
+        "x": 4.451979136516414,
+        "y": 4.831589484288092
       },
       "prevControl": {
-        "x": 4.158808253480646,
-        "y": 1.40774237479194
+        "x": 3.94876505316517,
+        "y": 5.315069682017718
       },
       "nextControl": {
-        "x": 4.9443789615111315,
-        "y": 1.4638545682226887
+        "x": 4.886834562132396,
+        "y": 4.413787212617836
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.861804639530567,
+        "y": 4.067934003488759
+      },
+      "prevControl": {
+        "x": 5.247504650461995,
+        "y": 4.099436567030736
+      },
+      "nextControl": {
+        "x": 6.434546250130068,
+        "y": 4.038562638842631
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +52,8 @@
         "y": 2.318745636064738
       },
       "prevControl": {
-        "x": 5.764137519715837,
-        "y": 1.7683363184130072
+        "x": 6.276848395358714,
+        "y": 3.917308274907369
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,6 +63,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -65,7 +86,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to ShootMidR",
+  "folder": "IntakeCloseC to PrepIntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

@@ -5,7 +5,7 @@
       "x": 0.75,
       "y": 4.35
     },
-    "rotation": -59.75752486977742
+    "rotation": -62.11870887186327
   },
   "command": {
     "type": "sequential",
@@ -15,6 +15,12 @@
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -47,7 +53,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.5
                       }
                     },
                     {
@@ -60,6 +66,50 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutputToShooterZTarget"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeRing"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootCloseR to PrepIntakeCenterFarR"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {

@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 1.45,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.021549716623586,
-        "y": 1.337486226493026
+        "x": 1.5,
+        "y": 5.55
       },
       "isLocked": false,
-      "linkedName": "ShootMidR"
+      "linkedName": "CenterSub"
     },
     {
       "anchor": {
-        "x": 4.61647553822925,
-        "y": 1.4404328951311258
+        "x": 1.6000001349938433,
+        "y": 5.550071149496812
       },
       "prevControl": {
-        "x": 4.158808253480646,
-        "y": 1.40774237479194
+        "x": 1.5500000674969217,
+        "y": 5.5500355747484065
       },
       "nextControl": {
-        "x": 4.9443789615111315,
-        "y": 1.4638545682226887
+        "x": 1.650000202490765,
+        "y": 5.550106724245218
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.560474404828979,
-        "y": 2.318745636064738
+        "x": 1.75,
+        "y": 5.55
       },
       "prevControl": {
-        "x": 5.764137519715837,
-        "y": 1.7683363184130072
+        "x": 1.7000003599835818,
+        "y": 5.550189731991501
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterR"
+      "linkedName": "PrepIntakeCloseC"
     }
   ],
   "rotationTargets": [
@@ -65,7 +65,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to ShootMidR",
+  "folder": "CenterSub to PrepIntakeClose",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

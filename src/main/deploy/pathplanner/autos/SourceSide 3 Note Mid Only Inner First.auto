@@ -47,7 +47,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
                       }
                     },
                     {
@@ -59,13 +59,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.6
+                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
                       }
                     }
                   ]
@@ -77,7 +71,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
+            "pathName": "IntakeCenterR to ShootMidR"
           }
         },
         {
@@ -109,7 +103,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                        "pathName": "RightSub to PrepIntakeCenterFarR"
                       }
                     },
                     {
@@ -121,7 +115,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
+                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
                       }
                     }
                   ]
@@ -131,15 +125,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.1
+            "pathName": "IntakeCenterFarR to ShootMidR"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "IntakeCenterR to ShootMidR"
+            "waitTime": 0.1
           }
         },
         {

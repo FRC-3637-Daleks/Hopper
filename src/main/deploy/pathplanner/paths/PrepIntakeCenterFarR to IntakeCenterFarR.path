@@ -3,50 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 5.902190265918994,
+        "y": 0.7597545964322702
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.021549716623586,
-        "y": 1.337486226493026
+        "x": 6.002190265918994,
+        "y": 0.7597545964322702
       },
       "isLocked": false,
-      "linkedName": "ShootMidR"
+      "linkedName": "PrepIntakeCenterFarR"
     },
     {
       "anchor": {
-        "x": 4.61647553822925,
-        "y": 1.4404328951311258
+        "x": 8.3,
+        "y": 0.77
       },
       "prevControl": {
-        "x": 4.158808253480646,
-        "y": 1.40774237479194
-      },
-      "nextControl": {
-        "x": 4.9443789615111315,
-        "y": 1.4638545682226887
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.560474404828979,
-        "y": 2.318745636064738
-      },
-      "prevControl": {
-        "x": 5.764137519715837,
-        "y": 1.7683363184130072
+        "x": 8.200000000000001,
+        "y": 0.77
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterR"
+      "linkedName": "IntakeCenterFarR"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -65,7 +49,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to ShootMidR",
+  "folder": "PrepIntakeCenter to IntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }

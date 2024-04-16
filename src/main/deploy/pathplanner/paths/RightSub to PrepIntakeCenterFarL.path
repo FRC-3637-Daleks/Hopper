@@ -3,71 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 0.75,
+        "y": 4.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.92810053801926,
-        "y": 1.5834714054043495
+        "x": 0.6043303678736167,
+        "y": 2.5699944065362192
       },
       "isLocked": false,
-      "linkedName": "ShootMidR"
+      "linkedName": "RightSub"
     },
     {
       "anchor": {
-        "x": 4.426813217262798,
-        "y": 3.35
+        "x": 4.437293454193349,
+        "y": 3.2895928403663612
       },
       "prevControl": {
-        "x": 4.120413875517127,
-        "y": 3.0224815310655826
+        "x": 4.2904366309627076,
+        "y": 2.3790805363363865
       },
       "nextControl": {
-        "x": 4.818620546332002,
-        "y": 3.7688133558085304
+        "x": 4.568766863261275,
+        "y": 4.104727976587501
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.91008382016764,
-        "y": 4.098792791023527
+        "x": 5.803061910238311,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 4.880679166509573,
-        "y": 4.0758695654615185
+        "x": 5.4415853276570765,
+        "y": 4.1
       },
       "nextControl": {
-        "x": 7.010875839933497,
-        "y": 4.123305701156857
+        "x": 6.1645384928195455,
+        "y": 4.1
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.3,
-        "y": 4.098792791023527
+        "x": 7.1,
+        "y": 7.43
       },
       "prevControl": {
-        "x": 5.984713787609393,
-        "y": 4.0953194633662
+        "x": 7.462544012744556,
+        "y": 4.508504473180682
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCenterC"
+      "linkedName": "PrepIntakeCenterFarL"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 1,
       "rotationDegrees": 0,
       "rotateFast": true
     },
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 2,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -81,12 +81,12 @@
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeCenter to ShootMidR",
+  "folder": "RightSub to PrepIntakeCenter",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }
