@@ -64,21 +64,18 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
-void RobotContainer::ControllerRumble1Sec() {
+void RobotContainer::ControllerRumble() {
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
+  frc::Wait(300_ms);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
 }
 
 void RobotContainer::ConfigureBindings() {
+  RumbleForIntakeTrigger.OnTrue(frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  RumbleForOutakeTrigger.OnTrue(frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(
@@ -162,7 +159,7 @@ void RobotContainer::ConfigureBindings() {
       m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
   m_swerveController.B().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
+      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
   m_swerveController.Y().WhileTrue(
       m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
@@ -326,7 +323,12 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        auto rotationOverride = GetRotationTargetOverride();
+        if (rotationOverride.has_value())
+          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx,
+                                       speed.vy, m_isRed);
+        else
+          this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
@@ -390,6 +392,11 @@ void RobotContainer::ConfigureBindings() {
           .ZTargetPoseCommand(targetMidFarLNote, fwd, strafe, false, alliance)
           .WithTimeout(1_s));
 
+  pathplanner::NamedCommands::registerCommand(
+      "StraightenRobot",
+      frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
+                        m_swerve.TurnToAngleCommand(0_deg), checkRed));
+
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
@@ -420,6 +427,8 @@ void RobotContainer::ConfigureBindings() {
                                       std::move(BlueCenterSubPath), checkRed);
 
   // Load autons.
+
+  m_defaultAuto = pathplanner::PathPlannerAuto("Default Auto").ToPtr();
 
   m_AmpSide3NoteAuto = pathplanner::PathPlannerAuto("AmpSide 3 Note").ToPtr();
   m_SourceSide3NoteAuto =
@@ -464,8 +473,11 @@ void RobotContainer::ConfigureBindings() {
 
   // Add loaded autons to the configurator.
 
-  m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
-                             m_AmpSide3NoteAuto.get());
+  m_chooser.SetDefaultOption("Default Auto: Shoot Preload",
+                             m_defaultAuto.get());
+
+  m_chooser.AddOption("AmpSide Subwoofer 3 Note Auto",
+                      m_AmpSide3NoteAuto.get());
   m_chooser.AddOption("SourceSide Subwoofer 3 Note Auto",
                       m_SourceSide3NoteAuto.get());
   m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());

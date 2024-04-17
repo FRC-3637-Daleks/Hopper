@@ -147,7 +147,7 @@ public:
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
-  void ControllerRumble1Sec();
+  void ControllerRumble();
   std::optional<frc::Rotation2d> GetRotationTargetOverride();
 
 public:
@@ -243,6 +243,8 @@ public:
   Vision m_vision;
 
   // The autonomous commands are initialized here.
+
+  frc2::CommandPtr m_defaultAuto{frc2::cmd::None()};
 
   frc2::CommandPtr m_AmpSide3NoteAuto{frc2::cmd::None()};
   frc2::CommandPtr m_center3NoteAuto{frc2::cmd::None()};

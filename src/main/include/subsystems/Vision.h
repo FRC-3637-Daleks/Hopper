@@ -82,8 +82,19 @@ public:
 
   bool HasTargets();
 
+  /**
+   * Calculate the robot pose estimate using the latest result from a camera.
+   *
+   * @param estimator The PhotonVision pose estimator that contains the camera
+   * and estimated pose.
+   * @param lastEstTimestamp The timestamp of the last pose estimated by the
+   * given pose estimator.
+   *
+   * @return A std::optional containing the robot's estimated pose.
+   */
   std::optional<photon::EstimatedRobotPose>
-  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator);
+  CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator,
+                             units::second_t &lastEstTimestamp);
   /**Gets the standard deviation of the pose returned by
    * CalculateRobotPoseEstimate*/
   Eigen::Matrix<double, 3, 1>
@@ -109,7 +120,8 @@ private:
   //                          PoseStrategy strategy, PhotonCamera&& camera,
   //                          frc::Transform3d robotToCamera);
   Eigen::Matrix<double, 3, 1> m_estimatedStdDevs;
-  units::time::second_t lastEstTimestamp;
+  units::time::second_t lastEstTimestampIntake;
+  units::time::second_t lastEstTimestampShooter;
   std::function<void(frc::Pose2d, units::second_t, wpi::array<double, 3U>)>
       m_addVisionMeasurement;
 

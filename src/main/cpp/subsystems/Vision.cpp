@@ -79,7 +79,8 @@ bool Vision::HasTargets() {
 }
 
 std::optional<photon::EstimatedRobotPose>
-Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
+Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator,
+                                   units::second_t &lastEstTimestamp) {
   estimator.SetReferencePose(frc::Pose3d{m_referencePose()});
   auto visionEst = estimator.Update();
   auto camera = estimator.GetCamera();
@@ -87,7 +88,7 @@ Vision::CalculateRobotPoseEstimate(photon::PhotonPoseEstimator &estimator) {
       frc::Timer::GetFPGATimestamp() - camera->GetLatestResult().GetLatency();
 
   bool newResult =
-      units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-5_s;
+      units::math::abs(latestTimestamp - lastEstTimestamp) > 1e-7_s;
   if (newResult) {
     lastEstTimestamp = latestTimestamp;
   }
@@ -107,15 +108,18 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
 
   auto targets = latestResult.GetTargets();
   auto avgDist = 0.0_m; // Declare and initialize the variable "avgDist"
+  auto minDist = 10.0_m;
 
   for (const auto &tgt : targets) {
     auto tagPose = estimator.GetFieldLayout().GetTagPose(tgt.GetFiducialId());
     if (tagPose.has_value()) {
       auto [tag_x, tag_y] = tgt.GetDetectedCorners()[0];
-      if ((tag_x > 200 && tag_x < 1400) && (tag_y > 100 && tag_y < 800)) {
+      if ((tag_x > 100 && tag_x < 1400) && (tag_y > 200 && tag_y < 800)) {
         numTags++;
-        avgDist += tagPose.value().ToPose2d().Translation().Distance(
+        auto dist = tagPose.value().ToPose2d().Translation().Distance(
             estimatedPose.Translation());
+        avgDist += dist;
+        minDist = dist < minDist ? dist : minDist;
       }
     }
   }
@@ -126,35 +130,79 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
   if (numTags > 1) {
     estStdDevs = VisionConstants::kMultiTagStdDevs;
   }
-  if (avgDist > 8_m) {
+  if (minDist > 8_m) {
     estStdDevs =
         (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
          std::numeric_limits<double>::max(), std::numeric_limits<double>::max())
             .finished();
   } else {
-    estStdDevs = estStdDevs * (1 + (avgDist.value() * avgDist.value() / 5));
+    estStdDevs = estStdDevs * (1 + (minDist.value() * minDist.value() / 2));
   }
 
   frc::SmartDashboard::PutNumber("Vision/average vision distance",
                                  avgDist.value());
+  frc::SmartDashboard::PutNumber("Vision/min vision distance", minDist.value());
   frc::SmartDashboard::PutNumber("Vision/num tags", numTags);
   return estStdDevs;
 }
 
 void Vision::Periodic() {
-  m_intakeApriltagEstimate = CalculateRobotPoseEstimate(m_intakeEstimator);
-  m_shooterApriltagEstimate = CalculateRobotPoseEstimate(m_shooterEstimator);
+  m_intakeApriltagEstimate =
+      CalculateRobotPoseEstimate(m_intakeEstimator, lastEstTimestampIntake);
+  m_shooterApriltagEstimate =
+      CalculateRobotPoseEstimate(m_shooterEstimator, lastEstTimestampShooter);
+
   if (m_intakeApriltagEstimate.has_value()) {
     auto EstPose2d = m_intakeApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_intakeEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+    m_addVisionMeasurement(EstPose2d, lastEstTimestampIntake, StdDevArray);
   }
   if (m_shooterApriltagEstimate.has_value()) {
     auto EstPose2d = m_shooterApriltagEstimate.value().estimatedPose.ToPose2d();
     auto StdDev = GetEstimationStdDevs(EstPose2d, m_shooterEstimator);
     wpi::array<double, 3U> StdDevArray{StdDev[0], StdDev[1], StdDev[2]};
-    m_addVisionMeasurement(EstPose2d, lastEstTimestamp, StdDevArray);
+    m_addVisionMeasurement(EstPose2d, lastEstTimestampShooter, StdDevArray);
+  }
+
+  UpdateDashboard();
+}
+
+void Vision::UpdateDashboard() {
+  m_field_viz->GetObject("Fused Pose")->SetPose(m_referencePose());
+
+  if (m_intakeApriltagEstimate) {
+    auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
+    m_field_viz->GetObject("Intake Cam Pose")->SetPose(robot_pose.ToPose2d());
+
+    std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kIntakeCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
+
+    m_field_viz->GetObject("Intake Reprojected Tags")
+        ->SetPoses(reprojected_tags);
+  }
+
+  if (m_shooterApriltagEstimate) {
+    auto robot_pose = m_shooterApriltagEstimate.value().estimatedPose;
+    m_field_viz->GetObject("Shooter Cam Pose")->SetPose(robot_pose.ToPose2d());
+
+    std::vector<frc::Pose2d> reprojected_tags;
+    for (const auto &tag :
+         m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+      auto tag_pose =
+          robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
+              .TransformBy(tag.GetBestCameraToTarget());
+      reprojected_tags.push_back(tag_pose.ToPose2d());
+    }
+
+    m_field_viz->GetObject("Shooter Reprojected Tags")
+        ->SetPoses(reprojected_tags);
   }
 
   UpdateDashboard();

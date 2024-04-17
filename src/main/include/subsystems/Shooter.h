@@ -90,7 +90,7 @@ constexpr auto kAngleToSensor =
     (kMaxAimSensor - kMinAimSensor) / (kMaxAngle - kMinAngle);
 /**Note speed when exiting shooter (approximate)*/
 constexpr auto kNoteVelocity = 15.7_mps;
-constexpr auto kAmpShotAngle = 470;
+constexpr auto kAmpShotAngle = 430;
 constexpr auto kAmpShotPower = 0.15;
 } // namespace ShooterConstants
 
