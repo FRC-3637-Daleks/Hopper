@@ -60,7 +60,7 @@ constexpr auto kPivotEncoderDistancePerCount =
     2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
 
 // Guess values for Pivot PID. Need to calculate feed forward
-constexpr double kPPivot = 5.0;
+constexpr double kPPivot = 7.5;
 constexpr double kIPivot = 0.0;
 constexpr double kDPivot = 0.0;
 constexpr double kFPivot = 0.0;

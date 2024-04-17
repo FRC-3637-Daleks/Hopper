@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 3.30486184510172,
+        "y": 2.4241431649767726
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6519827076744042,
-        "y": 2.1550754349176864
+        "x": 3.8435603262076694,
+        "y": 1.6980712991383187
       },
       "isLocked": false,
       "linkedName": "ShootMidR"
     },
     {
       "anchor": {
-        "x": 4.5020119304147315,
-        "y": 1.7877230503105797
+        "x": 4.46423466313409,
+        "y": 1.639517116409411
       },
       "prevControl": {
-        "x": 3.6453552057603407,
-        "y": 2.205825592236063
+        "x": 4.112909566760645,
+        "y": 2.002553049328638
       },
       "nextControl": {
-        "x": 5.358668655069122,
-        "y": 1.3696205083850965
+        "x": 4.875081436780732,
+        "y": 1.2149754503078811
       },
       "isLocked": false,
       "linkedName": null
@@ -54,7 +54,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 4.0,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
@@ -67,5 +67,5 @@
   "reversed": false,
   "folder": "IntakeCenter to ShootMidR",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

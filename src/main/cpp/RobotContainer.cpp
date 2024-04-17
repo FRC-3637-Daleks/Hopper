@@ -455,6 +455,10 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
+  m_SourceSideMidOnlyLandCenterR =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center Last")
+          .ToPtr();
+
   m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
   m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
   m_nonoPath = pathplanner::PathPlannerAuto("rest in peace robot").ToPtr();
@@ -508,12 +512,15 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
 
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
+                      m_SourceSideMidOnlyLandCenterR.get());
+
   m_chooser.AddOption("square path test", m_squarePath.get());
 
   m_chooser.AddOption("5m straight line test", m_straightLine.get());
 
   // m_chooser.AddOption(
-  //     "DO NOT RUN: the forbidden auton (robot will explode if you run)",
+  //     "DO NOT RUN: the` forbidden auton (robot will explode if you run)",
   //     m_nonoPath.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
