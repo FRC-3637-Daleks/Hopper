@@ -326,19 +326,11 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        auto rotationOverride = GetRotationTargetOverride();
-        if (rotationOverride.has_value())
-          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx,
-                                       speed.vy, m_isRed);
-        else
-          this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
-
-  pathplanner::PPHolonomicDriveController::setRotationTargetOverride(
-      [this] { return GetRotationTargetOverride(); });
 
   pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
       AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
@@ -538,13 +530,6 @@ void RobotContainer::ConfigureAuto() {
       [this](auto &&activePath) {
         m_swerve.GetField().GetObject("Hopper")->SetPoses(activePath);
       });
-}
-
-std::optional<frc::Rotation2d> RobotContainer::GetRotationTargetOverride() {
-  if (m_intake.IsIntaking())
-    return m_isRed ? 180_deg : 0_deg;
-  else
-    return std::nullopt;
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

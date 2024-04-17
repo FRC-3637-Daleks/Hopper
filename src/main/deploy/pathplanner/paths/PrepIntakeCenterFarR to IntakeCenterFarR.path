@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.902190265918994,
-        "y": 0.7597545964322702
+        "x": 7.1,
+        "y": 0.77
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.002190265918994,
-        "y": 0.7597545964322702
+        "x": 7.199999999999999,
+        "y": 0.77
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarR"
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
@@ -51,5 +51,5 @@
   "reversed": false,
   "folder": "PrepIntakeCenter to IntakeCenter",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

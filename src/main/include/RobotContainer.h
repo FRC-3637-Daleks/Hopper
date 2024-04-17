@@ -148,7 +148,6 @@ public:
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
   void ControllerRumble1Sec();
-  std::optional<frc::Rotation2d> GetRotationTargetOverride();
 
 public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
