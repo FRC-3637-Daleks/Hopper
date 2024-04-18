@@ -73,10 +73,10 @@ void RobotContainer::ControllerRumble() {
 }
 
 void RobotContainer::ConfigureBindings() {
-  RumbleForIntakeTrigger.OnTrue(
-      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
-  RumbleForOutakeTrigger.OnTrue(
-      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  // RumbleForIntakeTrigger.OnTrue(
+  //     frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  // RumbleForOutakeTrigger.OnTrue(
+  //     frc2::cmd::RunOnce([this] { ControllerRumble(); }));
 
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {

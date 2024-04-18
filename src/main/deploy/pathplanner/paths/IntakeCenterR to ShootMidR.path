@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.170430012296434,
-        "y": 0.8618928849226062
+        "x": 5.029899973747056,
+        "y": 0.9204470676515147
       },
       "isLocked": false,
       "linkedName": "IntakeCenterR"
     },
     {
       "anchor": {
-        "x": 4.46423466313409,
-        "y": 1.9322880300539491
+        "x": 3.7615844703872,
+        "y": 1.6746496260467554
       },
       "prevControl": {
-        "x": 4.9443789615111315,
-        "y": 1.6278062798636284
+        "x": 4.241728768764242,
+        "y": 1.3701678758564346
       },
       "nextControl": {
-        "x": 3.692346923102332,
-        "y": 2.421777816415555
+        "x": 2.989696730355442,
+        "y": 2.16413941240836
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.4241431649767726
       },
       "prevControl": {
-        "x": 3.621054431837821,
-        "y": 1.920577193508167
+        "x": 3.9226084728916915,
+        "y": 1.709500625190211
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,7 +54,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
@@ -67,5 +67,5 @@
   "reversed": false,
   "folder": "IntakeCenter to ShootMidR",
   "previewStartingState": null,
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
