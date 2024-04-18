@@ -16,15 +16,9 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.3
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooter"
+                  "name": "OutputToShooterZTarget"
                 }
               }
             ]
@@ -47,7 +41,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterR"
+                        "pathName": "RightSub to ShootMidR"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootMidR to PrepIntakeCenterR"
                       }
                     },
                     {
@@ -103,7 +103,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
+                        "pathName": "ShootMidC to PrepIntakeCenterC"
                       }
                     },
                     {
@@ -115,7 +115,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
+                        "pathName": "PrepIntakeCenterC to IntakeCenterC"
                       }
                     }
                   ]
@@ -127,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
+            "pathName": "IntakeCenterC to ShootMidC"
           }
         },
         {

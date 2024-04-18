@@ -39,7 +39,7 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 3.5_mps;
+constexpr auto kMaxSpeed = 4_mps;
 constexpr auto kMaxAcceleration = 6_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
@@ -147,7 +147,8 @@ public:
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
-  void ControllerRumble1Sec();
+  void ControllerRumble();
+  std::optional<frc::Rotation2d> GetRotationTargetOverride();
 
 public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -256,6 +257,9 @@ public:
   frc2::CommandPtr m_SourceSideMidInnerOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerAmpSideMidOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
+
+  frc2::CommandPtr m_SourceSideMidOnlyLandCenterR{frc2::cmd::None()};
+
   frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
   frc2::CommandPtr m_AmpShotPath{frc2::cmd::None()};

@@ -168,6 +168,48 @@ void Vision::Periodic() {
   UpdateDashboard();
 }
 
+// void Vision::UpdateDashboard() {
+//   m_field_viz->GetObject("Fused Pose")->SetPose(m_referencePose());
+
+//   if (m_intakeApriltagEstimate) {
+//     auto robot_pose = m_intakeApriltagEstimate.value().estimatedPose;
+//     m_field_viz->GetObject("Intake Cam
+//     Pose")->SetPose(robot_pose.ToPose2d());
+
+//     std::vector<frc::Pose2d> reprojected_tags;
+//     for (const auto &tag :
+//          m_intakeEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+//       auto tag_pose =
+//           robot_pose.TransformBy(VisionConstants::kIntakeCameraToRobot)
+//               .TransformBy(tag.GetBestCameraToTarget());
+//       reprojected_tags.push_back(tag_pose.ToPose2d());
+//     }
+
+//     m_field_viz->GetObject("Intake Reprojected Tags")
+//         ->SetPoses(reprojected_tags);
+//   }
+
+//   if (m_shooterApriltagEstimate) {
+//     auto robot_pose = m_shooterApriltagEstimate.value().estimatedPose;
+//     m_field_viz->GetObject("Shooter Cam
+//     Pose")->SetPose(robot_pose.ToPose2d());
+
+//     std::vector<frc::Pose2d> reprojected_tags;
+//     for (const auto &tag :
+//          m_shooterEstimator.GetCamera()->GetLatestResult().GetTargets()) {
+//       auto tag_pose =
+//           robot_pose.TransformBy(VisionConstants::kShooterCameraToRobot)
+//               .TransformBy(tag.GetBestCameraToTarget());
+//       reprojected_tags.push_back(tag_pose.ToPose2d());
+//     }
+
+//     m_field_viz->GetObject("Shooter Reprojected Tags")
+//         ->SetPoses(reprojected_tags);
+//   }
+
+//   UpdateDashboard();
+// }
+
 void Vision::UpdateDashboard() {
   m_field_viz->GetObject("Fused Pose")->SetPose(m_referencePose());
 

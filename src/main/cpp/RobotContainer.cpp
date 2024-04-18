@@ -64,21 +64,20 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
-void RobotContainer::ControllerRumble1Sec() {
+void RobotContainer::ControllerRumble() {
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
+  frc::Wait(300_ms);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
   m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
 }
 
 void RobotContainer::ConfigureBindings() {
+  RumbleForIntakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  RumbleForOutakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(
@@ -102,7 +101,7 @@ void RobotContainer::ConfigureBindings() {
         -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
         OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input);
-    return AutoConstants::kMaxAngularSpeed * squaredInput;
+    return DriveConstants::kMaxTurnRate * squaredInput;
   };
 
   // Constantly updating for alliance checks.
@@ -170,7 +169,8 @@ void RobotContainer::ConfigureBindings() {
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.Back().ToggleOnTrue(
+      m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
 
@@ -450,6 +450,10 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
+  m_SourceSideMidOnlyLandCenterR =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center Last")
+          .ToPtr();
+
   m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
   m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
   m_nonoPath = pathplanner::PathPlannerAuto("rest in peace robot").ToPtr();
@@ -503,12 +507,15 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
 
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
+                      m_SourceSideMidOnlyLandCenterR.get());
+
   m_chooser.AddOption("square path test", m_squarePath.get());
 
   m_chooser.AddOption("5m straight line test", m_straightLine.get());
 
   // m_chooser.AddOption(
-  //     "DO NOT RUN: the forbidden auton (robot will explode if you run)",
+  //     "DO NOT RUN: the` forbidden auton (robot will explode if you run)",
   //     m_nonoPath.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
