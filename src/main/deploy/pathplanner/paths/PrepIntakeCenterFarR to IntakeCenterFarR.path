@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.902190265918994,
-        "y": 0.76
+        "x": 7.1,
+        "y": 0.77
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.002190265918994,
-        "y": 0.76
+        "x": 7.199999999999999,
+        "y": 0.77
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarR"
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 0.7597545964322702
+        "x": 8.3,
+        "y": 0.77
       },
       "prevControl": {
-        "x": 8.180123483323891,
-        "y": 0.7597545964322702
+        "x": 8.200000000000001,
+        "y": 0.77
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,21 +31,21 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 0.0,
+      "rotationDegrees": 0,
       "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": true
   },
   "reversed": false,
