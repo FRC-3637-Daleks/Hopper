@@ -10,11 +10,7 @@
 
 void Robot::RobotInit() {}
 
-void Robot::DriverStationConnected() {
-  m_container.m_isRed =
-      frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
-  frc::SmartDashboard::PutBoolean("Is red?", m_container.m_isRed);
-}
+void Robot::DriverStationConnected() {}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -26,6 +22,10 @@ void Robot::DriverStationConnected() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+
+  m_container.m_isRed =
+      frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed;
+  frc::SmartDashboard::PutBoolean("Is red?", m_container.m_isRed);
 
   // Log the RIO states.
   frc::SmartDashboard::PutNumber(

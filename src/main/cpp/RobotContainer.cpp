@@ -73,8 +73,10 @@ void RobotContainer::ControllerRumble() {
 }
 
 void RobotContainer::ConfigureBindings() {
-  RumbleForIntakeTrigger.OnTrue(frc2::cmd::RunOnce([this] { ControllerRumble(); }));
-  RumbleForOutakeTrigger.OnTrue(frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  RumbleForIntakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
+  RumbleForOutakeTrigger.OnTrue(
+      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
 
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
@@ -99,7 +101,7 @@ void RobotContainer::ConfigureBindings() {
         -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
         OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input);
-    return AutoConstants::kMaxAngularSpeed * squaredInput;
+    return DriveConstants::kMaxTurnRate * squaredInput;
   };
 
   // Constantly updating for alliance checks.
@@ -167,7 +169,8 @@ void RobotContainer::ConfigureBindings() {
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.Back().ToggleOnTrue(
+      m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
 

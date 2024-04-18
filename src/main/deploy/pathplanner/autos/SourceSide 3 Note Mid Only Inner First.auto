@@ -16,9 +16,15 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.3
+                }
+              },
+              {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooterZTarget"
+                  "name": "OutputToShooter"
                 }
               }
             ]
