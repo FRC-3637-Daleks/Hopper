@@ -147,8 +147,6 @@ public:
   frc2::CommandPtr GetDisabledCommand();
   frc2::Command *GetAutonomousCommand();
   std::unique_ptr<frc2::Command> HopperAuto;
-  void ControllerRumble();
-  std::optional<frc::Rotation2d> GetRotationTargetOverride();
 
 public:
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -193,14 +191,6 @@ public:
   /** Source Intake Trigger, up & right on the Co-Pilot dpad*/
   frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;
-  }};
-
-  frc2::Trigger RumbleForIntakeTrigger{[this]() -> bool {
-    return m_intake.IsIntakeBreakBeamBroken(); // when broken = true
-  }};
-
-  frc2::Trigger RumbleForOutakeTrigger{[this]() -> bool {
-    return !(m_intake.IsIntakeBreakBeamBroken()); // when broken = true
   }};
 
   /**Pit Reset Trigger, Start Button on Co-Pilot controller*/
@@ -258,7 +248,7 @@ public:
   frc2::CommandPtr m_centerAmpSideMidOnlyAuto{frc2::cmd::None()};
   frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
 
-  frc2::CommandPtr m_SourceSideMidOnlyLandCenterR{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSideMidOnlyInnerFirst{frc2::cmd::None()};
 
   frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};

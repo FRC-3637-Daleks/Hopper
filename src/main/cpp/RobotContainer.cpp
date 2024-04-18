@@ -64,19 +64,7 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
-void RobotContainer::ControllerRumble() {
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(300_ms);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-}
-
 void RobotContainer::ConfigureBindings() {
-  RumbleForIntakeTrigger.OnTrue(
-      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
-  RumbleForOutakeTrigger.OnTrue(
-      frc2::cmd::RunOnce([this] { ControllerRumble(); }));
 
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
@@ -450,8 +438,8 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
-  m_SourceSideMidOnlyLandCenterR =
-      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center Last")
+  m_SourceSideMidOnlyInnerFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
           .ToPtr();
 
   m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
@@ -508,7 +496,7 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
 
   m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
-                      m_SourceSideMidOnlyLandCenterR.get());
+                      m_SourceSideMidOnlyInnerFirst.get());
 
   m_chooser.AddOption("square path test", m_squarePath.get());
 

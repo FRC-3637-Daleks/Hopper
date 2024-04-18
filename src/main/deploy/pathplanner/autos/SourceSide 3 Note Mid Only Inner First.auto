@@ -35,28 +35,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RightSub to PrepIntakeCenterR"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.1
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "PrepIntakeCenterR to IntakeCenterR"
-                      }
-                    }
-                  ]
+                  "pathName": "RightSub to IntakeCenterR"
                 }
               }
             ]
@@ -91,28 +72,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.1
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
-                      }
-                    }
-                  ]
+                  "pathName": "RightSub to IntakeCenterFarR"
                 }
               }
             ]
