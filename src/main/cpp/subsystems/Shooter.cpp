@@ -63,8 +63,14 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.SetSensorPhase(false);
   m_pivot.SetInverted(false);
 
-  m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
+  m_pivot.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+  m_pivot.ConfigNeutralDeadband(ShooterConstants::kNeutralDeadband,
+                                ShooterConstants::kTimeoutMs);
+
+  m_pivot.ConfigNominalOutputForward(ShooterConstants::kNorminalForward,
+                                     ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigNominalOutputReverse(ShooterConstants::kNominalReverse,
+                                     ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 

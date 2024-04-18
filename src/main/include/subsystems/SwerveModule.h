@@ -31,9 +31,10 @@ constexpr auto kCurrentLimitPeriod =
 // Best defense against current
 constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
-constexpr auto kWheelDiameterIdeal = 4_in;
-constexpr double kWheelAdjust = 1.0671 * 0.923;
-constexpr auto kWheelDiameter = kWheelDiameterIdeal * kWheelAdjust;
+constexpr auto kWheelDiameterIdeal = 3.6_in;
+constexpr double kWheelAdjust =
+    1.0671 * 0.923; // Depricated after new wheel measurements
+constexpr auto kWheelDiameter = kWheelDiameterIdeal;
 
 constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
 constexpr auto kDriveEncoderDistancePerRevolution =

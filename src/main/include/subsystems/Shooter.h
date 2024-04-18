@@ -60,10 +60,10 @@ constexpr auto kPivotEncoderDistancePerCount =
     2_rad * std::numbers::pi / kPivotEncoderCPR; // Radians per encoder count.
 
 // Guess values for Pivot PID. Need to calculate feed forward
-constexpr double kPPivot = 7.5;
+constexpr double kPPivot = 10;
 constexpr double kIPivot = 0.0;
 constexpr double kDPivot = 0.0;
-constexpr double kFPivot = 0.0;
+constexpr double kFPivot = 1.0;
 
 // Physical Constants for Simulation
 constexpr auto kWheelMass = 1_kg;
@@ -92,6 +92,10 @@ constexpr auto kAngleToSensor =
 constexpr auto kNoteVelocity = 15.7_mps;
 constexpr auto kAmpShotAngle = 430;
 constexpr auto kAmpShotPower = 0.15;
+
+constexpr auto kNorminalForward = 0.10346041055;
+constexpr auto kNominalReverse = -0.25024437927;
+constexpr auto kNeutralDeadband = 0.04078201368523;
 } // namespace ShooterConstants
 
 // forward declaration
