@@ -1,0 +1,104 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 5.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.703009338040144,
+        "y": 5.53650223579517
+      },
+      "isLocked": false,
+      "linkedName": "IntakeCloseC"
+    },
+    {
+      "anchor": {
+        "x": 4.451979136516414,
+        "y": 4.831589484288092
+      },
+      "prevControl": {
+        "x": 3.94876505316517,
+        "y": 5.315069682017718
+      },
+      "nextControl": {
+        "x": 4.886834562132396,
+        "y": 4.413787212617836
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.861804639530567,
+        "y": 4.067934003488759
+      },
+      "prevControl": {
+        "x": 5.247504650461995,
+        "y": 4.099436567030736
+      },
+      "nextControl": {
+        "x": 6.434546250130068,
+        "y": 4.038562638842631
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.1,
+        "y": 2.44
+      },
+      "prevControl": {
+        "x": 6.816373990529734,
+        "y": 4.038562638842631
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterR"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 2.15,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "IntakeCloseC to PrepIntakeCenter",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,125 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7518994781213513,
+        "y": 6.75
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3533001663498863,
+        "y": 7.093184562039965
+      },
+      "isLocked": false,
+      "linkedName": "LeftSub"
+    },
+    {
+      "anchor": {
+        "x": 1.889416607018863,
+        "y": 6.633187079893838
+      },
+      "prevControl": {
+        "x": 1.6213583866843746,
+        "y": 6.863185820966901
+      },
+      "nextControl": {
+        "x": 2.1574748273533513,
+        "y": 6.403188338820774
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.895296810271618,
+        "y": 6.27
+      },
+      "prevControl": {
+        "x": 2.4694120229027585,
+        "y": 6.255314317676936
+      },
+      "nextControl": {
+        "x": 4.2424825677025595,
+        "y": 6.316454681290721
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.384811856642258,
+        "y": 6.382405917450922
+      },
+      "prevControl": {
+        "x": 5.456859480792107,
+        "y": 6.993939737197076
+      },
+      "nextControl": {
+        "x": 7.263755730499706,
+        "y": 5.803169397871899
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.3,
+        "y": 4.098792791023527
+      },
+      "prevControl": {
+        "x": 7.286315824861018,
+        "y": 5.9477013408464225
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterC"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 2.25,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "LeftSub to PrepIntakeCenter",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,125 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.45,
+        "y": 5.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.758770249945606,
+        "y": 6.306241081153127
+      },
+      "isLocked": false,
+      "linkedName": "CenterSub"
+    },
+    {
+      "anchor": {
+        "x": 2.0666404969173575,
+        "y": 6.27
+      },
+      "prevControl": {
+        "x": 1.89763877596631,
+        "y": 6.27
+      },
+      "nextControl": {
+        "x": 2.235642217868405,
+        "y": 6.27
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9342138684277366,
+        "y": 6.27
+      },
+      "prevControl": {
+        "x": 2.2998591451728356,
+        "y": 6.27
+      },
+      "nextControl": {
+        "x": 4.068475274915755,
+        "y": 6.27
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.723508901563257,
+        "y": 6.558108388944051
+      },
+      "prevControl": {
+        "x": 4.062992125984252,
+        "y": 6.2409310273166
+      },
+      "nextControl": {
+        "x": 6.821741949723081,
+        "y": 6.767883240839748
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.1,
+        "y": 7.43
+      },
+      "prevControl": {
+        "x": 6.814972175398896,
+        "y": 6.754012053478652
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "PrepIntakeCenterFarL"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 2.35,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "CenterSub to PrepIntakeCenter",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
