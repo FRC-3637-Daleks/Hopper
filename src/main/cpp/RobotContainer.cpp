@@ -314,8 +314,8 @@ void RobotContainer::ConfigureBindings() {
    */
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
-          pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(15.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(7.0, 0.0, 0.0), // Translation constants
+          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
@@ -326,7 +326,7 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, false);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder

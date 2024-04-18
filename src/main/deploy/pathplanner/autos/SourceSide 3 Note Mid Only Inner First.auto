@@ -41,13 +41,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to ShootMidR"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ShootMidR to PrepIntakeCenterR"
+                        "pathName": "RightSub to PrepIntakeCenterR"
                       }
                     },
                     {
@@ -103,7 +97,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
                       }
                     },
                     {

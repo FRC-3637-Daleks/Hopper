@@ -16,6 +16,8 @@
 #include <units/velocity.h>
 #include <units/voltage.h>
 
+#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include <numbers>
 
 namespace ModuleConstants {
