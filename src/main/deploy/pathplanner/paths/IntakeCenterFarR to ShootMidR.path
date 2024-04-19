@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.3,
-        "y": 0.77
+        "x": 8.281967377058862,
+        "y": 0.9017344140251753
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.4799768991309,
-        "y": 1.0720548095836802
+        "x": 5.461944276189762,
+        "y": 1.2037892236088554
       },
       "isLocked": false,
       "linkedName": "IntakeCenterFarR"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 3.0003800949114017,
+        "y": 3.03310666535741
       },
       "prevControl": {
-        "x": 2.1484167362058,
-        "y": 2.8811473007561403
+        "x": 3.035512604548747,
+        "y": 3.03310666535741
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,7 +54,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 4.0,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
@@ -67,5 +67,5 @@
   "reversed": false,
   "folder": "IntakeCenter to ShootMidR",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
