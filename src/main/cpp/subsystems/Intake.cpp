@@ -195,8 +195,10 @@ frc2::CommandPtr Intake::OutputToShooter() {
                    IntakeConstants::IntakeArmSpeakerPos;
           }) // when ring
           .AndThen(IntakeOutSpeaker())
-          .WithTimeout(0.5_s),
-      frc2::cmd::None(),                             // no ring
+          .WithTimeout(0.5_s), // Change to 1.5 or 1, doesn't hurt and there
+                               // isnt a reason for it to be this short.
+      frc2::cmd::None(), // no ring. (why this here, just output to shooter,
+                         // consolidates it into one button.)
       [this]() { return IsIntakeBreakBeamBroken(); } // When broken = true
   );
 }
