@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1,
-        "y": 0.77
+        "x": 7.064040376297585,
+        "y": 0.8783127409336134
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.199999999999999,
-        "y": 0.77
+        "x": 7.164040376297585,
+        "y": 0.8783127409336134
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCenterFarR"
     },
     {
       "anchor": {
-        "x": 8.3,
-        "y": 0.77
+        "x": 8.281967377058862,
+        "y": 0.9017344140251753
       },
       "prevControl": {
-        "x": 8.200000000000001,
-        "y": 0.77
+        "x": 8.181967377058863,
+        "y": 0.9017344140251753
       },
       "nextControl": null,
       "isLocked": false,

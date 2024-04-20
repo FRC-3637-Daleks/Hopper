@@ -275,8 +275,8 @@ void RobotContainer::ConfigureBindings() {
 
   PitReset.OnTrue(frc2::cmd::Parallel(
       m_shooter.PivotAngleCommand([]() { return 80_deg; }),
-      m_shooter.FlywheelCommand(flywheelOff), m_climb.RetractClimb(),
-      m_intake.IntakeArmSpeakerCommand()));
+      m_shooter.FlywheelCommand(flywheelOff),
+      m_climb.RetractClimb() /*, m_intake.IntakeArmSpeakerCommand()*/));
 
   // Configure climb bindings.
 
@@ -380,6 +380,12 @@ void RobotContainer::ConfigureBindings() {
       frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
                         m_swerve.TurnToAngleCommand(0_deg), checkRed));
 
+  pathplanner::NamedCommands::registerCommand(
+      "FinishWhenEmpty",
+      frc2::cmd::Sequence(frc2::cmd::Wait(.75_s),
+                          frc2::cmd::WaitUntil([this]() -> bool {
+                            return !m_intake.IsIntakeBreakBeamBroken();
+                          })));
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
@@ -442,6 +448,10 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
           .ToPtr();
 
+  m_SourceSideMidOnlyCenterFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center First")
+          .ToPtr();
+
   m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
   m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
   m_nonoPath = pathplanner::PathPlannerAuto("rest in peace robot").ToPtr();
@@ -497,6 +507,8 @@ void RobotContainer::ConfigureBindings() {
 
   m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
                       m_SourceSideMidOnlyInnerFirst.get());
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center First",
+                      m_SourceSideMidOnlyCenterFirst.get());
 
   m_chooser.AddOption("square path test", m_squarePath.get());
 

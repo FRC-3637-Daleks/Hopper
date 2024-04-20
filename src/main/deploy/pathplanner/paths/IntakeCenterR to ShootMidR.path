@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.3,
-        "y": 2.44
+        "x": 8.317099886696207,
+        "y": 2.623227386255057
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.049776490423166,
-        "y": 0.9134452505709579
+        "x": 5.120041509697854,
+        "y": 1.3350353662190912
       },
       "isLocked": false,
       "linkedName": "IntakeCenterR"
     },
     {
       "anchor": {
-        "x": 3.632765268383603,
-        "y": 1.5809629336805036
+        "x": 4.499367172771434,
+        "y": 1.7800471549587875
       },
       "prevControl": {
-        "x": 4.07014354816947,
-        "y": 1.2177165657227502
+        "x": 5.178215526791049,
+        "y": 1.589493231023455
       },
       "nextControl": {
-        "x": 2.9418259121824937,
-        "y": 2.1547939244237972
+        "x": 3.831849489661888,
+        "y": 1.9674205396912936
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 3.0003800949114017,
+        "y": 3.03310666535741
       },
       "prevControl": {
-        "x": 2.9418259121824937,
-        "y": 2.2016372706069234
+        "x": 3.618126722701375,
+        "y": 2.3184641255708485
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,5 +79,5 @@
   "reversed": false,
   "folder": "IntakeCenter to ShootMidR",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
