@@ -43,48 +43,28 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightSub to IntakeCenterR"
+                  "pathName": "RightSub to IntakeCenterC"
                 }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "FinishWhenEmpty"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "IntakeCenterR to ShootMidR"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "OutputToShooterZTarget"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.1
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "IntakeMidC to ShootMidR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutputToShooterZTarget"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {

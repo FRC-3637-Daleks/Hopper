@@ -81,15 +81,35 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooterZTarget"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "FinishWhenEmpty"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "IntakeCenterFarR to ShootMidR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "OutputToShooterZTarget"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

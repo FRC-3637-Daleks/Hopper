@@ -249,6 +249,7 @@ public:
   frc2::CommandPtr m_centerSourceSideMidOnlyAuto{frc2::cmd::None()};
 
   frc2::CommandPtr m_SourceSideMidOnlyInnerFirst{frc2::cmd::None()};
+  frc2::CommandPtr m_SourceSideMidOnlyCenterFirst{frc2::cmd::None()};
 
   frc2::CommandPtr m_getOutSourceSide{frc2::cmd::None()};
   frc2::CommandPtr m_SourcePath{frc2::cmd::None()};
