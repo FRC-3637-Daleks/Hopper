@@ -12,6 +12,7 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/simulation/LinearSystemSim.h>
 
 #include <frc/controller/ProfiledPIDController.h>
 
@@ -23,7 +24,7 @@
 namespace DriveConstants {
 constexpr auto kMaxSpeed = 15.7_fps;
 constexpr auto kMaxTeleopSpeed = 15.7_fps;
-
+constexpr auto kWeight = 123_lb;
 constexpr auto kMaxTurnRate = 2.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 6 * std::numbers::pi * 1_rad_per_s_sq;
 

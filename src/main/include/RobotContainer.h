@@ -11,7 +11,9 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/button/CommandJoystick.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc2/command/button/JoystickButton.h>
 
 #include "frc/apriltag/AprilTagFields.h"
 #include <frc/apriltag/AprilTagFieldLayout.h>
@@ -39,8 +41,9 @@
 
 namespace AutoConstants {
 
-constexpr auto kMaxSpeed = 4_mps;
+constexpr auto kMaxSpeed = 4.5_mps;
 constexpr auto kMaxAcceleration = 6_mps_sq;
+constexpr auto kPathMaxAcceleration = 4_mps_sq;
 // Swerve Constants (NEED TO BE INTEGRATED)
 // constexpr auto kMaxSpeed = ModuleConstants::kPhysicalMaxSpeed / 3; // left
 // out as these are repeat values constexpr auto kMaxAcceleration = 10_fps_sq;
@@ -153,18 +156,16 @@ public:
   frc2::CommandXboxController m_copilotController{
       OperatorConstants::kCopilotControllerPort};
 
-  frc2::CommandXboxController m_swerveController{
+  frc2::CommandJoystick m_swerveController{
       OperatorConstants::kSwerveControllerPort};
 
   // Button Triggers are defined here.
 
-  frc2::Trigger m_slowModeTrigger{[this]() -> bool {
-    return m_swerveController.GetLeftTriggerAxis() > 0.2;
-  }};
+  frc2::Trigger m_slowModeTrigger{
+      [this]() -> bool { return m_swerveController.GetRawButtonPressed(1); }};
 
-  frc2::Trigger m_autoAmpTrigger{[this]() -> bool {
-    return m_swerveController.GetRightTriggerAxis() > 0.2;
-  }};
+  frc2::Trigger m_autoAmpTrigger{
+      [this]() -> bool { return m_swerveController.GetRawButtonPressed(2); }};
 
   frc2::Trigger m_passMode{[this]() -> bool {
     return m_copilotController.GetLeftTriggerAxis() > 0.2;

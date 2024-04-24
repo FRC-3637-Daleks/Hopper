@@ -37,13 +37,13 @@ Vision::Vision(
     std::function<frc::Pose2d()> getSimulatedPose)
     : m_shooterEstimator(
           frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
-          photon::MULTI_TAG_PNP_ON_COPROCESSOR,
+          photon::CLOSEST_TO_REFERENCE_POSE,
           std::move(
               m_shooterCamera), // change to the multitag detection algorithm
           VisionConstants::kShooterCameraToRobot),
       m_intakeEstimator(
           frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo),
-          photon::MULTI_TAG_PNP_ON_COPROCESSOR,
+          photon::CLOSEST_TO_REFERENCE_POSE,
           std::move(
               m_intakeCamera), // change to the multitag detection algorithm
           VisionConstants::kIntakeCameraToRobot),
@@ -61,9 +61,9 @@ Vision::Vision(
   m_addVisionMeasurement =
       addVisionMeasurement; // Call the addVisionMeasurement function
   m_shooterEstimator.SetMultiTagFallbackStrategy(
-      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+      photon::PoseStrategy::LOWEST_AMBIGUITY);
   m_intakeEstimator.SetMultiTagFallbackStrategy(
-      photon::PoseStrategy::CLOSEST_TO_REFERENCE_POSE);
+      photon::PoseStrategy::LOWEST_AMBIGUITY);
 
   frc::DataLogManager::Log("finished initializing vision.");
 }
@@ -130,7 +130,7 @@ Vision::GetEstimationStdDevs(frc::Pose2d estimatedPose,
   if (numTags > 1) {
     estStdDevs = VisionConstants::kMultiTagStdDevs;
   }
-  if (minDist > 8_m) {
+  if (minDist > 10_m) {
     estStdDevs =
         (Eigen::MatrixXd(3, 1) << std::numeric_limits<double>::max(),
          std::numeric_limits<double>::max(), std::numeric_limits<double>::max())

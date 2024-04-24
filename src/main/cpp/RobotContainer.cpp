@@ -140,29 +140,29 @@ void RobotContainer::ConfigureBindings() {
   m_swerve.SetDefaultCommand(
       m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Start().OnTrue(m_swerve.ZeroHeadingCommand());
+  m_swerveController.Button(12).OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.A().WhileTrue(
+  m_swerveController.Button(7).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, checkRed));
 
-  m_swerveController.X().WhileTrue(
+  m_swerveController.Button(4).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
-  m_swerveController.B().WhileTrue(
+  m_swerveController.Button(3).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
-  m_swerveController.Y().WhileTrue(
+  m_swerveController.Button(8).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
 
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Back().ToggleOnTrue(
+  m_swerveController.Button(9).ToggleOnTrue(
       m_swerve.SwerveCommand(fwd, strafe, rot));
 
-  m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
+  m_swerveController.Button(2).OnTrue(m_intake.ShootOnAMPRetract());
 
-  m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
+  m_swerveController.Trigger().OnTrue(m_intake.OutputToShooter());
 
   constexpr auto one_meter = []() -> units::meters_per_second_t {
     return 1_mps;
@@ -188,7 +188,7 @@ void RobotContainer::ConfigureBindings() {
 
   // Configure Shooter Bindings.
   auto flywheel = [this]() -> double {
-    return (1.0 - m_copilotController.GetRightTriggerAxis());
+    return (m_swerveController.GetThrottle());
   };
 
   auto pivot = [this]() -> units::degrees_per_second_t {
@@ -267,9 +267,9 @@ void RobotContainer::ConfigureBindings() {
   m_passMode.WhileTrue(m_shooter.PassModeCommand());
 
   // Manual Intake In/Out.
-  m_copilotController.A().WhileTrue(m_intake.IntakeIn());
+  m_swerveController.Button(5).WhileTrue(m_intake.IntakeIn());
 
-  m_copilotController.B().WhileTrue(m_intake.IntakeOut());
+  m_copilotController.Button(6).WhileTrue(m_intake.IntakeOut());
 
   constexpr auto flywheelOff = []() { return 0.0; };
 
@@ -321,7 +321,7 @@ void RobotContainer::ConfigureBindings() {
       (&m_swerve));
 
   pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
-      AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
+      AutoConstants::kMaxSpeed, AutoConstants::kPathMaxAcceleration,
       AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
 
   // Register named commands for use in auton.
@@ -462,13 +462,13 @@ void RobotContainer::ConfigureBindings() {
    * ORGANISATION >:(
    *                  -- Visvam.
    */
-  // SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  SourcePathTrigger.WhileTrue(m_SourcePath.get());
 
-  // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
+  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
 
-  // SubPathTrigger.WhileTrue(m_CenterSubPath.get());
+  SubPathTrigger.WhileTrue(m_CenterSubPath.get());
 
-  // Add loaded autons to the configurator.
+  //   Add loaded autons to the configurator.
 
   m_chooser.SetDefaultOption("Default Auto: Shoot Preload",
                              m_defaultAuto.get());

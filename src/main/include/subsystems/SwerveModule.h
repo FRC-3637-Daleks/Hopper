@@ -39,7 +39,7 @@ constexpr auto kWheelDiameter = kWheelDiameterIdeal;
 constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
 constexpr auto kDriveEncoderDistancePerRevolution =
     kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
-constexpr auto kWheelMoment = 0.015_kg_sq_m;
+constexpr auto kWheelMoment = .015_kg_sq_m;
 
 constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
