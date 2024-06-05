@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.25,
-        "y": 3.35
+        "x": 3.0003800949114017,
+        "y": 3.03310666535741
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.158265490055131,
-        "y": 1.8063389257368858
+        "x": 4.908645584966532,
+        "y": 1.4894455910942959
       },
       "isLocked": false,
       "linkedName": "ShootMidR"
     },
     {
       "anchor": {
-        "x": 4.613521642070118,
-        "y": 1.6301107378601165
+        "x": 5.3425474040677035,
+        "y": 1.2530595103986197
       },
       "prevControl": {
-        "x": 4.186461846159934,
-        "y": 1.7978842291105464
+        "x": 4.884880119319099,
+        "y": 1.220368990059434
       },
       "nextControl": {
-        "x": 5.024720747115913,
-        "y": 1.4685682323064115
+        "x": 5.670450827349585,
+        "y": 1.2764811834901826
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.44
       },
       "prevControl": {
-        "x": 6.267267149918916,
-        "y": 1.0261620523241057
+        "x": 6.712715279924141,
+        "y": 1.3233245296733098
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,9 +54,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {

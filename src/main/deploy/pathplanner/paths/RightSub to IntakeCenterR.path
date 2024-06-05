@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.75,
+        "y": 4.35
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.604764701683467,
+        "y": 0.7260718658384518
+      },
+      "isLocked": false,
+      "linkedName": "RightSub"
+    },
+    {
+      "anchor": {
+        "x": 6.3496793470119,
+        "y": 1.7097821356874818
+      },
+      "prevControl": {
+        "x": 5.571848879069789,
+        "y": 1.4266749980512017
+      },
+      "nextControl": {
+        "x": 6.428139348882546,
+        "y": 1.7383392409488674
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.317099886696207,
+        "y": 2.623227386255057
+      },
+      "prevControl": {
+        "x": 8.24051308102616,
+        "y": 2.6073705512318295
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "IntakeCenterR"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 30.141385552075352,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 32.89952945606751,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "RightSub to IntakeCenter",
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

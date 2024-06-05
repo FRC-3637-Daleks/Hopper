@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 1.75,
-        "y": 7.0
+        "y": 7.003080254377342
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.85,
-        "y": 7.0
+        "y": 7.003080254377342
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCloseL"
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 6.99655944766435
+        "x": 2.9,
+        "y": 7.003080254377342
       },
       "prevControl": {
-        "x": 2.9,
-        "y": 6.99655944766435
+        "x": 2.8,
+        "y": 7.003080254377342
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,9 +38,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
@@ -51,5 +51,5 @@
   "reversed": false,
   "folder": "PrepIntakeClose to IntakeClose",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.894982565999367,
+        "y": 7.003080254377342
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.0,
-        "y": 7.0
+        "x": 3.8949825659993667,
+        "y": 7.003080254377342
       },
       "isLocked": false,
       "linkedName": "IntakeCloseL"
@@ -39,8 +39,8 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
@@ -51,5 +51,5 @@
   "reversed": false,
   "folder": "IntakeCloseL to PrepIntakeCenter",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

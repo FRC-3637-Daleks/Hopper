@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.894982565999367,
+        "y": 7.003080254377342
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.764137519715837,
-        "y": 6.768863523461712
+        "x": 5.659120085715204,
+        "y": 6.771943777839054
       },
       "isLocked": false,
       "linkedName": "IntakeCloseL"
@@ -20,8 +20,8 @@
         "y": 4.098792791023527
       },
       "prevControl": {
-        "x": 7.485630491945719,
-        "y": 7.565200408574855
+        "x": 6.829823645381955,
+        "y": 7.096766946743594
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,9 +38,9 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 240.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {

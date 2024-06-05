@@ -12,6 +12,7 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/simulation/LinearSystemSim.h>
 
 #include <frc/controller/ProfiledPIDController.h>
 
@@ -23,15 +24,15 @@
 namespace DriveConstants {
 constexpr auto kMaxSpeed = 15.7_fps;
 constexpr auto kMaxTeleopSpeed = 15.7_fps;
-
-constexpr auto kMaxTurnRate = 1.5 * std::numbers::pi * 1_rad_per_s;
-constexpr auto kMaxTurnAcceleration = 2 * std::numbers::pi * 1_rad_per_s_sq;
+constexpr auto kWeight = 123_lb;
+constexpr auto kMaxTurnRate = 2.5 * std::numbers::pi * 1_rad_per_s;
+constexpr auto kMaxTurnAcceleration = 6 * std::numbers::pi * 1_rad_per_s_sq;
 
 // NOTE: Guess value!
 
-constexpr double kPTurn = 0.061; // 0.0605
-constexpr double kITurn = 0.00;  // 0.001
-constexpr double kDTurn = 0.0;   // 0.03
+constexpr double kPTurn = 0.071; // 0.061
+constexpr double kITurn = 0.00;  // 0.00
+constexpr double kDTurn = 0.00;  // 0.0
 
 // Swerve Constants
 constexpr auto kTrackWidth =
@@ -84,6 +85,8 @@ constexpr struct PIDCoefficients kRearRightSteerMotorPIDCoefficients {
 };
 
 constexpr double kS = 0.0545;
+
+constexpr double kOdometryCompensationFactor = 0.05;
 
 constexpr frc::Pose2d kSpeakerPose{0.14_m, 5.5222_m, 0_deg};
 constexpr frc::Pose2d kAMPPose{1.812_m, 8.239_m, 0_deg};
@@ -154,7 +157,6 @@ public:
   // Returns the robot heading and translation as a Pose2d.
   frc::Pose2d GetPose();
 
-  // Simulation only. Returns the simulated ground truth position of the robot
   frc::Pose2d GetSimulatedGroundTruth();
 
   // Returns Current Chassis Speed
@@ -231,6 +233,18 @@ public:
                      std::function<units::meters_per_second_t()> strafe,
                      bool shooterSide, std::function<bool()> isRed);
 
+  /**
+   * Use robot relative speeds and a dedicated angle to properly control
+   * rotation in autonomous.
+   *
+   * @param angle The commanded angle
+   * @param forward The commanded forward velocity, robot relative
+   * @param strafe The commanded strafe velocity, robot relative
+   * @param isRed Correctly orient robot if we are on the red alliance or not.
+   */
+  void OverrideAngle(frc::Rotation2d angle, units::meters_per_second_t forward,
+                     units::meters_per_second_t strafe, bool isRed);
+
 private:
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
@@ -255,6 +269,8 @@ private:
   frc2::CommandPtr zeroEncodersCommand{ZeroAbsEncodersCommand()};
 
   frc::Pose2d m_zTarget;
+
+  frc::Transform2d m_odometryCompensation{0_m, 0_m, 0_deg};
 
 private:
   friend class DrivetrainSimulation;

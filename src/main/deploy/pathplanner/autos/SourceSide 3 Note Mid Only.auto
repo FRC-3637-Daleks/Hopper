@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.75,
+      "y": 4.35
+    },
+    "rotation": -57.46979802813723
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -10,9 +16,15 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
+                }
+              },
+              {
                 "type": "named",
                 "data": {
-                  "name": "OutputToShooterZTarget"
+                  "name": "OutputToShooter"
                 }
               }
             ]
@@ -35,7 +47,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightSub to PrepIntakeCenterFarR"
+                        "pathName": "RightSub to ShootMidR"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootMidR to PrepIntakeCenterFarR"
                       }
                     },
                     {
@@ -49,6 +67,12 @@
                       "data": {
                         "pathName": "PrepIntakeCenterFarR to IntakeCenterFarR"
                       }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.6
+                      }
                     }
                   ]
                 }
@@ -57,15 +81,35 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "IntakeCenterFarR to ShootMidR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutputToShooterZTarget"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "FinishWhenEmpty"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "IntakeCenterFarR to ShootMidR"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "OutputToShooterZTarget"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

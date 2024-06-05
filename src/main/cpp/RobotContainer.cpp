@@ -11,6 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
 RobotContainer::RobotContainer()
@@ -64,6 +65,7 @@ RobotContainer::RobotContainer()
 }
 
 void RobotContainer::ConfigureBindings() {
+
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(
@@ -87,25 +89,28 @@ void RobotContainer::ConfigureBindings() {
         -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
         OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input);
-    return AutoConstants::kMaxAngularSpeed * squaredInput;
+    return DriveConstants::kMaxTurnRate * squaredInput;
   };
 
+  // Constantly updating for alliance checks.
   auto checkRed = [this]() -> bool { return m_isRed; };
+
+  // Z-Target locations
 
   auto targetSpeaker = [this]() -> frc::Pose2d {
     return m_isRed ? OperatorConstants::kRedSpeakerPose
                    : OperatorConstants::kBlueSpeakerPose;
-  }; // implement live apriltag targeting
+  };
 
   auto targetAMP = [this]() -> frc::Pose2d {
     return m_isRed ? OperatorConstants::kRedAMPPose
                    : OperatorConstants::kBlueAMPPose;
-  }; // implement live apriltag targeting
+  };
 
   auto targetStage = [this]() -> frc::Pose2d {
     return m_isRed ? OperatorConstants::kRedStagePose
                    : OperatorConstants::kBlueStagePose;
-  }; // implement live apriltag targeting
+  };
 
   auto targetSource = [this]() -> frc::Pose2d {
     return m_isRed ? OperatorConstants::kRedSourcePose
@@ -114,55 +119,92 @@ void RobotContainer::ConfigureBindings() {
 
   constexpr auto targetMidFarRNote = []() -> frc::Pose2d {
     return OperatorConstants::kMidFarRNote;
-  }; // implement live apriltag targeting
+  };
 
   constexpr auto targetMidRNote = []() -> frc::Pose2d {
     return OperatorConstants::kMidRNote;
-  }; // implement live apriltag targeting
+  };
 
   constexpr auto targetMidCNote = []() -> frc::Pose2d {
     return OperatorConstants::kMidCNote;
-  }; // implement live apriltag targeting
+  };
 
   constexpr auto targetMidLNote = []() -> frc::Pose2d {
     return OperatorConstants::kMidLNote;
-  }; // implement live apriltag targeting
+  };
 
   constexpr auto targetMidFarLNote = []() -> frc::Pose2d {
     return OperatorConstants::kMidFarLNote;
-  }; // implement live apriltag targeting
+  };
 
   m_swerve.SetDefaultCommand(
       m_swerve.SwerveCommandFieldRelative(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Start().OnTrue(m_swerve.ZeroHeadingCommand());
+  m_swerveController.Button(12).OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.A().WhileTrue(
+  m_swerveController.Button(7).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, checkRed));
 
-  m_swerveController.X().WhileTrue(
+  m_swerveController.Button(4).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
 
-  m_swerveController.B().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, false, checkRed));
+  m_swerveController.Button(3).WhileTrue(
+      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
-  m_swerveController.Y().WhileTrue(
+  m_swerveController.Button(8).WhileTrue(
       m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
 
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.Button(9).ToggleOnTrue(
+      m_swerve.SwerveCommand(fwd, strafe, rot));
+
+  m_swerveController.Button(2).OnTrue(m_intake.ShootOnAMPRetract());
+
+  m_swerveController.Trigger().OnTrue(m_intake.OutputToShooter());
+
+  constexpr auto one_meter = []() -> units::meters_per_second_t {
+    return 1_mps;
+  };
+
+  constexpr auto neg_one_meter = []() -> units::meters_per_second_t {
+    return -1_mps;
+  };
+
+  // Precise driving commands.
+
+  DriveFwdTrigger.WhileTrue(
+      m_swerve.SwerveCommandFieldRelative(one_meter, strafe, rot, checkRed));
+
+  DriveStrafeLeftTrigger.WhileTrue(
+      m_swerve.SwerveCommandFieldRelative(fwd, one_meter, rot, checkRed));
+
+  DriveRevTrigger.WhileTrue(m_swerve.SwerveCommandFieldRelative(
+      neg_one_meter, strafe, rot, checkRed));
+
+  DriveStrafeRightTrigger.WhileTrue(
+      m_swerve.SwerveCommandFieldRelative(fwd, neg_one_meter, rot, checkRed));
 
   // Configure Shooter Bindings.
-  auto calculateDistance = [this]() -> units::meter_t {
+  auto flywheel = [this]() -> double {
+    return (m_swerveController.GetThrottle());
+  };
+
+  auto pivot = [this]() -> units::degrees_per_second_t {
+    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(),
+                                             OperatorConstants::kDeadband);
+  };
+
+  auto calculateSpeakerDistance = [this]() -> units::meter_t {
     frc::Pose2d RobotPose2d = m_swerve.GetPose();
 
     // Determine the IDs of the speaker AprilTags based on the alliance color
-    int id = m_isRed ? 4 : 7;
+    int speakerID = m_isRed ? 4 : 7;
 
     // Get the pose of the speaker AprilTag based on its ID
-    frc::Pose3d SpeakerPose = m_aprilTagFieldLayout.GetTagPose(id).value();
+    frc::Pose3d SpeakerPose =
+        m_aprilTagFieldLayout.GetTagPose(speakerID).value();
     frc::Pose2d SpeakerPose2d = frc::Pose2d{SpeakerPose.X(), SpeakerPose.Y(),
                                             SpeakerPose.Rotation().Angle()};
 
@@ -172,18 +214,95 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
+  auto calculateAmpDistance = [this]() -> units::meter_t {
+    frc::Pose2d RobotPose2d = m_swerve.GetPose();
+
+    // Determine the IDs of the speaker AprilTags based on the alliance color
+    int ampID = m_isRed ? 5 : 6;
+
+    // Get the pose of the speaker AprilTag based on its ID
+    frc::Pose3d AmpPose = m_aprilTagFieldLayout.GetTagPose(ampID).value();
+    frc::Pose2d AmpPose2d =
+        frc::Pose2d{AmpPose.X(), AmpPose.Y(), AmpPose.Rotation().Angle()};
+
+    // Calculate the horizontal distance between RobotPose and SpeakerPose
+    units::meter_t offset =
+        RobotPose2d.Translation().Distance(AmpPose2d.Translation());
+    return offset; // Return the horizontal distance as units::meter_t
+  };
+
+  m_shooter.SetDefaultCommand(
+      m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
+
+  m_copilotController.LeftStick().ToggleOnTrue(
+      m_shooter.ShooterVelocityCommand(flywheel, pivot));
+
+  m_copilotController.RightBumper().WhileTrue(m_shooter.SubwooferCommand());
+
+  m_copilotController.LeftBumper().WhileTrue(m_shooter.AmpShot());
+
   // Configure Intake Bindings.
 
-  // SourceIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
+  GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
 
+  AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
+
+  SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+
+  AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
+
+  // Manual intake using percent out.
+
+  m_copilotController.Start().ToggleOnTrue(frc2::cmd::Run(
+      [this] {
+        if (m_copilotController.GetXButton())
+          m_intake.Emergency(1.0);
+        else if (m_copilotController.GetYButton())
+          m_intake.Emergency(-1.0);
+        else
+          m_intake.Emergency(0.0);
+      },
+      {&m_intake}));
+
+  m_passMode.WhileTrue(m_shooter.PassModeCommand());
+
+  // Manual Intake In/Out.
+  m_swerveController.Button(5).WhileTrue(m_intake.IntakeIn());
+
+  m_copilotController.Button(6).WhileTrue(m_intake.IntakeOut());
+
+  constexpr auto flywheelOff = []() { return 0.0; };
+
+  PitReset.OnTrue(frc2::cmd::Parallel(
+      m_shooter.PivotAngleCommand([]() { return 80_deg; }),
+      m_shooter.FlywheelCommand(flywheelOff),
+      m_climb.RetractClimb() /*, m_intake.IntakeArmSpeakerCommand()*/));
+
+  // Configure climb bindings.
+
+  auto climb = [this]() -> double {
+    return -frc::ApplyDeadband(m_copilotController.GetRightY(),
+                               OperatorConstants::kClimbDeadband);
+  };
+
+  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
+
+  // Configure PathPlanner.
+
+  /**
+   * If the robot falls off the course of a path, replanning may be required.
+   */
   pathplanner::ReplanningConfig replanningConfig =
       pathplanner::ReplanningConfig(true, true, 1_m, .25_m);
 
   constexpr auto alliance = []() -> bool { return false; };
 
+  /**
+   * Apply the swerve drive configurations.
+   */
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
-          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Translation constants
+          pathplanner::PIDConstants(7.0, 0.0, 0.0), // Translation constants
           pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
@@ -195,11 +314,39 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, false);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
+
+  pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
+      AutoConstants::kMaxSpeed, AutoConstants::kPathMaxAcceleration,
+      AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
+
+  // Register named commands for use in auton.
+
+  pathplanner::NamedCommands::registerCommand(
+      "ShootAmp", m_intake.ShootOnAMPRetract().WithName("ShootAMP"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "OutputToShooterZTarget",
+      frc2::cmd::Sequence(
+          m_swerve
+              .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
+              .WithTimeout(1_s),
+          m_intake.OutputToShooter().WithTimeout(1_s).WithName(
+              "OutputToShooterZTarget")));
+
+  pathplanner::NamedCommands::registerCommand(
+      "OutputToShooter",
+      m_intake.OutputToShooter().WithName("OutputToShooter"));
+
+  pathplanner::NamedCommands::registerCommand(
+      "ShootAmp", frc2::cmd::None().WithName("ShootAmp"));
 
   pathplanner::NamedCommands::registerCommand(
       "zTargetingMidNoteFarR",
@@ -228,9 +375,18 @@ void RobotContainer::ConfigureBindings() {
           .ZTargetPoseCommand(targetMidFarLNote, fwd, strafe, false, alliance)
           .WithTimeout(1_s));
 
-  pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
-      AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
-      AutoConstants::kMaxAngularSpeed, AutoConstants::kMaxAngularAcceleration);
+  pathplanner::NamedCommands::registerCommand(
+      "StraightenRobot",
+      frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
+                        m_swerve.TurnToAngleCommand(0_deg), checkRed));
+
+  pathplanner::NamedCommands::registerCommand(
+      "FinishWhenEmpty",
+      frc2::cmd::Sequence(frc2::cmd::Wait(.75_s),
+                          frc2::cmd::WaitUntil([this]() -> bool {
+                            return !m_intake.IsIntakeBreakBeamBroken();
+                          })));
+  // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
       OperatorConstants::kBlueSourcePickUp, constraints, 0_mps, 0_m);
@@ -259,6 +415,10 @@ void RobotContainer::ConfigureBindings() {
   m_CenterSubPath = frc2::cmd::Either(std::move(RedCenterSubPath),
                                       std::move(BlueCenterSubPath), checkRed);
 
+  // Load autons.
+
+  m_defaultAuto = pathplanner::PathPlannerAuto("Default Auto").ToPtr();
+
   m_AmpSide3NoteAuto = pathplanner::PathPlannerAuto("AmpSide 3 Note").ToPtr();
   m_SourceSide3NoteAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note").ToPtr();
@@ -273,6 +433,9 @@ void RobotContainer::ConfigureBindings() {
       pathplanner::PathPlannerAuto("AmpSide 3 Note Mid Only").ToPtr();
   m_SourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only").ToPtr();
+  m_SourceSideMidInnerOnlyAuto =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
+          .ToPtr();
   m_centerSourceSideMidOnlyAuto =
       pathplanner::PathPlannerAuto("Center-SourceSide 3 Note Mid Only").ToPtr();
   m_centerAmpSideMidOnlyAuto =
@@ -281,15 +444,37 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
-  // SourcePathTrigger.WhileTrue(m_SourcePath.get());
+  m_SourceSideMidOnlyInnerFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
+          .ToPtr();
 
-  // AmpPathTrigger.WhileTrue(m_AmpShotPath.get());   Not reliable enough to
-  // risk this
+  m_SourceSideMidOnlyCenterFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center First")
+          .ToPtr();
 
-  // SubPathTrigger.WhileTrue(m_CenterSubPath.get());
+  m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
+  m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
+  m_nonoPath = pathplanner::PathPlannerAuto("rest in peace robot").ToPtr();
 
-  m_chooser.SetDefaultOption("AmpSide Subwoofer 3 Note Auto",
-                             m_AmpSide3NoteAuto.get());
+  /**
+   * Automatic pathfinding triggers. Still need to test.
+   * IF I SEE THESE ENABLED DURING A MATCH I WILL BAN YOU FROM THE GITHUB
+   * ORGANISATION >:(
+   *                  -- Visvam.
+   */
+  SourcePathTrigger.WhileTrue(m_SourcePath.get());
+
+  AmpPathTrigger.WhileTrue(m_AmpShotPath.get());
+
+  SubPathTrigger.WhileTrue(m_CenterSubPath.get());
+
+  //   Add loaded autons to the configurator.
+
+  m_chooser.SetDefaultOption("Default Auto: Shoot Preload",
+                             m_defaultAuto.get());
+
+  m_chooser.AddOption("AmpSide Subwoofer 3 Note Auto",
+                      m_AmpSide3NoteAuto.get());
   m_chooser.AddOption("SourceSide Subwoofer 3 Note Auto",
                       m_SourceSide3NoteAuto.get());
   m_chooser.AddOption("Center Subwoofer 3 Note Auto", m_center3NoteAuto.get());
@@ -310,6 +495,9 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("SourceSide Mid Only 3 Note Auto",
                       m_SourceSideMidOnlyAuto.get());
 
+  m_chooser.AddOption("SourceSide Mid Only Inner First 3 Note Auto",
+                      m_SourceSideMidInnerOnlyAuto.get());
+
   m_chooser.AddOption("AmpSide Mid Only 3 Note Auto",
                       m_AmpSideMidOnlyAuto.get());
 
@@ -317,10 +505,32 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
 
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
+                      m_SourceSideMidOnlyInnerFirst.get());
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center First",
+                      m_SourceSideMidOnlyCenterFirst.get());
+
+  m_chooser.AddOption("square path test", m_squarePath.get());
+
+  m_chooser.AddOption("5m straight line test", m_straightLine.get());
+
+  // m_chooser.AddOption(
+  //     "DO NOT RUN: the` forbidden auton (robot will explode if you run)",
+  //     m_nonoPath.get());
+
   frc::SmartDashboard::PutData(&m_chooser);
 }
 
-void RobotContainer::ConfigureDashboard() {}
+void RobotContainer::ConfigureDashboard() {
+  m_intake.InitVisualization(&m_mech_sideview);
+  m_shooter.InitVisualization(&m_mech_sideview);
+
+  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  frc::SmartDashboard::PutData("Intake", &m_intake);
+  frc::SmartDashboard::PutData("Shooter", &m_shooter);
+  frc::SmartDashboard::PutData("Drivebase", &m_swerve);
+  frc::SmartDashboard::PutData(&m_chooser);
+}
 
 void RobotContainer::ConfigureAuto() {
   pathplanner::PathPlannerLogging::setLogActivePathCallback(

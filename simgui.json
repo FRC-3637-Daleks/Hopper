@@ -4,6 +4,11 @@
       "window": {
         "visible": false
       }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
+      }
     }
   },
   "NTProvider": {
@@ -16,18 +21,38 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/Swerve/TurnPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Vision/field": "Field2d",
       "/SmartDashboard/Vision/simulated apriltags": "Field2d",
       "/SmartDashboard/zeroEncodersCommand": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
         "FL": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "FR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            255.0,
+            240.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Hopper": {
           "arrows": false,
@@ -46,12 +71,37 @@
           "width": 0.33000001311302185
         },
         "RL": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "width": 0.10000000149011612
         },
         "RR": {
-          "arrows": false,
-          "style": "Hidden"
+          "arrowColor": [
+            240.00001525878906,
+            255.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 100,
+          "arrowWeight": 2.0,
+          "color": [
+            1.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.30000001192092896,
+          "style": "Hidden",
+          "weight": 2.0,
+          "width": 0.10000000149011612
         },
         "Robot": {
           "length": 0.9100000262260437,
@@ -63,18 +113,7 @@
         "left": 150,
         "right": 2961,
         "simulation": {
-          "arrowColor": [
-            172.5000457763672,
-            0.0,
-            255.0,
-            255.0
-          ],
-          "color": [
-            232.49998474121094,
-            0.0,
-            255.0,
-            255.0
-          ]
+          "style": "Box/Image"
         },
         "top": 79,
         "vision estimate": {
@@ -102,14 +141,141 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Shooter": {
+      "/SmartDashboard/Vision/field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Vision/simulated apriltags": {
+        "Intake Cam Pose": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.058823585510253906,
+            255.0
+          ]
+        },
+        "Intake Reprojected Tags": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.7352941036224365,
+            0.0,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "width": 0.20000000298023224
+        },
+        "Robot": {
+          "color": [
+            1.0,
+            0.0,
+            0.970588207244873,
+            255.0
+          ]
+        },
+        "Shooter Cam Pose": {
+          "arrows": false,
+          "color": [
+            0.0588231086730957,
+            0.0,
+            1.0,
+            255.0
+          ]
+        },
+        "Shooter Reprojected Tags": {
+          "arrows": false,
+          "color": [
+            1.0,
+            0.7058823108673096,
+            0.0,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "width": 0.20000000298023224
+        },
+        "apriltag": {
+          "arrows": false,
+          "color": [
+            0.0,
+            0.029412031173706055,
+            1.0,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "width": 0.20000000298023224
+        },
+        "bottom": 1476,
+        "cameras": {
+          "arrowColor": [
+            1.0,
+            0.9411764740943909,
+            0.0,
+            255.0
+          ],
+          "arrowWeight": 2.0,
+          "color": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.30000001192092896,
+          "weight": 2.0,
+          "width": 0.30000001192092896
+        },
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "visibleTargetPoses": {
+          "arrows": false,
+          "color": [
+            0.0,
+            1.0,
+            0.11764693260192871,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "width": 0.20000000298023224
+        },
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
       }
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Swerve": {
+          "TurnPIDController": {
+            "open": true
+          },
+          "open": true
+        },
+        "TurnPID": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }
