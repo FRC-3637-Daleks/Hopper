@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.113284226568455,
-        "y": 2.8811473007561403
+        "x": 3.0003800949114017,
+        "y": 3.03310666535741
       },
       "prevControl": {
-        "x": 1.6770555652380903,
-        "y": 3.4429859444597626
+        "x": 2.564151433581037,
+        "y": 3.5949453090610324
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
@@ -50,9 +50,6 @@
   },
   "reversed": false,
   "folder": "RightSub to PrepIntakeCenter",
-  "previewStartingState": {
-    "rotation": -60.0,
-    "velocity": 0.0
-  },
-  "useDefaultConstraints": true
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

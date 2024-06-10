@@ -67,6 +67,7 @@ Drivetrain::Drivetrain()
                           m_rearLeft.GetPosition(), m_rearRight.GetPosition()},
                       frc::Pose2d()},
       m_sim_state(new DrivetrainSimulation(*this)) {
+
   frc::DataLogManager::Log(
       fmt::format("Finished initializing drivetrain subsystem."));
 }
@@ -174,7 +175,11 @@ frc::Rotation2d Drivetrain::GetGyroHeading() {
   return units::degree_t(-m_gyro.GetYaw());
 }
 
-void Drivetrain::ZeroHeading() { m_gyro.Reset(); }
+// void Drivetrain::ZeroHeading() { m_gyro.Reset();}
+void Drivetrain::ZeroHeading() {
+  auto pose = GetPose();
+  ResetOdometry(frc::Pose2d{pose.X(), pose.Y(), 0_deg});
+}
 
 void Drivetrain::ZeroAbsEncoders() {
   m_frontLeft.ZeroAbsEncoders();

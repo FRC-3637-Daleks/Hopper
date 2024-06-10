@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5013930170513679,
-        "y": 6.75
+        "x": 1.75,
+        "y": 7.003080254377342
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.601393017051368,
-        "y": 6.75
+        "x": 1.85,
+        "y": 7.003080254377342
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCloseL"
     },
     {
       "anchor": {
-        "x": 3.3985485374679727,
-        "y": 7.22558614874719
+        "x": 2.9,
+        "y": 7.003080254377342
       },
       "prevControl": {
-        "x": 3.2985485374679726,
-        "y": 7.22558614874719
+        "x": 2.8,
+        "y": 7.003080254377342
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },

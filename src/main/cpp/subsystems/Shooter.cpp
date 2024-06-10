@@ -63,8 +63,14 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_pivot.SetSensorPhase(false);
   m_pivot.SetInverted(false);
 
-  m_pivot.ConfigNominalOutputForward(0, ShooterConstants::kTimeoutMs);
-  m_pivot.ConfigNominalOutputReverse(0, ShooterConstants::kTimeoutMs);
+  m_pivot.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+  m_pivot.ConfigNeutralDeadband(ShooterConstants::kNeutralDeadband,
+                                ShooterConstants::kTimeoutMs);
+
+  m_pivot.ConfigNominalOutputForward(ShooterConstants::kNorminalForward,
+                                     ShooterConstants::kTimeoutMs);
+  m_pivot.ConfigNominalOutputReverse(ShooterConstants::kNominalReverse,
+                                     ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputForward(1.0, ShooterConstants::kTimeoutMs);
   m_pivot.ConfigPeakOutputReverse(-1.0, ShooterConstants::kTimeoutMs);
 
@@ -108,6 +114,15 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_leadMotor.SetClosedLoopRampRate(0.1);
   m_followMotor.SetClosedLoopRampRate(0.1);
 
+  // m_leadMotor.SetSmartCurrentLimit(5);
+  // m_followMotor.SetSmartCurrentLimit(5);
+
+  m_leadMotor.SetOpenLoopRampRate(0.1);
+  m_followMotor.SetOpenLoopRampRate(0.1);
+
+  m_leadMotor.SetClosedLoopRampRate(0.1);
+  m_followMotor.SetClosedLoopRampRate(0.1);
+
   // Need to empirically measure proper current limit.
   m_leadMotor.SetSmartCurrentLimit(
       ShooterConstants::kFlywheelCurrentLimit.value());
@@ -118,8 +133,8 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
 
   // Insert empirically measured data points into interpolation map.
   m_map.insert(1.424465_m, 41.296232_deg);
-  m_map.insert(2.388467_m, 27.834950_deg);
-  m_map.insert(2.438238_m, 25.355256_deg);
+  // m_map.insert(2.388467_m, 27.834950_deg);
+  // m_map.insert(2.438238_m, 25.355256_deg);
   m_map.insert(2.640507_m, 25.355256_deg);
   m_map.insert(3.141301_m, 23.401145_deg);
   m_map.insert(3.231028_m, 20.455068_deg);
@@ -128,6 +143,12 @@ Shooter::Shooter() : m_sim_state(new ShooterSimulation(*this)) {
   m_map.insert(4.079345_m, 14.305907_deg);
   m_map.insert(4.397344_m, 16.375658_deg);
   m_map.insert(7.050149_m, 10_deg);
+
+  // new values
+  m_map.insert(2.127477_m, 25.969837_deg);
+  m_map.insert(2.347595_m, 24.772709_deg);
+  m_map.insert(2.447317_m, 24.787335_deg);
+  m_map.insert(2.824183_m, 19.852487_deg);
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing shooter subsystem."));

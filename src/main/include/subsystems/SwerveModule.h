@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ctre/phoenix6/CANcoder.hpp>
-#include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/AnalogInput.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/geometry/Rotation2d.h>
@@ -17,6 +16,8 @@
 #include <units/velocity.h>
 #include <units/voltage.h>
 
+#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include <numbers>
 
 namespace ModuleConstants {
@@ -30,9 +31,10 @@ constexpr auto kCurrentLimitPeriod =
 // Best defense against current
 constexpr double kMotorRampRate = 0.2; // Seconds from neutral to full output.
 
-constexpr auto kWheelDiameterIdeal = 4_in;
-constexpr double kWheelAdjust = 1.0671 * 0.923;
-constexpr auto kWheelDiameter = kWheelDiameterIdeal * kWheelAdjust;
+constexpr auto kWheelDiameterIdeal = 3.6_in;
+constexpr double kWheelAdjust =
+    1.0671 * 0.923; // Depricated after new wheel measurements
+constexpr auto kWheelDiameter = kWheelDiameterIdeal;
 
 constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
 constexpr auto kDriveEncoderDistancePerRevolution =

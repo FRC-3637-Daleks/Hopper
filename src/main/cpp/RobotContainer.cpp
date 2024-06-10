@@ -64,21 +64,8 @@ RobotContainer::RobotContainer()
   frc::DataLogManager::Log(fmt::format("Finished initializing robot."));
 }
 
-void RobotContainer::ControllerRumble1Sec() {
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-  m_swerveController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  frc::Wait(1_s);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-  m_copilotController.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-}
-
 void RobotContainer::ConfigureBindings() {
+
   // Configure Swerve Bindings.
   auto fwd = [this]() -> units::meters_per_second_t {
     auto input = frc::ApplyDeadband(
@@ -102,7 +89,7 @@ void RobotContainer::ConfigureBindings() {
         -m_swerveController.GetRawAxis(OperatorConstants::kRotationAxis),
         OperatorConstants::kDeadband);
     auto squaredInput = input * std::abs(input);
-    return AutoConstants::kMaxAngularSpeed * squaredInput;
+    return DriveConstants::kMaxTurnRate * squaredInput;
   };
 
   // Constantly updating for alliance checks.
@@ -170,7 +157,8 @@ void RobotContainer::ConfigureBindings() {
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
 
-  m_swerveController.Back().WhileTrue(m_swerve.SwerveCommand(fwd, strafe, rot));
+  m_swerveController.Back().ToggleOnTrue(
+      m_swerve.SwerveCommand(fwd, strafe, rot));
 
   m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
 
@@ -287,8 +275,8 @@ void RobotContainer::ConfigureBindings() {
 
   PitReset.OnTrue(frc2::cmd::Parallel(
       m_shooter.PivotAngleCommand([]() { return 80_deg; }),
-      m_shooter.FlywheelCommand(flywheelOff), m_climb.RetractClimb(),
-      m_intake.IntakeArmSpeakerCommand()));
+      m_shooter.FlywheelCommand(flywheelOff),
+      m_climb.RetractClimb() /*, m_intake.IntakeArmSpeakerCommand()*/));
 
   // Configure climb bindings.
 
@@ -314,8 +302,8 @@ void RobotContainer::ConfigureBindings() {
    */
   const pathplanner::HolonomicPathFollowerConfig pathFollowerConfig =
       pathplanner::HolonomicPathFollowerConfig(
-          pathplanner::PIDConstants(10.0, 0.0, 0.0), // Translation constants
-          pathplanner::PIDConstants(15.0, 0.0, 0.0), // Rotation constants
+          pathplanner::PIDConstants(7.0, 0.0, 0.0), // Translation constants
+          pathplanner::PIDConstants(5.0, 0.0, 0.0), // Rotation constants
           ModuleConstants::kPhysicalMaxSpeed,
           DriveConstants::kRadius, // Drive base radius (distance from center to
                                    // furthest module)
@@ -326,19 +314,11 @@ void RobotContainer::ConfigureBindings() {
       [this](frc::Pose2d pose) { this->m_swerve.ResetOdometry(pose); },
       [this]() { return this->m_swerve.GetSpeed(); },
       [this](frc::ChassisSpeeds speed) {
-        auto rotationOverride = GetRotationTargetOverride();
-        if (rotationOverride.has_value())
-          this->m_swerve.OverrideAngle(rotationOverride.value(), speed.vx,
-                                       speed.vy, m_isRed);
-        else
-          this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, m_isRed);
+        this->m_swerve.Drive(speed.vx, speed.vy, speed.omega, false, false);
       },
       pathFollowerConfig,
       [this]() { return m_isRed; }, // replace later, just a placeholder
       (&m_swerve));
-
-  pathplanner::PPHolonomicDriveController::setRotationTargetOverride(
-      [this] { return GetRotationTargetOverride(); });
 
   pathplanner::PathConstraints constraints = pathplanner::PathConstraints(
       AutoConstants::kMaxSpeed, AutoConstants::kMaxAcceleration,
@@ -400,6 +380,12 @@ void RobotContainer::ConfigureBindings() {
       frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
                         m_swerve.TurnToAngleCommand(0_deg), checkRed));
 
+  pathplanner::NamedCommands::registerCommand(
+      "FinishWhenEmpty",
+      frc2::cmd::Sequence(frc2::cmd::Wait(.75_s),
+                          frc2::cmd::WaitUntil([this]() -> bool {
+                            return !m_intake.IsIntakeBreakBeamBroken();
+                          })));
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
@@ -458,6 +444,14 @@ void RobotContainer::ConfigureBindings() {
   m_getOutSourceSide =
       pathplanner::PathPlannerAuto("Get Out SourceSide").ToPtr();
 
+  m_SourceSideMidOnlyInnerFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Inner First")
+          .ToPtr();
+
+  m_SourceSideMidOnlyCenterFirst =
+      pathplanner::PathPlannerAuto("SourceSide 3 Note Mid Only Center First")
+          .ToPtr();
+
   m_straightLine = pathplanner::PathPlannerAuto("straight line test").ToPtr();
   m_squarePath = pathplanner::PathPlannerAuto("sqare test").ToPtr();
   m_nonoPath = pathplanner::PathPlannerAuto("rest in peace robot").ToPtr();
@@ -511,12 +505,17 @@ void RobotContainer::ConfigureBindings() {
   m_chooser.AddOption("Amp Path", m_AmpShotPath.get());
   m_chooser.AddOption("Sub Path", m_CenterSubPath.get());
 
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center Last",
+                      m_SourceSideMidOnlyInnerFirst.get());
+  m_chooser.AddOption("SourceSide 3 Note Mid Only Center First",
+                      m_SourceSideMidOnlyCenterFirst.get());
+
   m_chooser.AddOption("square path test", m_squarePath.get());
 
   m_chooser.AddOption("5m straight line test", m_straightLine.get());
 
   // m_chooser.AddOption(
-  //     "DO NOT RUN: the forbidden auton (robot will explode if you run)",
+  //     "DO NOT RUN: the` forbidden auton (robot will explode if you run)",
   //     m_nonoPath.get());
 
   frc::SmartDashboard::PutData(&m_chooser);
@@ -538,13 +537,6 @@ void RobotContainer::ConfigureAuto() {
       [this](auto &&activePath) {
         m_swerve.GetField().GetObject("Hopper")->SetPoses(activePath);
       });
-}
-
-std::optional<frc::Rotation2d> RobotContainer::GetRotationTargetOverride() {
-  if (m_intake.IsIntaking())
-    return m_isRed ? 180_deg : 0_deg;
-  else
-    return std::nullopt;
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

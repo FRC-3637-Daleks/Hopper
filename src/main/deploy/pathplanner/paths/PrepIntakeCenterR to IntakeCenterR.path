@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.560474404828979,
-        "y": 2.318745636064738
+        "x": 7.1,
+        "y": 2.44
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.660474404828979,
-        "y": 2.318745636064738
+        "x": 7.199999999999999,
+        "y": 2.44
       },
       "isLocked": false,
       "linkedName": "PrepIntakeCenterR"
     },
     {
       "anchor": {
-        "x": 8.3,
-        "y": 2.44
+        "x": 8.317099886696207,
+        "y": 2.623227386255057
       },
       "prevControl": {
-        "x": 8.200000000000001,
-        "y": 2.44
+        "x": 8.217099886696207,
+        "y": 2.623227386255057
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
@@ -51,5 +51,5 @@
   "reversed": false,
   "folder": "PrepIntakeCenter to IntakeCenter",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

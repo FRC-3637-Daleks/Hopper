@@ -8,57 +8,57 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.75,
-        "y": 4.35
+        "x": 3.1409101334607787,
+        "y": -0.5855418272890752
       },
       "isLocked": false,
       "linkedName": "RightSub"
     },
     {
       "anchor": {
-        "x": 1.75,
-        "y": 4.520382906671662
+        "x": 7.099172885934929,
+        "y": 1.9674205396912936
       },
       "prevControl": {
-        "x": 1.7473205845127795,
-        "y": 4.35643119503072
+        "x": 6.349679347004912,
+        "y": 1.616095443317848
       },
       "nextControl": {
-        "x": 1.7520325075325642,
-        "y": 4.644750736325689
+        "x": 7.174774532939148,
+        "y": 2.002858811724521
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.75,
-        "y": 5.55
+        "x": 8.317099886696207,
+        "y": 2.623227386255057
       },
       "prevControl": {
-        "x": 1.7590314210585614,
-        "y": 5.094213897414956
+        "x": 8.24051308102616,
+        "y": 2.6073705512318295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PrepIntakeCloseC"
+      "linkedName": "IntakeCenterR"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 30.141385552075352,
       "rotateFast": true
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.2,
+      "minWaypointRelativePos": 0.8,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 180.0,
         "maxAngularAcceleration": 360.0
       }
@@ -66,18 +66,21 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 4.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 32.89952945606751,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "RightSub to PrepIntakeClose",
-  "previewStartingState": null,
-  "useDefaultConstraints": true
+  "folder": "RightSub to IntakeCenter",
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
 }
