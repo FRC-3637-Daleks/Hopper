@@ -160,10 +160,6 @@ void RobotContainer::ConfigureBindings() {
   m_swerveController.Button(9).ToggleOnTrue(
       m_swerve.SwerveCommand(fwd, strafe, rot));
 
-  m_swerveController.Button(2).OnTrue(m_intake.ShootOnAMPRetract());
-
-  m_swerveController.Trigger().OnTrue(m_intake.OutputToShooter());
-
   constexpr auto one_meter = []() -> units::meters_per_second_t {
     return 1_mps;
   };
@@ -174,27 +170,7 @@ void RobotContainer::ConfigureBindings() {
 
   // Precise driving commands.
 
-  DriveFwdTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(one_meter, strafe, rot, checkRed));
-
-  DriveStrafeLeftTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(fwd, one_meter, rot, checkRed));
-
-  DriveRevTrigger.WhileTrue(m_swerve.SwerveCommandFieldRelative(
-      neg_one_meter, strafe, rot, checkRed));
-
-  DriveStrafeRightTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(fwd, neg_one_meter, rot, checkRed));
-
   // Configure Shooter Bindings.
-  auto flywheel = [this]() -> double {
-    return (m_swerveController.GetThrottle());
-  };
-
-  auto pivot = [this]() -> units::degrees_per_second_t {
-    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(),
-                                             OperatorConstants::kDeadband);
-  };
 
   auto calculateSpeakerDistance = [this]() -> units::meter_t {
     frc::Pose2d RobotPose2d = m_swerve.GetPose();
@@ -231,61 +207,15 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
-  m_shooter.SetDefaultCommand(
-      m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
-
-  m_copilotController.LeftStick().ToggleOnTrue(
-      m_shooter.ShooterVelocityCommand(flywheel, pivot));
-
-  m_copilotController.RightBumper().WhileTrue(m_shooter.SubwooferCommand());
-
-  m_copilotController.LeftBumper().WhileTrue(m_shooter.AmpShot());
-
   // Configure Intake Bindings.
-
-  GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
-
-  AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
-
-  SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
-
-  AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
 
   // Manual intake using percent out.
 
-  m_copilotController.Start().ToggleOnTrue(frc2::cmd::Run(
-      [this] {
-        if (m_copilotController.GetXButton())
-          m_intake.Emergency(1.0);
-        else if (m_copilotController.GetYButton())
-          m_intake.Emergency(-1.0);
-        else
-          m_intake.Emergency(0.0);
-      },
-      {&m_intake}));
-
-  m_passMode.WhileTrue(m_shooter.PassModeCommand());
-
   // Manual Intake In/Out.
-  m_swerveController.Button(5).WhileTrue(m_intake.IntakeIn());
-
-  m_copilotController.Button(6).WhileTrue(m_intake.IntakeOut());
 
   constexpr auto flywheelOff = []() { return 0.0; };
 
-  PitReset.OnTrue(frc2::cmd::Parallel(
-      m_shooter.PivotAngleCommand([]() { return 80_deg; }),
-      m_shooter.FlywheelCommand(flywheelOff),
-      m_climb.RetractClimb() /*, m_intake.IntakeArmSpeakerCommand()*/));
-
   // Configure climb bindings.
-
-  auto climb = [this]() -> double {
-    return -frc::ApplyDeadband(m_copilotController.GetRightY(),
-                               OperatorConstants::kClimbDeadband);
-  };
-
-  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
   // Configure PathPlanner.
 
@@ -327,28 +257,6 @@ void RobotContainer::ConfigureBindings() {
   // Register named commands for use in auton.
 
   pathplanner::NamedCommands::registerCommand(
-      "ShootAmp", m_intake.ShootOnAMPRetract().WithName("ShootAMP"));
-
-  pathplanner::NamedCommands::registerCommand(
-      "IntakeRing", m_intake.IntakeRing().WithName("IntakeRing"));
-
-  pathplanner::NamedCommands::registerCommand(
-      "OutputToShooterZTarget",
-      frc2::cmd::Sequence(
-          m_swerve
-              .ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, alliance)
-              .WithTimeout(1_s),
-          m_intake.OutputToShooter().WithTimeout(1_s).WithName(
-              "OutputToShooterZTarget")));
-
-  pathplanner::NamedCommands::registerCommand(
-      "OutputToShooter",
-      m_intake.OutputToShooter().WithName("OutputToShooter"));
-
-  pathplanner::NamedCommands::registerCommand(
-      "ShootAmp", frc2::cmd::None().WithName("ShootAmp"));
-
-  pathplanner::NamedCommands::registerCommand(
       "zTargetingMidNoteFarR",
       m_swerve
           .ZTargetPoseCommand(targetMidFarRNote, fwd, strafe, false, alliance)
@@ -380,12 +288,6 @@ void RobotContainer::ConfigureBindings() {
       frc2::cmd::Either(m_swerve.TurnToAngleCommand(180_deg),
                         m_swerve.TurnToAngleCommand(0_deg), checkRed));
 
-  pathplanner::NamedCommands::registerCommand(
-      "FinishWhenEmpty",
-      frc2::cmd::Sequence(frc2::cmd::Wait(.75_s),
-                          frc2::cmd::WaitUntil([this]() -> bool {
-                            return !m_intake.IsIntakeBreakBeamBroken();
-                          })));
   // Special pathfinding configurations.
 
   auto BlueSourcePath = pathplanner::AutoBuilder::pathfindToPose(
@@ -522,12 +424,6 @@ void RobotContainer::ConfigureBindings() {
 }
 
 void RobotContainer::ConfigureDashboard() {
-  m_intake.InitVisualization(&m_mech_sideview);
-  m_shooter.InitVisualization(&m_mech_sideview);
-
-  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
-  frc::SmartDashboard::PutData("Intake", &m_intake);
-  frc::SmartDashboard::PutData("Shooter", &m_shooter);
   frc::SmartDashboard::PutData("Drivebase", &m_swerve);
   frc::SmartDashboard::PutData(&m_chooser);
 }

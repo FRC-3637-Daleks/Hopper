@@ -33,10 +33,8 @@
 
 #include <numbers>
 
-#include "subsystems/Climb.h"
 #include "subsystems/Drivetrain.h"
-#include "subsystems/Intake.h"
-#include "subsystems/Shooter.h"
+
 #include "subsystems/Vision.h"
 
 namespace AutoConstants {
@@ -227,10 +225,7 @@ public:
 
   // The robot's subsystems are defined here...
 
-  Shooter m_shooter;
   Drivetrain m_swerve;
-  Intake m_intake;
-  Climb m_climb;
   Vision m_vision;
 
   // The autonomous commands are initialized here.

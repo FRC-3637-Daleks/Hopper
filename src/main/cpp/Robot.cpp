@@ -135,32 +135,7 @@ void Robot::SimulationInit() {}
 /**
  * This function is called periodically whilst in simulation.
  */
-void Robot::SimulationPeriodic() {
-  const auto pose = m_container.m_swerve.GetPose();
-  if (pose.Translation().Distance(
-          FieldConstants::feeder_station.Translation()) < 0.5_m) {
-    m_container.m_intake.SimulateNotePickup();
-  }
-
-  std::vector<frc::Pose2d> note_poses;
-  for (int i = 0; i < std::size(FieldConstants::note_positions); i++) {
-    if (!m_note_staged[i])
-      continue;
-
-    if (pose.Translation().Distance(FieldConstants::note_positions[i]) <
-        0.5_m) {
-      if (m_container.m_intake.SimulateNotePickup()) {
-        fmt::println("Picked up note {}", i);
-        m_note_staged[i] = false;
-        continue;
-      }
-    }
-
-    note_poses.push_back(frc::Pose2d{FieldConstants::note_positions[i], 0_deg});
-  }
-
-  m_container.m_swerve.GetField().GetObject("Notes")->SetPoses(note_poses);
-}
+void Robot::SimulationPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
