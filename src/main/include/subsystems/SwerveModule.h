@@ -128,6 +128,8 @@ private:
 
   ctre::phoenix6::hardware::TalonFX m_steerMotor;
 
+  ctre::phoenix6::configs::MotionMagicConfigs &m_motionMagicConfig;
+
   // Keeps track of the module heading between power cycles.
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
 
