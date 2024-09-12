@@ -71,7 +71,20 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       m_sim_state(new SwerveModuleSim(*this)) {
 
   ctre::phoenix6::configs::TalonFXConfiguration steerConfig, driveConfig;
+  ctre::phoenix6::configs::MotionMagicConfigs &steerMMConfig =
+                                                  steerConfig.MotionMagic,
+                                              &driveMMConfig =
+                                                  driveConfig.MotionMagic;
 
+  driveMMConfig.MotionMagicCruiseVelocity =
+      kTalonSpeedRPM * kDriveEncoderReduction;
+  driveMMConfig.MotionMagicAcceleration = kDriveAcceleration;
+  driveMMConfig.MotionMagicJerk = 0;
+
+  steerMMConfig.MotionMagicCruiseVelocity =
+      kTalonSpeedRPM * kSteerGearReduction;
+  steerMMConfig.MotionMagicAcceleration = 5;
+  steerMMConfig.MotionMagicJerk = 0;
   ctre::phoenix6::configs::MotorOutputConfigs steerOutputConfigs;
   steerOutputConfigs.WithNeutralMode(
       ctre::phoenix6::signals::NeutralModeValue::Brake);
@@ -134,13 +147,14 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
   drivePIDConfigs.kV =
       1.0 / (kPhysicalMaxSpeed / kDistanceToRotations * 1_s / 1_tr);
   driveConfig.WithSlot0(drivePIDConfigs);
-
+  driveMMConfig.MotionMagicExpo_kV = driveConfig.Slot0.kV;
   ctre::phoenix6::configs::Slot0Configs steerPIDConfigs{};
   steerPIDConfigs.kP = steerMotorPIDCoefficients.kP;
   steerPIDConfigs.kI = steerMotorPIDCoefficients.kI;
   steerPIDConfigs.kD = steerMotorPIDCoefficients.kD;
   steerPIDConfigs.kV = 0.0;
   steerConfig.WithSlot0(steerPIDConfigs);
+  steerMMConfig.MotionMagicExpo_kV = steerConfig.Slot0.kV;
 
   ctre::phoenix6::configs::ClosedLoopGeneralConfigs steerClosedLoopConfig{};
   steerClosedLoopConfig.ContinuousWrap = true;
@@ -274,10 +288,10 @@ void SwerveModule::SetDesiredState(
   const auto state =
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
-  ctre::phoenix6::controls::VelocityDutyCycle velocityControl{
+  ctre::phoenix6::controls::MotionMagicVelocityDutyCycle mmVelocityControl{
       0_tps, 0_tr_per_s_sq, true};
   m_driveMotor.SetControl(
-      velocityControl.WithVelocity(state.speed / kDistanceToRotations));
+      mmVelocityControl.WithVelocity(state.speed / kDistanceToRotations));
 
   ctre::phoenix6::controls::PositionDutyCycle positionControl{0_tr, 0_tps,
                                                               true};

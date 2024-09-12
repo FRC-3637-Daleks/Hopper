@@ -40,7 +40,8 @@ constexpr double kDriveEncoderReduction = 6.75; // reduction in drive motor
 constexpr auto kDriveEncoderDistancePerRevolution =
     kWheelDiameter * std::numbers::pi / kDriveEncoderReduction;
 constexpr auto kWheelMoment = .015_kg_sq_m;
-
+constexpr auto kTalonSpeedRPM = 5104;
+constexpr auto kDriveAcceleration = 20.5;
 constexpr auto kDistanceToRotations = kDriveEncoderDistancePerRevolution / 1_tr;
 
 constexpr double kSteerGearReduction = 150.0 / 7.0;
@@ -127,8 +128,6 @@ private:
   ctre::phoenix6::hardware::TalonFX m_driveMotor;
 
   ctre::phoenix6::hardware::TalonFX m_steerMotor;
-
-  ctre::phoenix6::configs::MotionMagicConfigs &m_motionMagicConfig;
 
   // Keeps track of the module heading between power cycles.
   ctre::phoenix6::hardware::CANcoder m_absoluteEncoder;
