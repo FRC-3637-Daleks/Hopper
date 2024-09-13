@@ -9,10 +9,10 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
+#include <frc/simulation/LinearSystemSim.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/simulation/LinearSystemSim.h>
 
 #include <frc/controller/ProfiledPIDController.h>
 

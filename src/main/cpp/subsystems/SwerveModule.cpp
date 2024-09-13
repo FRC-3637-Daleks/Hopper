@@ -289,7 +289,7 @@ void SwerveModule::SetDesiredState(
       frc::SwerveModuleState::Optimize(referenceState, GetModuleHeading());
 
   ctre::phoenix6::controls::MotionMagicVelocityDutyCycle mmVelocityControl{
-      0_tps, 0_tr_per_s_sq, true};
+      0_tps, 0_tr_per_s_sq, true, 0.0, 0, false, false, false};
   m_driveMotor.SetControl(
       mmVelocityControl.WithVelocity(state.speed / kDistanceToRotations));
 
