@@ -70,6 +70,28 @@ Drivetrain::Drivetrain()
 
   frc::DataLogManager::Log(
       fmt::format("Finished initializing drivetrain subsystem."));
+
+  m_ntInst = nt::NetworkTableInstance::NetworkTableInstance::GetDefault();
+  m_ntInst.StartClient4("RosDrivetrain");
+
+  m_pubOdomTimestamp =
+      m_ntInst.GetIntegerTopic("/Drivetrain/nt2ros/odom/timestamp").Publish();
+  m_pubOdomPosLinear =
+      m_ntInst.GetDoubleArrayTopic("/Drivetrain/nt2ros/odom/position/linear")
+          .Publish();
+  m_pubOdomPosAngular =
+      m_ntInst.GetDoubleArrayTopic("/Drivetrain/nt2ros/odom/position/angular")
+          .Publish();
+  m_pubOdomVelLinear =
+      m_ntInst.GetDoubleArrayTopic("/Drivetrain/nt2ros/odom/velocity/linear")
+          .Publish();
+  m_pubOdomVelAngular =
+      m_ntInst.GetDoubleArrayTopic("/Drivetrain/nt2ros/odom/velocity/angular")
+          .Publish();
+  m_pubOdomAccLinear =
+      m_ntInst
+          .GetDoubleArrayTopic("/Drivetrain/nt2ros/odom/acceleration/linear")
+          .Publish();
 }
 frc::Pose2d Drivetrain::GetSimulatedGroundTruth() {
   return m_sim_state->m_poseSim.GetPose();
@@ -118,6 +140,7 @@ void Drivetrain::Periodic() {
       {0.0, 0.0, 0.0});*/
 
   this->UpdateDashboard();
+  this->PublishOdom();
 }
 
 Drivetrain::~Drivetrain() {}
@@ -290,6 +313,40 @@ void Drivetrain::UpdateDashboard() {
 
   // frc::SmartDashboard::PutNumber("PDH/Total Current",
   // m_pdh.GetTotalCurrent());
+}
+
+void Drivetrain::PublishOdom() {
+  auto current_time = nt::Now();
+  m_pubOdomTimestamp.Set(current_time, current_time);
+
+  std::vector<double> pubPosLinear;
+  auto pose = GetPose();
+  pubPosLinear.push_back(pose.X().convert<units::meters>().value());
+  pubPosLinear.push_back(pose.Y().convert<units::meters>().value());
+  pubPosLinear.push_back(0);
+  m_pubOdomPosLinear.Set(pubPosLinear, current_time);
+
+  std::vector<double> pubPosAngular;
+  pubPosAngular.push_back(0);
+  pubPosAngular.push_back(0);
+  pubPosAngular.push_back(GetHeading().Radians().value());
+  m_pubOdomPosAngular.Set(pubPosAngular, current_time);
+
+  std::vector<double> pubVelLinear;
+  auto speeds = GetSpeed();
+  pubVelLinear.push_back(speeds.vx.convert<units::meters_per_second>().value());
+  pubVelLinear.push_back(speeds.vy.convert<units::meters_per_second>().value());
+  pubVelLinear.push_back(0);
+  m_pubOdomVelLinear.Set(pubVelLinear, current_time);
+
+  std::vector<double> pubVelAngular;
+  pubVelAngular.push_back(0);
+  pubVelAngular.push_back(0);
+  pubVelAngular.push_back(
+      GetTurnRate().convert<units::radians_per_second>().value());
+  m_pubOdomVelAngular.Set(pubVelAngular, current_time);
+
+  m_ntInst.Flush();
 }
 
 void Drivetrain::SimulationPeriodic() {

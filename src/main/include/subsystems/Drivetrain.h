@@ -15,6 +15,13 @@
 
 #include <frc/controller/ProfiledPIDController.h>
 
+#include <networktables/DoubleArrayTopic.h>
+#include <networktables/DoubleTopic.h>
+#include <networktables/IntegerArrayTopic.h>
+#include <networktables/IntegerTopic.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
 #include <memory>
 #include <numbers>
 
@@ -180,6 +187,7 @@ public:
 
   // Display useful information on Shuffleboard.
   void UpdateDashboard();
+  void PublishOdom();
   frc::Field2d &GetField() { return m_field; }
 
   // Drive the robot with swerve controls.
@@ -270,6 +278,15 @@ private:
   frc::Pose2d m_zTarget;
 
   frc::Transform2d m_odometryCompensation{0_m, 0_m, 0_deg};
+
+private:
+  nt::NetworkTableInstance m_ntInst;
+  nt::IntegerPublisher m_pubOdomTimestamp;
+  nt::DoubleArrayPublisher m_pubOdomPosLinear;
+  nt::DoubleArrayPublisher m_pubOdomPosAngular;
+  nt::DoubleArrayPublisher m_pubOdomVelLinear;
+  nt::DoubleArrayPublisher m_pubOdomVelAngular;
+  nt::DoubleArrayPublisher m_pubOdomAccLinear;
 
 private:
   friend class DrivetrainSimulation;
