@@ -272,7 +272,10 @@ void Drivetrain::UpdateDashboard() {
       swerveStates); // Have to initialize array separately due as an error
                      // occurs when an array attempts to initialize as a
                      // parameter.
-
+  frc::SmartDashboard::PutNumber(
+      "Robot Speed",
+      (swerveStates[1] + swerveStates[3] + swerveStates[5] + swerveStates[7]) /
+          4);
   frc::SmartDashboard::PutData("zeroEncodersCommand",
                                zeroEncodersCommand.get());
   m_frontLeft.UpdateDashboard();
