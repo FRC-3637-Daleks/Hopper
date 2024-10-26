@@ -345,8 +345,6 @@ void Drivetrain::PublishOdom() {
   pubVelAngular.push_back(
       GetTurnRate().convert<units::radians_per_second>().value());
   m_pubOdomVelAngular.Set(pubVelAngular, current_time);
-
-  m_ntInst.Flush();
 }
 
 void Drivetrain::SimulationPeriodic() {

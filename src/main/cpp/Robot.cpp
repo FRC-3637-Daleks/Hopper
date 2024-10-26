@@ -8,9 +8,16 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  AddPeriodic(
+      [this] {
+        this->m_container.m_ros_bridge.PubOdom(m_container.m_swerve.GetPose(),
+                                               m_container.m_swerve.GetSpeed());
+      },
+      20_ms);
+}
 
-void Robot::DriverStationConnected() {}
+void Robot::DriverStationConnected() { m_container.m_ros_bridge.CheckFMS(); }
 
 /**
  * This function is called every 20 ms, no matter the mode. Use

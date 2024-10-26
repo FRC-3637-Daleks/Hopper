@@ -34,6 +34,7 @@
 #include "subsystems/Climb.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Intake.h"
+#include "subsystems/ROSBridge.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
 
@@ -231,6 +232,7 @@ public:
   Intake m_intake;
   Climb m_climb;
   Vision m_vision;
+  ROSBridge m_ros_bridge;
 
   // The autonomous commands are initialized here.
 
