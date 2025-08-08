@@ -182,6 +182,8 @@ public:
       std::function<units::feet_per_second_t()> strafe_velocity);
   /** Sets the flywheel to speed determined by controller input*/
   frc2::CommandPtr FlywheelCommand(std::function<double()> controllerInput);
+
+  frc2::CommandPtr FlywheelSpinStaticCommand(double V12Percent);
   /**Sets Shooter pivot angle to the value returned by a command*/
   frc2::CommandPtr
   PivotAngleCommand(std::function<units::degree_t()> pivotAngle);

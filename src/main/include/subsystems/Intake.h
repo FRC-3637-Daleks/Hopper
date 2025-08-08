@@ -73,7 +73,7 @@ constexpr int kAllowableMarginOfError = 25;
 
 // voltage for funtions (i dide't even have to use auto)
 constexpr units::voltage::volt_t kOffVoltage = 0.0_V;
-constexpr units::current::ampere_t kMaxCurrent = 50_A;
+constexpr units::current::ampere_t kMaxCurrent = 30_A; // was 50_A
 
 // physical characteristics
 constexpr auto kWheelMoment = 0.0001_kg_sq_m;

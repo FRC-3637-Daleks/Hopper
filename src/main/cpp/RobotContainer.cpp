@@ -142,27 +142,55 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.Start().OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.A().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, checkRed));
+  // m_swerveController.A().WhileTrue(
+  //     m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false,
+  //     checkRed));
 
-  m_swerveController.X().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
+  // m_swerveController.X().WhileTrue(
+  //     m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true,
+  //     checkRed));
 
-  m_swerveController.B().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
+  // m_swerveController.B().WhileTrue(
+  //     m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
-  m_swerveController.Y().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
+  // m_swerveController.Y().WhileTrue(
+  //     m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false,
+  //     checkRed));
 
+  // m_slowModeTrigger.WhileTrue(
+  //     m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
+
+  // m_swerveController.Back().ToggleOnTrue(
+  //     m_swerve.SwerveCommand(fwd, strafe, rot));
+
+  // m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
+
+  // m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
+
+  // https://imgur.com/a/4KrECWl
+  m_swerveController.Y().WhileTrue(m_intake.IntakeFromPlayerStation());
+
+  m_swerveController.B().WhileTrue(m_intake.OutputToShooter());
+
+  m_swerveController.X().WhileTrue(m_intake.IntakeArmIntakeCommand());
+
+  m_swerveController.RightBumper().WhileTrue(
+      m_shooter.FlywheelSpinStaticCommand(30));
+
+  m_swerveController.LeftTrigger().WhileTrue(
+      m_shooter.PivotAngleCommand([this] {
+        return units::degree_t((m_swerveController.LeftTrigger().Get() / 2));
+      }));
+
+  ArmWheelIn.WhileTrue(m_intake.IntakeIn());
+  ArmWheelOut.WhileTrue(m_intake.IntakeOut());
+
+  ArmUp.WhileTrue(m_intake.IntakeArmSpeakerCommand());
+  ArmDown.WhileTrue(m_intake.IntakeArmIntakeCommand());
+
+  // !!!!!! Runs all the time unless r trigger is heald.
   m_slowModeTrigger.WhileTrue(
       m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
-
-  m_swerveController.Back().ToggleOnTrue(
-      m_swerve.SwerveCommand(fwd, strafe, rot));
-
-  m_swerveController.RightBumper().OnTrue(m_intake.ShootOnAMPRetract());
-
-  m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
 
   constexpr auto one_meter = []() -> units::meters_per_second_t {
     return 1_mps;
@@ -174,17 +202,19 @@ void RobotContainer::ConfigureBindings() {
 
   // Precise driving commands.
 
-  DriveFwdTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(one_meter, strafe, rot, checkRed));
+  //   DriveFwdTrigger.WhileTrue(
+  //       m_swerve.SwerveCommandFieldRelative(one_meter, strafe, rot,
+  //       checkRed));
 
-  DriveStrafeLeftTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(fwd, one_meter, rot, checkRed));
+  //   DriveStrafeLeftTrigger.WhileTrue(
+  //       m_swerve.SwerveCommandFieldRelative(fwd, one_meter, rot, checkRed));
 
-  DriveRevTrigger.WhileTrue(m_swerve.SwerveCommandFieldRelative(
-      neg_one_meter, strafe, rot, checkRed));
+  //   DriveRevTrigger.WhileTrue(m_swerve.SwerveCommandFieldRelative(
+  //       neg_one_meter, strafe, rot, checkRed));
 
-  DriveStrafeRightTrigger.WhileTrue(
-      m_swerve.SwerveCommandFieldRelative(fwd, neg_one_meter, rot, checkRed));
+  //   DriveStrafeRightTrigger.WhileTrue(
+  //       m_swerve.SwerveCommandFieldRelative(fwd, neg_one_meter, rot,
+  //       checkRed));
 
   // Configure Shooter Bindings.
   auto flywheel = [this]() -> double {
@@ -231,61 +261,65 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
-  m_shooter.SetDefaultCommand(
-      m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
+  // m_shooter.SetDefaultCommand(
+  //     m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
 
-  m_copilotController.LeftStick().ToggleOnTrue(
-      m_shooter.ShooterVelocityCommand(flywheel, pivot));
+  // m_copilotController.LeftStick().ToggleOnTrue(
+  //     m_shooter.ShooterVelocityCommand(flywheel, pivot));
 
-  m_copilotController.RightBumper().WhileTrue(m_shooter.SubwooferCommand());
+  // m_copilotController.RightBumper().WhileTrue(m_shooter.SubwooferCommand());
 
-  m_copilotController.LeftBumper().WhileTrue(m_shooter.AmpShot());
+  // m_copilotController.LeftBumper().WhileTrue(m_shooter.AmpShot());
 
   // Configure Intake Bindings.
 
-  GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true));
+  // GroundIntakeTrigger.OnTrue(m_intake.IntakeArmIntakeCommand(true)); //Ground
+  // Intake, DPAD Right
 
-  AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation());
+  // AMPIntakeTrigger.OnTrue(m_intake.IntakeFromPlayerStation()); //Player, DPAD
+  // Up
 
-  SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));
+  // SpeakerIntakeTrigger.OnTrue(m_intake.IntakeArmSpeakerCommand(true));//Speaker
+  // (back) DPAD Left
 
-  AutoIntakeTrigger.OnTrue(m_intake.IntakeRing());
+  // AutoIntakeTrigger.OnTrue(m_intake.IntakeRing()); //Audo do it DPAD Down
 
   // Manual intake using percent out.
 
-  m_copilotController.Start().ToggleOnTrue(frc2::cmd::Run(
-      [this] {
-        if (m_copilotController.GetXButton())
-          m_intake.Emergency(1.0);
-        else if (m_copilotController.GetYButton())
-          m_intake.Emergency(-1.0);
-        else
-          m_intake.Emergency(0.0);
-      },
-      {&m_intake}));
+  // m_copilotController.Start().ToggleOnTrue(frc2::cmd::Run( // Something
+  //     [this] {
+  //         if (m_copilotController.GetXButton())
+  //         m_intake.Emergency(1.0);
+  //         else if (m_copilotController.GetYButton())
+  //         m_intake.Emergency(-1.0);
+  //         else
+  //         m_intake.Emergency(0.0);
+  //     },
+  //     {&m_intake}));
 
-  m_passMode.WhileTrue(m_shooter.PassModeCommand());
+  // m_passMode.WhileTrue(m_shooter.PassModeCommand()); //copioletController Y
+  // is over 2
 
-  // Manual Intake In/Out.
-  m_copilotController.A().WhileTrue(m_intake.IntakeIn());
+  // // Manual Intake In/Out.
+  // m_copilotController.A().WhileTrue(m_intake.IntakeIn());//CC A
 
-  m_copilotController.B().WhileTrue(m_intake.IntakeOut());
+  // m_copilotController.B().WhileTrue(m_intake.IntakeOut());//CC B
 
   constexpr auto flywheelOff = []() { return 0.0; };
 
-  PitReset.OnTrue(frc2::cmd::Parallel(
+  PitReset.OnTrue(frc2::cmd::Parallel( // pit mode, copiolet start
       m_shooter.PivotAngleCommand([]() { return 80_deg; }),
       m_shooter.FlywheelCommand(flywheelOff),
       m_climb.RetractClimb() /*, m_intake.IntakeArmSpeakerCommand()*/));
 
   // Configure climb bindings.
 
-  auto climb = [this]() -> double {
-    return -frc::ApplyDeadband(m_copilotController.GetRightY(),
-                               OperatorConstants::kClimbDeadband);
-  };
+  // auto climb = [this]() -> double { //copiolet Y button
+  //     return -frc::ApplyDeadband(m_copilotController.GetRightY(),
+  //                             OperatorConstants::kClimbDeadband);
+  // };
 
-  m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
+  // m_climb.SetDefaultCommand(m_climb.ClimbCommand(climb));
 
   // Configure PathPlanner.
 

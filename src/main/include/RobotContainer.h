@@ -159,11 +159,11 @@ public:
   // Button Triggers are defined here.
 
   frc2::Trigger m_slowModeTrigger{[this]() -> bool {
-    return m_swerveController.GetLeftTriggerAxis() > 0.2;
+    return !(m_swerveController.GetRightTriggerAxis() > 0.2); // invert for 4-H
   }};
 
   frc2::Trigger m_autoAmpTrigger{[this]() -> bool {
-    return m_swerveController.GetRightTriggerAxis() > 0.2;
+    return m_swerveController.GetLeftTriggerAxis() > 0.2;
   }};
 
   frc2::Trigger m_passMode{[this]() -> bool {
@@ -212,16 +212,16 @@ public:
   frc2::Trigger SubPathTrigger{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
 
-  frc2::Trigger DriveFwdTrigger{
+  frc2::Trigger ArmUp{
       [this]() -> bool { return m_swerveController.GetPOV() == 0; }};
 
-  frc2::Trigger DriveStrafeLeftTrigger{
+  frc2::Trigger ArmWheelIn{
       [this]() -> bool { return m_swerveController.GetPOV() == 270; }};
 
-  frc2::Trigger DriveStrafeRightTrigger{
+  frc2::Trigger ArmWheelOut{
       [this]() -> bool { return m_swerveController.GetPOV() == 90; }};
 
-  frc2::Trigger DriveRevTrigger{
+  frc2::Trigger ArmDown{
       [this]() -> bool { return m_swerveController.GetPOV() == 180; }};
 
   // The robot's subsystems are defined here...

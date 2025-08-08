@@ -79,11 +79,9 @@ Intake::Intake() : m_sim_state(new IntakeSimulation(*this)) {
    */
 
   // set Motion Magic settings
-  m_arm.ConfigMotionCruiseVelocity(
-      130); // 80 rps = 16384 ticks/100ms cruise velocity
-  m_arm.ConfigMotionAcceleration(
-      1300); // 160 rps/s = 32768 ticks/100ms/s acceleration
-  m_arm.ConfigMotionSCurveStrength(0); // s-curve smoothing strength of 3
+  m_arm.ConfigMotionCruiseVelocity(50); // was 130
+  m_arm.ConfigMotionAcceleration(600);  // was 1300
+  m_arm.ConfigMotionSCurveStrength(0);  // s-curve smoothing strength of 3
 
   // periodic, run Motion Magic with slot 0 configs
   m_arm.SelectProfileSlot(0, 0);

@@ -365,7 +365,7 @@ frc2::CommandPtr Shooter::PassModeCommand() {
   });
 }
 
-frc2::CommandPtr Shooter::SubwooferCommand() {
+frc2::CommandPtr Shooter::SubwooferCommand() { 
   return this->Run([this]() {
     m_leadMotor.SetVoltage(12_V * 0.5);
     SetPivotMotor(ToTalonUnits(43_deg));
@@ -408,6 +408,13 @@ Shooter::FlywheelCommand(std::function<double()> controllerInput) {
                                2.0);
       },
       {});
+}
+
+//Pass in 1 - 100
+frc2::CommandPtr Shooter::FlywheelSpinStaticCommand(double V12Percent) {
+  return frc2::cmd::Run([this, V12Percent] {
+    m_leadMotor.SetVoltage(12_V * (V12Percent / 100));
+  });
 }
 
 frc2::CommandPtr
