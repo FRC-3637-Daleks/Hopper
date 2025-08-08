@@ -66,6 +66,7 @@ SwerveModule::SwerveModule(const std::string name, const int driveMotorId,
       m_absoluteEncoder(absoluteEncoderId),
       m_drivePosition(m_driveMotor.GetPosition()),
       m_driveVelocity(m_driveMotor.GetVelocity()),
+      m_driveSupplyCurrent(m_driveMotor.GetSupplyCurrent()),
       m_steerPosition(m_steerMotor.GetPosition()), //< FusedCANCoder
       m_steerVelocity(m_steerMotor.GetVelocity()),
       m_sim_state(new SwerveModuleSim(*this)) {
@@ -206,6 +207,10 @@ units::meter_t SwerveModule::GetModuleDistance() {
 
 units::meters_per_second_t SwerveModule::GetModuleVelocity() {
   return m_driveVelocity.GetValue() * kDistanceToRotations;
+}
+
+units::ampere_t SwerveModule::GetDriveMotorCurrent() {
+  return m_driveSupplyCurrent.GetValue();
 }
 
 frc::Rotation2d SwerveModule::GetModuleHeading() {

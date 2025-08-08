@@ -559,11 +559,15 @@ void RobotContainer::ConfigureDashboard() {
   m_intake.InitVisualization(&m_mech_sideview);
   m_shooter.InitVisualization(&m_mech_sideview);
 
-  frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
-  frc::SmartDashboard::PutData("Intake", &m_intake);
-  frc::SmartDashboard::PutData("Shooter", &m_shooter);
-  frc::SmartDashboard::PutData("Drivebase", &m_swerve);
-  frc::SmartDashboard::PutData(&m_chooser);
+  // frc::SmartDashboard::PutData("Mechanisms", &m_mech_sideview);
+  // frc::SmartDashboard::PutData("Intake", &m_intake);
+  // frc::SmartDashboard::PutData("Shooter", &m_shooter);
+  // frc::SmartDashboard::PutData("Drivebase", &m_swerve);
+  // frc::SmartDashboard::PutData(&m_chooser);
+  frc::SmartDashboard::PutBoolean("Swerve/FL Wheel On Ground", true);
+  frc::SmartDashboard::PutBoolean("Swerve/FR Wheel On Ground", true);
+  frc::SmartDashboard::PutBoolean("Swerve/RL Wheel On Ground", true);
+  frc::SmartDashboard::PutBoolean("Swerve/RR Wheel On Ground", true);
 }
 
 void RobotContainer::ConfigureAuto() {

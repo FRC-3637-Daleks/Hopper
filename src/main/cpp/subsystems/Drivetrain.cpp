@@ -233,6 +233,40 @@ void Drivetrain::ResetOdometry(const frc::Pose2d &pose) {
       pose);
 }
 
+void Drivetrain::CheckWheelsOffGround() {
+  // Front Left Wheel
+  bool fl_is_moving = m_frontLeft.GetState().speed >
+                      DriveConstants::kWheelOffGroundSpeedThreshold;
+  bool fl_low_current = m_frontLeft.GetDriveMotorCurrent() <
+                        DriveConstants::kWheelOffGroundCurrentThreshold;
+  frc::SmartDashboard::PutBoolean("Swerve/FL Wheel On Ground",
+                                  !(fl_is_moving && fl_low_current));
+
+  // Front Right Wheel
+  bool fr_is_moving = m_frontRight.GetState().speed >
+                      DriveConstants::kWheelOffGroundSpeedThreshold;
+  bool fr_low_current = m_frontRight.GetDriveMotorCurrent() <
+                        DriveConstants::kWheelOffGroundCurrentThreshold;
+  frc::SmartDashboard::PutBoolean("Swerve/FR Wheel On Ground",
+                                  !(fr_is_moving && fr_low_current));
+
+  // Rear Left Wheel
+  bool rl_is_moving = m_rearLeft.GetState().speed >
+                      DriveConstants::kWheelOffGroundSpeedThreshold;
+  bool rl_low_current = m_rearLeft.GetDriveMotorCurrent() <
+                        DriveConstants::kWheelOffGroundCurrentThreshold;
+  frc::SmartDashboard::PutBoolean("Swerve/RL Wheel On Ground",
+                                  !(rl_is_moving && rl_low_current));
+
+  // Rear Right Wheel
+  bool rr_is_moving = m_rearRight.GetState().speed >
+                      DriveConstants::kWheelOffGroundSpeedThreshold;
+  bool rr_low_current = m_rearRight.GetDriveMotorCurrent() <
+                        DriveConstants::kWheelOffGroundCurrentThreshold;
+  frc::SmartDashboard::PutBoolean("Swerve/RR Wheel On Ground",
+                                  !(rr_is_moving && rr_low_current));
+}
+
 void Drivetrain::UpdateDashboard() {
   const auto robot_center = this->GetPose();
   m_field.SetRobotPose(this->GetPose());
@@ -279,6 +313,8 @@ void Drivetrain::UpdateDashboard() {
   m_rearLeft.UpdateDashboard();
   m_frontRight.UpdateDashboard();
   m_rearRight.UpdateDashboard();
+
+  CheckWheelsOffGround();
 
   frc::SmartDashboard::PutNumber("Swerve/Gyro", m_gyro.GetAngle());
 

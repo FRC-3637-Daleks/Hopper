@@ -95,6 +95,10 @@ constexpr frc::Pose2d kSourcePose{15.733_m, 0.410_m, 0_deg};
 // estimation
 constexpr auto kNoteVelocity = 50_fps;
 
+// Needs tuning
+constexpr auto kWheelOffGroundCurrentThreshold = 5.0_A;
+constexpr auto kWheelOffGroundSpeedThreshold = 0.1_mps;
+
 } // namespace DriveConstants
 
 // Forward Declaration
@@ -245,6 +249,8 @@ public:
                      units::meters_per_second_t strafe, bool isRed);
 
 private:
+  void CheckWheelsOffGround();
+
   SwerveModule m_frontLeft;
   SwerveModule m_rearLeft;
   SwerveModule m_frontRight;

@@ -11,6 +11,7 @@
 #include <units/angle.h>
 #include <units/angular_acceleration.h>
 #include <units/angular_velocity.h>
+#include <units/current.h>
 #include <units/length.h>
 #include <units/moment_of_inertia.h>
 #include <units/velocity.h>
@@ -91,6 +92,9 @@ public:
   // Returns the velocity of the module in m/s.
   units::meters_per_second_t GetModuleVelocity();
 
+  // Returns the supply current of the drive motor.
+  units::ampere_t GetDriveMotorCurrent();
+
   // Returns the module heading in the scope [-180,180] degrees.
   frc::Rotation2d GetModuleHeading();
 
@@ -135,6 +139,7 @@ private: // signal objects to cache
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_drivePosition;
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t>
       m_driveVelocity;
+  ctre::phoenix6::StatusSignal<units::ampere_t> m_driveSupplyCurrent;
   ctre::phoenix6::StatusSignal<units::angle::turn_t> m_steerPosition;
   ctre::phoenix6::StatusSignal<units::angular_velocity::turns_per_second_t>
       m_steerVelocity;
@@ -149,5 +154,6 @@ template <typename... T> void SwerveModule::RefreshAllSignals(T &...modules) {
   // This passes all 4N signals to one call to RefreshAll
   ctre::phoenix6::BaseStatusSignal::RefreshAll(
       modules.m_drivePosition..., modules.m_driveVelocity...,
-      modules.m_steerPosition..., modules.m_steerVelocity...);
+      modules.m_driveSupplyCurrent..., modules.m_steerPosition...,
+      modules.m_steerVelocity...);
 }
