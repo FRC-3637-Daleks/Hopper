@@ -320,11 +320,11 @@ frc2::CommandPtr Intake::AutoIntake() {
 }
 
 void Intake::IntakeForward() { // in
-  m_intake.SetVoltage(3_V);
+  m_intake.SetVoltage(1_V);
 }
 
 void Intake::IntakeBackward() { // out, (i was adjusting the voltage for amp)
-  m_intake.SetVoltage(-1 * (1.75_V));
+  m_intake.SetVoltage(-1 * (1_V));
 }
 
 void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (1.75_V)); }

@@ -168,19 +168,23 @@ void RobotContainer::ConfigureBindings() {
   // m_swerveController.LeftBumper().OnTrue(m_intake.OutputToShooter());
 
   // https://imgur.com/a/4KrECWl
+  // Monitor this too check if its broken: "Intake/Break Beam State (raw)"
   m_swerveController.Y().WhileTrue(m_intake.IntakeFromPlayerStation());
 
-  m_swerveController.B().WhileTrue(m_intake.OutputToShooter());
+  m_swerveController.B().WhileTrue(m_intake.OutputToShooter().AndThen(
+      m_intake.IntakeOut())); // Could need to be changed to In
 
-  m_swerveController.X().WhileTrue(m_intake.IntakeArmIntakeCommand());
+  m_swerveController.X().WhileTrue(m_intake.IntakeRing());
 
   m_swerveController.RightBumper().WhileTrue(
       m_shooter.FlywheelSpinStaticCommand(30));
 
-  m_swerveController.LeftTrigger().WhileTrue(
-      m_shooter.PivotAngleCommand([this] {
-        return units::degree_t((m_swerveController.LeftTrigger().Get() / 2));
-      }));
+  auto RTPos = [this]() -> double {
+    return m_swerveController.LeftTrigger().Get();
+  };
+
+  m_swerveController.LeftTrigger().WhileTrue(m_shooter.PivotAngleCommand(
+      [this, RTPos] { return units::degree_t((RTPos() / 2)); }));
 
   ArmWheelIn.WhileTrue(m_intake.IntakeIn());
   ArmWheelOut.WhileTrue(m_intake.IntakeOut());
