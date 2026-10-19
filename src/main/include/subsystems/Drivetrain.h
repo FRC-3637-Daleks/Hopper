@@ -22,7 +22,7 @@
 
 namespace DriveConstants {
 constexpr auto kMaxSpeed = 15.7_fps;
-constexpr auto kMaxTeleopSpeed = 15.7_fps;
+constexpr auto kMaxTeleopSpeed = 4.0_fps;
 
 constexpr auto kMaxTurnRate = 2.5 * std::numbers::pi * 1_rad_per_s;
 constexpr auto kMaxTurnAcceleration = 6 * std::numbers::pi * 1_rad_per_s_sq;

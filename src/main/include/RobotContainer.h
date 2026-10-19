@@ -178,16 +178,22 @@ public:
   }};
   /** Amp Intake Trigger, up on the Co-Pilot dpad*/
   frc2::Trigger AMPIntakeTrigger{[this]() -> bool {
-    return m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV;
+    return m_swerveController.GetYButton() ||
+           m_copilotController.GetPOV() == OperatorConstants::kIntakeAMPPOV;
   }};
   /** Speaker Intake Trigger, left on the Co-Pilot dpad*/
-  frc2::Trigger SpeakerIntakeTrigger{[this]() -> bool {
-    return m_copilotController.GetPOV() == OperatorConstants::kIntakeShooterPOV;
-  }};
+  frc2::Trigger SpeakerIntakeTrigger =
+      frc2::Trigger{[this]() -> bool {
+        return m_copilotController.GetPOV() ==
+               OperatorConstants::kIntakeShooterPOV;
+      }} ||
+      m_swerveController.B();
   /** Auto Intake Trigger, down on the Co-Pilot dpad*/
-  frc2::Trigger AutoIntakeTrigger{[this]() -> bool {
-    return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
-  }};
+  frc2::Trigger AutoIntakeTrigger =
+      frc2::Trigger{[this]() -> bool {
+        return m_copilotController.GetPOV() == OperatorConstants::kAutoIntake;
+      }} ||
+      m_swerveController.A();
   /** Source Intake Trigger, up & right on the Co-Pilot dpad*/
   frc2::Trigger SourceIntakeTrigger{[this]() -> bool {
     return m_copilotController.GetPOV() == OperatorConstants::kIntakeSourcePOV;

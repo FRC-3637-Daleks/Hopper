@@ -188,16 +188,15 @@ frc2::CommandPtr Intake::ShootOnAMPRetract() {
 }
 
 frc2::CommandPtr Intake::OutputToShooter() {
-  return frc2::cmd::Either(
-      IntakeArmSpeakerCommand(true)
-          .Until([this]() -> bool {
-            return m_arm.GetSelectedSensorPosition() <
-                   IntakeConstants::IntakeArmSpeakerPos;
-          }) // when ring
-          .AndThen(IntakeOutSpeaker())
-          .WithTimeout(0.5_s),
-      frc2::cmd::None(),                             // no ring
-      [this]() { return IsIntakeBreakBeamBroken(); } // When broken = true
+  return frc2::cmd::Either(IntakeArmSpeakerCommand(true)
+                               .Until([this]() -> bool {
+                                 return m_arm.GetSelectedSensorPosition() <
+                                        IntakeConstants::IntakeArmSpeakerPos;
+                               }) // when ring
+                               .AndThen(IntakeOutSpeaker())
+                               .WithTimeout(0.5_s),
+                           frc2::cmd::None(),        // no ring
+                           [this]() { return true; } // When broken = true
   );
 }
 
@@ -322,11 +321,11 @@ frc2::CommandPtr Intake::AutoIntake() {
 }
 
 void Intake::IntakeForward() { // in
-  m_intake.SetVoltage(3_V);
+  m_intake.SetVoltage(2.5_V);
 }
 
 void Intake::IntakeBackward() { // out, (i was adjusting the voltage for amp)
-  m_intake.SetVoltage(-1 * (1.75_V));
+  m_intake.SetVoltage(-1 * (3.0_V));
 }
 
 void Intake::IntakeBackwardSpeaker() { m_intake.SetVoltage(-1 * (1.75_V)); }
@@ -367,7 +366,7 @@ bool Intake::IsIntaking() { return m_intake.Get() > 0.0; }
 
 void Intake::IntakeArmAMPVelocity() {
   m_goal = IntakeConstants::IntakeArmAMPVelocityPos;
-  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 70);
+  m_arm.Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, 80);
 }
 
 frc2::CommandPtr Intake::IntakeArmAMPCommand(bool wait) {

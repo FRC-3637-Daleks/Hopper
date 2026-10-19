@@ -367,7 +367,7 @@ frc2::CommandPtr Shooter::PassModeCommand() {
 
 frc2::CommandPtr Shooter::SubwooferCommand() {
   return this->Run([this]() {
-    m_leadMotor.SetVoltage(12_V * 0.5);
+    m_leadMotor.SetVoltage(12_V * 0.3);
     SetPivotMotor(ToTalonUnits(43_deg));
   });
 }

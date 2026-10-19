@@ -142,20 +142,23 @@ void RobotContainer::ConfigureBindings() {
 
   m_swerveController.Start().OnTrue(m_swerve.ZeroHeadingCommand());
 
-  m_swerveController.A().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false, checkRed));
+  //   m_swerveController.A().WhileTrue(
+  //       m_swerve.ZTargetPoseCommand(targetSource, fwd, strafe, false,
+  //       checkRed));
 
-  m_swerveController.X().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true, checkRed));
+  //   m_swerveController.X().WhileTrue(
+  //       m_swerve.ZTargetPoseCommand(targetSpeaker, fwd, strafe, true,
+  //       checkRed));
 
-  m_swerveController.B().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
+  //   m_swerveController.B().WhileTrue(
+  //       m_swerve.ZTargetPoseCommand(targetAMP, fwd, strafe, true, checkRed));
 
-  m_swerveController.Y().WhileTrue(
-      m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false, checkRed));
+  //   m_swerveController.Y().WhileTrue(
+  //       m_swerve.ZTargetPoseCommand(targetStage, fwd, strafe, false,
+  //       checkRed));
 
-  m_slowModeTrigger.WhileTrue(
-      m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));
+  /*m_slowModeTrigger.WhileTrue(
+      m_swerve.SwerveSlowCommand(fwd, strafe, rot, checkRed));*/
 
   m_swerveController.Back().ToggleOnTrue(
       m_swerve.SwerveCommand(fwd, strafe, rot));
@@ -188,12 +191,17 @@ void RobotContainer::ConfigureBindings() {
 
   // Configure Shooter Bindings.
   auto flywheel = [this]() -> double {
-    return (1.0 - m_copilotController.GetRightTriggerAxis());
+    return 0.8 * (1.0 - m_copilotController.GetRightTriggerAxis());
   };
 
   auto pivot = [this]() -> units::degrees_per_second_t {
-    return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(),
-                                             OperatorConstants::kDeadband);
+    if (m_swerveController.GetLeftTriggerAxis() > 0.1)
+      return 10_deg_per_s;
+    else if (m_swerveController.GetRightTriggerAxis() > 0.1)
+      return -10_deg_per_s;
+    else
+      return 16_deg_per_s * frc::ApplyDeadband(m_copilotController.GetLeftY(),
+                                               OperatorConstants::kDeadband);
   };
 
   auto calculateSpeakerDistance = [this]() -> units::meter_t {
@@ -231,11 +239,12 @@ void RobotContainer::ConfigureBindings() {
     return offset; // Return the horizontal distance as units::meter_t
   };
 
-  m_shooter.SetDefaultCommand(
-      m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
+  //   m_shooter.SetDefaultCommand(
+  //       m_shooter.ShooterCommand(flywheel, calculateSpeakerDistance));
 
-  m_copilotController.LeftStick().ToggleOnTrue(
-      m_shooter.ShooterVelocityCommand(flywheel, pivot));
+  m_shooter.SetDefaultCommand(m_shooter.SubwooferCommand());
+  (m_swerveController.LeftStick() || m_copilotController.LeftStick())
+      .ToggleOnTrue(m_shooter.ShooterVelocityCommand(flywheel, pivot));
 
   m_copilotController.RightBumper().WhileTrue(m_shooter.SubwooferCommand());
 
